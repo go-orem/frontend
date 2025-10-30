@@ -1,0 +1,29 @@
+import React from "react";
+
+function IconSuka() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m6.232 15.292 2.584 2c.333.333 1.083.5 1.583.5h3.167c1 0 2.083-.75 2.333-1.75l2-6.084c.417-1.166-.333-2.166-1.583-2.166h-3.334c-.5 0-.916-.417-.833-1l.417-2.667c.166-.75-.334-1.583-1.084-1.833-.666-.25-1.5.083-1.833.583L6.232 7.958"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M1.982 15.292V7.124c0-1.167.5-1.583 1.667-1.583h.833c1.167 0 1.667.416 1.667 1.583v8.166c0 1.167-.5 1.584-1.667 1.584H3.65c-1.167 0-1.667-.417-1.667-1.584"
+        stroke="var(--primarycolor)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export default IconSuka;
