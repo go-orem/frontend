@@ -1,9 +1,11 @@
 import IconEdit from "@/app/components/icons/IconEdit";
 import IconGear from "@/app/components/icons/IconGear";
 import IconLogout from "@/app/components/icons/IconLogout";
+import IconPrivacy from "@/app/components/icons/IconPrivacy";
 import IconProfile from "@/app/components/icons/IconProfile";
 import IconReply from "@/app/components/icons/IconReply";
 import IconSet from "@/app/components/icons/IconSet";
+import IconSetChat from "@/app/components/icons/IconSetChat";
 import IconSuka from "@/app/components/icons/IconSuka";
 import React from "react";
 
@@ -67,7 +69,7 @@ function SettingsView() {
           <li className="flex flex-col gap-1 justify-between">
             <div className="flex justify-between w-full hover:bg-(--hovercolor) p-5 rounded-xl cursor-pointer">
               <button className="flex space-x-4 items-center">
-                <IconReply />
+                <IconPrivacy />
                 <span className="text-sm font-mono font-light text-gray-400">
                   Privasi
                 </span>
@@ -80,7 +82,7 @@ function SettingsView() {
           <li className="flex flex-col gap-1 justify-between">
             <div className="flex justify-between w-full hover:bg-(--hovercolor) p-5 rounded-xl cursor-pointer">
               <button className="flex space-x-4 items-center">
-                <IconSuka />
+                <IconSetChat />
                 <span className="text-sm font-mono font-light text-gray-400">
                   Chat
                 </span>
