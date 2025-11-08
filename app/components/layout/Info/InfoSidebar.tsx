@@ -271,10 +271,10 @@ export default function InfoSidebar({
             Blokir
           </button>
           <button className="w-full text-red-500 bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
-            Laporkan
+            Report
           </button>
           <button className="w-full text-red-500 bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
-            Report
+            Hapus chat
           </button>
         </div>
       </div>
