@@ -267,13 +267,13 @@ export default function InfoSidebar({
               </div>
             </div>
           </div>
-          <button className="w-full text-red-500 bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
-            Blokir
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+            Blokir {data.name}
           </button>
-          <button className="w-full text-red-500 bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
-            Report
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+            Report {data.name}
           </button>
-          <button className="w-full text-red-500 bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
             Hapus chat
           </button>
         </div>
