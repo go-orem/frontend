@@ -4,6 +4,7 @@ import "./globals.css";
 import { ModalProvider } from "./components/UI/modal/ModalContext";
 import FloatingMenu from "./components/UI/modal/FloatingMenu";
 import { GiftProvider } from "./components/UI/modal/GiftContext";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <ModalProvider>
           <GiftProvider>
+            <Toaster richColors closeButton />
             {children}
             <FloatingMenu />
           </GiftProvider>
