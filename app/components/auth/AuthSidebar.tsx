@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SparklesSub from "../UI/effects/SparklesSub";
 import IconGoogle from "../icons/IconAuth/IconGoogle";
 import IconApple from "../icons/IconAuth/IconApple";
+import Web3LoginButton from "./Web3LoginButton";
 
 type TabItem = {
   name: string;
@@ -187,6 +188,9 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
 
                   {/* Button */}
                   <div className="mt-14 relative space-y-3">
+                    {/* web3 */}
+                    <Web3LoginButton />
+
                     <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <IconGoogle />

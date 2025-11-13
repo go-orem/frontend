@@ -4,6 +4,8 @@ import "./globals.css";
 import { ModalProvider } from "./components/UI/modal/ModalContext";
 import FloatingMenu from "./components/UI/modal/FloatingMenu";
 import { GiftProvider } from "./components/UI/modal/GiftContext";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +32,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ModalProvider>
-          <GiftProvider>
-            {children}
-            <FloatingMenu />
-          </GiftProvider>
-        </ModalProvider>
+        <AuthProvider>
+          <ModalProvider>
+            <GiftProvider>
+              <Toaster richColors closeButton />
+              {children}
+              <FloatingMenu />
+            </GiftProvider>
+          </ModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );
