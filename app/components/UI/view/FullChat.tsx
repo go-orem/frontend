@@ -294,7 +294,7 @@ export default function ChatWindow() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col overflow-x-auto h-screen bg-[url('https://i.pinimg.com/736x/c6/69/0c/c6690caf0ff598a60ae714931b491f62.jpg')] object-cover bg-center bg-cover">
+    <div className="flex flex-col overflow-x-auto h-screen bg-[url('https://i.pinimg.com/736x/c6/69/0c/c6690caf0ff598a60ae714931b491f62.jpg')] object-cover bg-center">
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((msg, i) => (
           <ChatBubble key={i} {...msg} />
