@@ -190,7 +190,6 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                   <div className="mt-14 relative space-y-3">
                     {/* web3 */}
                     <Web3LoginButton />
-
                     <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <IconGoogle />
@@ -198,22 +197,7 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                       </div>
                     </button>
 
-                    <motion.div
-                      className="absolute -top-10.5 w-17 right-0 h-auto z-0 pointer-events-none transform scale-x-[-1]"
-                      animate={{
-                        y: [0, -3, 0],
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 10, -10, 0],
-                      }}
-                      transition={{ duration: 1.8, repeat: Infinity }}
-                      whileHover={{ opacity: 0 }} // ngilang saat hover
-                    >
-                      <img
-                        src="https://cuandigitalkit.com/wp-content/uploads/2025/09/ChatGPT-Image-Aug-25-2025-03_02_12-PM-2.png"
-                        alt="Sparkles"
-                        className="w-full h-auto"
-                      />
-                    </motion.div>
+                    
                     <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <IconApple />
@@ -268,45 +252,9 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                       Masuk Sebagai Tamu
                     </button>
                     <SparklesSub count={10} />
-                    <motion.div
-                      className="absolute -top-10.5 w-17 h-auto z-0 pointer-events-none"
-                      animate={{
-                        y: [0, -3, 0],
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 10, -10, 0],
-                      }}
-                      transition={{ duration: 1.8, repeat: Infinity }}
-                      whileHover={{ opacity: 0 }} // ngilang saat hover
-                    >
-                      <img
-                        src="https://cuandigitalkit.com/wp-content/uploads/2025/09/ChatGPT-Image-Aug-25-2025-03_02_12-PM-2.png"
-                        alt="Sparkles"
-                        className="w-full h-auto"
-                      />
-                    </motion.div>
                   </div>
                 </div>
               )}
-              <motion.div
-                className="absolute w-100 h-auto -bottom-20 -right-40 rounded-full p-1.5"
-                animate={{
-                  y: [0, -3, 0, -4, 0, -3, 0], // naik-turun variatif
-                  x: [0, 2, -10, 1, 0, 0], // gerakan horizontal halus
-                  scale: [1, 1, 1], // variasi scale
-                  rotate: [0, 6, -6, 4, -4, 0], // rotasi ringan
-                }}
-                transition={{
-                  duration: 4, // lebih smooth
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <SparklesSub count={30} />
-                <img
-                  src="https://cuandigitalkit.com/wp-content/uploads/2025/09/Gemini_Generated_Image_p0c5mdp0c5mdp0c5-2.png"
-                  alt="Floating"
-                />
-              </motion.div>
             </div>
           </motion.aside>
         </>
