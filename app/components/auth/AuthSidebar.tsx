@@ -41,7 +41,7 @@ function Sparkles({ count = 5 }: { count?: number }) {
       {particles.map((p, idx) => (
         <motion.div
           key={idx}
-          className="absolute bg-gradient-to-b from-(--primarycolor) to-yellow-400"
+          className="absolute bg-linear-to-b from-(--primarycolor) to-yellow-400"
           style={{ width: p.size, height: p.size }}
           initial={{ opacity: 0, y: 0 }}
           animate={{

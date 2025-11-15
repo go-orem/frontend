@@ -19,6 +19,14 @@ const chats: ChatItem[] = [
     img: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjk5Z2ZyYnp0N2UzbWdtaWp4dmpjcXRxb3VyNzlkMW50NjQ0ZHduZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z7wIVXPnpm1DiJDdsU/giphy.gif",
     borderColor: "border-green-500",
   },
+  {
+    id: 2,
+    name_group: "Public",
+    member: 1290,
+    time: "Hari ini",
+    img: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MDZuZWdndHg3cGM5cG10OGg2NGx5d3lmbjhtMjh5eHQ2ZXNob2hnNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/FRsG2UpLPivKnJ5Rhi/giphy.gif",
+    borderColor: "border-[--primarycolor]",
+  },
 ];
 
 function ChatCard({ name_group, member, time, img, borderColor }: ChatItem) {
