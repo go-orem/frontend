@@ -9,8 +9,12 @@ import {
   BarChartSVG,
   WaveformSVG,
 } from "./ChartToken";
-import MobileMenu from "@/app/components/UI/MobileMenu";
+
 import MobileNavFooter from "./MobileNavFooter";
+import IconAdd from "@/app/components/icons/IconAdd";
+import IconKirim from "@/app/components/icons/IconKirim";
+
+import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
 
 interface WalletSettingsProps {
   data: any;
@@ -28,13 +32,19 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
   ];
   const [activeTab, setActiveTab] = useState("line");
 
+  const IconWallet = [
+    { icon: <IconAdd />, label: "send" },
+    { icon: <IconKirim />, label: "Receive" },
+    { icon: <WalletOrem />, label: "Swap" },
+  ];
+
   // sample data
   const lineData = [2.3, 10.3, 4.5, 7.8];
   const barData = [1.3, 2.906, 2.1, 5.89];
   const donutData = [
-    { name: "A", value: 30 },
-    { name: "B", value: 20 },
-    { name: "C", value: 50 },
+    { name: "A", value: 3.4 },
+    { name: "B", value: 2.93 },
+    { name: "C", value: 0.0039 },
   ];
 
   // slider refs for dragging
@@ -129,11 +139,7 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
 
       {/* ACTION BUTTONS */}
       <div className="grid grid-cols-3 gap-3 mt-6">
-        {[
-          { icon: "📤", label: "Send" },
-          { icon: "📥", label: "Receive" },
-          { icon: "🔄", label: "Swap" },
-        ].map((b, i) => (
+        {IconWallet.map((b, i) => (
           <button
             key={i}
             className="backdrop-blur-xl bg-white/5 hover:bg-white/10 transition rounded-xl p-3 flex flex-col items-center gap-1 border border-white/10"

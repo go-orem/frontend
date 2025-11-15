@@ -5,6 +5,7 @@ import data from "@emoji-mart/data";
 import dynamic from "next/dynamic";
 import IconKirim from "../../icons/IconKirim";
 import EmojiPicker from "@emoji-mart/react";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 
@@ -67,7 +68,9 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
           }`}
           onClick={() => setShowEmoji(!showEmoji)}
         >
-          😊
+          <div className="w-7 h-7">
+            <DotLottieReact src="/animations/LMAO.lottie" loop autoplay />
+          </div>
         </button>
 
         {/* Attachment Button */}
