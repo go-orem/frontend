@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "sonner"; // import toaster
-import IconWallet from "../icons/IconWallet";
 import { getWeb3Nonce, loginWeb3 } from "@/lib/auth";
+import IconMetamask from "../icons/IconAuth/IconMetamask";
 
 export default function Web3LoginButton() {
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function Web3LoginButton() {
       className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer"
     >
       <div className="flex items-center gap-3">
-        <IconWallet />
+        <IconMetamask />
         <span>{loading ? "Logging in..." : "Wallet"}</span>
       </div>
     </button>

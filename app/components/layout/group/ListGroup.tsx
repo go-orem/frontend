@@ -43,7 +43,7 @@ function ChatCard({ name_group, member, time, img, borderColor }: ChatItem) {
           </div>
           <div>
             <div className="name font-mono font-semibold">{name_group}</div>
-            <p className="font-mono text-sm text-gray-400">{member} K member</p>
+            <p className="font-mono text-sm text-gray-400">{member}K member</p>
           </div>
         </div>
         <div>
