@@ -10,11 +10,11 @@ import IconSuka from "@/app/components/icons/IconSuka";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
 
 const settingsMenu = [
-  { name: "Akun", icon: <IconProfile />, key: "account", variant: "user" },
-  { name: "Dompet", icon: <IconSuka />, key: "wallet", variant: "user" },
+  { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
+  { name: "Wallet", icon: <IconSuka />, key: "wallet", variant: "user" },
   { name: "Edit", icon: <IconEdit />, key: "edit", variant: "user" },
-  { name: "Pengaturan", icon: <IconGear />, key: "setting", variant: "group" },
-  { name: "Privasi", icon: <IconReply />, key: "privacy", variant: "user" },
+  { name: "Settings", icon: <IconGear />, key: "setting", variant: "group" },
+  { name: "Privacy", icon: <IconReply />, key: "privacy", variant: "user" },
   { name: "Chat", icon: <IconSuka />, key: "chat", variant: "user" },
   { name: "Folder", icon: <IconSuka />, key: "folder", variant: "group" },
   { name: "Bahasa", icon: <IconSuka />, key: "language", variant: "user" },
@@ -83,7 +83,7 @@ export default function SettingsView() {
             <li key={index} className="flex flex-col gap-1 justify-between">
               <div
                 onClick={() => handleOpenSidebar(item)}
-                className="flex justify-between w-full hover:bg-[var(--hovercolor)] p-5 rounded-xl cursor-pointer transition-all"
+                className="flex justify-between w-full hover:bg-(--hovercolor) p-5 rounded-xl cursor-pointer transition-all"
               >
                 <button className="flex space-x-4 items-center cursor-pointer">
                   {item.icon}
@@ -104,7 +104,7 @@ export default function SettingsView() {
 
           {/* Tombol keluar */}
           <li className="flex flex-col gap-1 justify-between">
-            <div className="flex justify-between w-full hover:bg-[var(--hovercolor)] p-5 rounded-xl cursor-pointer transition-all">
+            <div className="flex justify-between w-full hover:bg-(--hovercolor) p-5 rounded-xl cursor-pointer transition-all">
               <button className="flex space-x-4 items-center">
                 <IconLogout />
                 <span className="text-sm font-mono font-light text-gray-400">
@@ -119,7 +119,7 @@ export default function SettingsView() {
       {/* ======= SLIDE SIDEBAR KANAN ======= */}
       {selectedMenu && (
         <div
-          className={`fixed top-0 right-0 h-full w-[380px] bg-[var(--background)] border-l border-gray-800 transition-transform duration-300 ease-in-out z-40 ${
+          className={`fixed top-0 right-0 h-full w-[380px] bg-(--background) border-l border-gray-800 transition-transform duration-300 ease-in-out z-40 ${
             showSidebar ? "translate-x-0" : "translate-x-full"
           }`}
         >

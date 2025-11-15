@@ -61,7 +61,7 @@ const WhitepaperSettings: React.FC<WhitepaperSettingsProps> = ({
                   classNames(
                     "px-4 py-2 text-sm font-mono cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
                     selected
-                      ? "bg-[var(--hovercolor)] text-white"
+                      ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
                   )
                 }
@@ -85,7 +85,7 @@ const WhitepaperSettings: React.FC<WhitepaperSettingsProps> = ({
                 ))}
                 {(data?.mediaItems ?? []).length === 0 && (
                   <div className="text-xs text-gray-500 col-span-3">
-                    Tidak ada media
+                    media
                   </div>
                 )}
               </div>

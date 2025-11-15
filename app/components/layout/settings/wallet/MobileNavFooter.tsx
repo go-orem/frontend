@@ -1,17 +1,17 @@
-import IconCall from "@/app/components/icons/IconCall";
-import IconChannel from "@/app/components/icons/IconChannel";
-import IconNewChat from "@/app/components/icons/IconNewChat";
-import IconSet from "@/app/components/icons/IconSet";
+import AppOrem from "@/app/components/icons/IconWallet/AppOrem";
+import HistoryOrem from "@/app/components/icons/IconWallet/HistoryOrem";
+import RewardOrem from "@/app/components/icons/IconWallet/RewardOrem";
+import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
 import React from "react";
 
 type MobileNavFooter = { icon: React.ComponentType; label?: string };
 
 function MobileNavFooter() {
   const items = [
-    { icon: <IconNewChat />, label: "Cerita" },
-    { icon: <IconCall />, label: "Panggilan" },
-    { icon: <IconChannel />, label: "Chat" },
-    { icon: <IconSet />, label: "Pengaturan" },
+    { icon: <WalletOrem />, label: "Wallet" },
+    { icon: <RewardOrem />, label: "Reward" },
+    { icon: <HistoryOrem />, label: "History" },
+    { icon: <AppOrem />, label: "Apps" },
   ];
 
   return (
@@ -22,9 +22,9 @@ function MobileNavFooter() {
           return (
             <button
               key={i}
-              className="p-2 text-[#30d5ff] opacity-80 hover:opacity-100 transition flex flex-col items-center"
+              className="p-2 text-gray-300 opacity-80 hover:opacity-100 transition flex flex-col items-center cursor-pointer"
             >
-              {item.icon && <span className="text-xs mt-1">{item.icon}</span>}
+              {item.icon && <span className="text-xs mt-1 mb-1">{item.icon}</span>}
             </button>
           );
         })}

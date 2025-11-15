@@ -16,7 +16,7 @@ function MobileMenu() {
     <div>
       <ul className="flex justify-between items-center pl-8 pr-8 p-1 pb-1 border-t-[0.5px] border-gray-700 bg-[--sidebar-bg]">
         {items.map((item, i) => (
-          <li key={i} className="relative group">
+          <li key={i} className="relative group mt-1 mb-1">
             <button
               className="p-2 rounded-xl transition-colors duration-200 
                         hover:bg-gray-700/40 focus:bg-gray-700/50 cursor-pointer"
