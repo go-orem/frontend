@@ -96,13 +96,6 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
 
   return (
     <aside className="w-full h-full bg-[--background] text-gray-100 flex flex-col p-4 pb-28 font-mono relative overflow-y-auto">
-      {/* BACKGROUND BLUR */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -left-40 w-72 h-72 rounded-full bg-[#30d5ff]/20 blur-3xl animate-pulse" />
-        <div className="absolute -top-40 right-0 w-80 h-80 rounded-full bg-[#30d5ff]/10 blur-[100px]" />
-        <div className="absolute -bottom-10 left-1/3 w-64 h-64 rounded-full bg-[#30d5ff]/5 blur-[90px]" />
-      </div>
-
       {/* HEADER */}
       <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-4 py-4 backdrop-blur-xl z-50">
         <h2 className="text-xl font-bold tracking-wide">OREM Wallet</h2>

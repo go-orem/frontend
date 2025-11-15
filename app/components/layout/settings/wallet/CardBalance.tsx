@@ -122,33 +122,45 @@ function CardBalance({ data }: { data: any }) {
                 <stop offset="100%" stopColor="#146e85" stopOpacity="0.08" />
               </linearGradient>
               <filter id="grain">
-                <feTurbulence baseFrequency="0.9" numOctaves="1" stitchTiles="stitch" />
+                <feTurbulence
+                  baseFrequency="0.9"
+                  numOctaves="1"
+                  stitchTiles="stitch"
+                />
                 <feColorMatrix type="saturate" values="0" />
                 <feBlend in="SourceGraphic" />
               </filter>
             </defs>
 
             <g fill="url(#n1)">
-              <path d="M0 180 C120 100 240 220 360 160 C480 100 600 220 800 160 L800 400 L0 400 Z" opacity="0.9" />
+              <path
+                d="M0 180 C120 100 240 220 360 160 C480 100 600 220 800 160 L800 400 L0 400 Z"
+                opacity="0.9"
+              />
             </g>
           </svg>
         </div>
 
-        {/* Multi-layer parallax elements (z indexes) */}
-        {/* Layer 1: rotating hexagon nano background */}
         <svg
           viewBox="0 0 600 600"
           className="absolute left-[-10%] top-[-20%] w-[60%] h-[60%] opacity-40 pointer-events-none"
           style={{
             zIndex: 1,
-            transform: `translate3d(${tilt.tx * -0.25}px, ${tilt.ty * -0.18}px, 0) rotate(${tilt.ry * 0.6}deg)`,
+            transform: `translate3d(${tilt.tx * -0.25}px, ${
+              tilt.ty * -0.18
+            }px, 0) rotate(${tilt.ry * 0.6}deg)`,
             transition: "transform 120ms linear",
             animation: "spin-slow 45s linear infinite",
             filter: "blur(6px)",
           }}
         >
           <defs>
-            <pattern id="hex" width="60" height="52" patternUnits="userSpaceOnUse">
+            <pattern
+              id="hex"
+              width="60"
+              height="52"
+              patternUnits="userSpaceOnUse"
+            >
               <g stroke="#30d5ff" strokeWidth="0.6" fill="none" opacity="0.12">
                 <path d="M30 0 L60 15 L60 45 L30 60 L0 45 L0 15 Z" />
               </g>
@@ -157,13 +169,14 @@ function CardBalance({ data }: { data: any }) {
           <rect width="100%" height="100%" fill="url(#hex)" />
         </svg>
 
-        {/* Layer 2: rotating tech grid (slower) */}
         <svg
           viewBox="0 0 500 200"
           className="absolute right-0 top-0 w-[45%] h-[55%] opacity-25 pointer-events-none"
           style={{
             zIndex: 2,
-            transform: `translate3d(${tilt.tx * -0.45}px, ${tilt.ty * -0.32}px, 0)`,
+            transform: `translate3d(${tilt.tx * -0.45}px, ${
+              tilt.ty * -0.32
+            }px, 0)`,
             transition: "transform 120ms linear",
             animation: "spin-slow 60s linear reverse infinite",
             filter: "blur(2px)",
@@ -178,21 +191,36 @@ function CardBalance({ data }: { data: any }) {
           <g stroke="url(#gline)" strokeWidth="0.6" strokeLinecap="round">
             {/* grid lines */}
             {Array.from({ length: 10 }).map((_, i) => (
-              <line key={i} x1={i * 50} y1={0} x2={i * 50} y2={200} opacity={0.45} />
+              <line
+                key={i}
+                x1={i * 50}
+                y1={0}
+                x2={i * 50}
+                y2={200}
+                opacity={0.45}
+              />
             ))}
             {Array.from({ length: 5 }).map((_, i) => (
-              <line key={"h" + i} x1={0} y1={i * 40} x2={500} y2={i * 40} opacity={0.35} />
+              <line
+                key={"h" + i}
+                x1={0}
+                y1={i * 40}
+                x2={500}
+                y2={i * 40}
+                opacity={0.35}
+              />
             ))}
           </g>
         </svg>
 
-        {/* Layer 3: laser circuit lines (animated) */}
         <svg
           viewBox="0 0 800 300"
           className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
             zIndex: 3,
-            transform: `translate3d(${tilt.tx * -0.18}px, ${tilt.ty * -0.12}px, 0)`,
+            transform: `translate3d(${tilt.tx * -0.18}px, ${
+              tilt.ty * -0.12
+            }px, 0)`,
             transition: "transform 120ms linear",
           }}
         >
@@ -203,7 +231,6 @@ function CardBalance({ data }: { data: any }) {
             </linearGradient>
           </defs>
 
-          {/* animated circuit path */}
           <path
             d="M20 60 C140 20 260 120 380 80 C500 40 620 140 760 100"
             fill="none"
@@ -231,20 +258,24 @@ function CardBalance({ data }: { data: any }) {
         <div
           className="relative z-10"
           style={{
-            transform: `translateZ(80px) translate(${tilt.tx * 0.02}px, ${tilt.ty * 0.02}px)`,
+            transform: `translateZ(80px) translate(${tilt.tx * 0.02}px, ${
+              tilt.ty * 0.02
+            }px)`,
             transition: "transform 120ms linear",
           }}
         >
           <p className="text-sm text-gray-300 mb-2">Total Balance</p>
 
           <h1 className="text-5xl font-extrabold text-white tracking-tight drop-shadow-[0_0_26px_rgba(48,213,255,0.18)]">
-            {data?.balance ?? "12.95"} <span className="text-lg font-semibold ml-2">OREM</span>
+            {data?.balance ?? "12.95"}{" "}
+            <span className="text-lg font-semibold ml-2">OREM</span>
           </h1>
 
-          <p className="text-gray-400 text-xs mt-2">≈ ${data?.balanceUSD ?? "120.89"}</p>
+          <p className="text-gray-400 text-xs mt-2">
+            ≈ ${data?.balanceUSD ?? "120.89"}
+          </p>
         </div>
 
-        {/* Holographic sheen / highlight on hover */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -262,7 +293,9 @@ function CardBalance({ data }: { data: any }) {
               height: "200%",
               background:
                 "linear-gradient(120deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 10%, rgba(255,255,255,0.01) 40%, rgba(255,255,255,0.02) 70%, transparent 100%)",
-              transform: `translate3d(${tilt.tx * -0.08}px, ${tilt.ty * -0.05}px, 0) rotate(${tilt.ry * 0.2}deg)`,
+              transform: `translate3d(${tilt.tx * -0.08}px, ${
+                tilt.ty * -0.05
+              }px, 0) rotate(${tilt.ry * 0.2}deg)`,
               transition: "transform 140ms linear, opacity 280ms linear",
               filter: "blur(12px)",
             }}
