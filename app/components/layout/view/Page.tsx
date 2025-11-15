@@ -81,26 +81,29 @@ export default function SplitView() {
   };
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full overflow-hidden">
       <div
         className={`flex flex-col transition-all duration-300 ${
-          openSidebar ? "w-2/3" : "w-full"
+          openSidebar ? "basis-[calc(100%-350px)]" : "basis-full"
         }`}
       >
         <HeaderSplit onProfileClick={() => setOpenSidebar(!openSidebar)} />
         <FullChat />
       </div>
 
-      {/* sidebar kanan */}
-      {openSidebar && (
-        <div className="w-1/3 border-l border-gray-700 bg-[--background]">
+      <div
+        className={`transition-all duration-300 overflow-hidden ${
+          openSidebar ? "max-w-[350px] opacity-100" : "max-w-0 opacity-0"
+        }`}
+      >
+        <div className="w-auto border-l border-gray-700 bg-[--background] h-full">
           <InfoSidebar
             variant="user"
             data={userData}
             onClose={() => setOpenSidebar(false)}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 }

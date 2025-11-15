@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 type AvatarProps = {
@@ -7,38 +7,49 @@ type AvatarProps = {
 };
 
 export default function AnimeBadgeAvatar({ src }: AvatarProps) {
-  // generate random partikel posisi (lebih banyak)
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 50 }).map(() => ({
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        size: Math.random() * 4 + 1.5, // partikel lebih kecil
-        delay: Math.random() * 2,
-        color: ["#fff", "#ffd700", "#ff5da2", "#5da2ff"][
-          Math.floor(Math.random() * 4)
-        ],
-        duration: Math.random() * 2 + 2, // durasi animasi acak biar variasi
-      })),
-    []
-  );
+  const [particles, setParticles] = useState<
+    {
+      left: number;
+      top: number;
+      size: number;
+      delay: number;
+      color: string;
+      duration: number;
+    }[]
+  >([]);
+
+  // Generate particles only on client
+  useEffect(() => {
+    const colors = ["#ffffffaa", "#ffd700dd", "#ff5da2cc", "#5da2ffdd"];
+
+    const temp = Array.from({ length: 35 }).map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      size: Math.random() * 3 + 1.2, // lebih halus
+      delay: Math.random() * 1.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      duration: Math.random() * 1.5 + 1.8,
+    }));
+
+    setParticles(temp);
+  }, []);
 
   return (
     <motion.div
-      className="relative inline-block w-18 h-18 -translate-y-4"
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      className="relative inline-block w-[70px] h-[70px]"
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 180, damping: 15 }}
     >
-      {/* Glow ring anime */}
+      {/* Glow ring (premium anime style) */}
       <motion.div
-        className="absolute inset-0 rounded-full border-4 border-transparent z-0 blur-sm"
+        className="absolute inset-0 rounded-full blur-md z-0"
         style={{
           background:
             "conic-gradient(from 0deg, #ff5da2, #ffa14d, #ffd700, #5da2ff, #ff5da2)",
-          maskImage: "radial-gradient(circle, white 70%, transparent 71%)",
+          maskImage: "radial-gradient(circle, white 68%, transparent 70%)",
           WebkitMaskImage:
-            "radial-gradient(circle, white 70%, transparent 71%)",
+            "radial-gradient(circle, white 68%, transparent 70%)",
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
@@ -47,49 +58,50 @@ export default function AnimeBadgeAvatar({ src }: AvatarProps) {
       {/* Avatar */}
       <img
         src={src}
-        alt="User Avatar"
-        className="w-18 h-18 rounded-full object-cover border-3 border-[#202225] relative shadow-xl"
+        alt="Avatar"
+        className="w-full h-full rounded-full object-cover border-[3px] border-[#1a1b1f] relative shadow-lg"
       />
 
-      {/* Badge Star (Nitro style) */}
+      {/* Nitro Badge (clean) */}
       <motion.div
-        className="absolute -bottom-2 -left-2 w-10 h-auto rounded-full p-1.5 z-20"
+        className="absolute bottom-1 -right-1 w-[26px] h-[26px] rounded-full flex items-center justify-center shadow-md"
         animate={{
-          y: [0, -3, 0],
-          scale: [1, 1.2, 1],
-          rotate: [0, 10, -10, 0],
+          y: [0, -2, 0],
+          scale: [1, 1.15, 1],
         }}
-        transition={{ duration: 1.8, repeat: Infinity }}
+        transition={{ duration: 2, repeat: Infinity }}
       >
         <img
           src="https://cuandigitalkit.com/wp-content/uploads/2025/09/ChatGPT-Image-Aug-25-2025-03_02_12-PM-2.png"
-          alt=""
+          alt="badge"
+          className="w-[18px] h-[18px]"
         />
       </motion.div>
 
-      {/* Partikel efek anime */}
+      {/* Soft particles (anime float) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((p, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full opacity-80"
+            className="absolute rounded-full"
             style={{
               left: `${p.left}%`,
               top: `${p.top}%`,
               width: p.size,
               height: p.size,
               backgroundColor: p.color,
-              filter: "blur(0.5px)",
+              filter: "blur(1px)",
             }}
             animate={{
-              y: [0, -40], // lebih tinggi
-              opacity: [0.9, 0],
-              scale: [1, 0.3],
+              y: [0, -25],
+              opacity: [1, 0],
+              scale: [1, 0.4],
             }}
             transition={{
               duration: p.duration,
               repeat: Infinity,
               delay: p.delay,
+              ease: "easeOut",
             }}
           />
         ))}

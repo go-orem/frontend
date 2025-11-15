@@ -44,7 +44,7 @@ export default function InfoSidebar({
   const { openModal } = useModal();
 
   return (
-    <aside className="relative h-full w-auto bg-(--background) text-gray-200 flex flex-col overflow-hidden">
+    <aside className="relative max-w-md h-full w-auto bg-(--background) text-gray-200 flex flex-col overflow-hidden">
       {/* header / cover */}
       <div className="relative">
         {"cover" in data && data.cover ? (
