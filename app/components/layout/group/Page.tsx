@@ -4,16 +4,15 @@ import { motion } from "framer-motion";
 import Search from "../../UI/Search";
 import HeaderChat from "../../UI/HeaderChat";
 import MobileMenu from "../../UI/MobileMenu";
-import ViewNotifikasi from "../../UI/view/notifikasi/Page";
-import CategoryNotif from "../../UI/view/notifikasi/Category";
+import ListGroup from "./ListGroup";
+import CategoryGroup from "./CategoryGroup";
 
-export default function NotifikasiPage() {
+export default function GroupPage() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // baca dari localStorage sekali, tanpa flicker
   useEffect(() => {
     const saved = localStorage.getItem("sidebarWidth");
     const width = saved ? parseInt(saved) : 430;
@@ -61,10 +60,10 @@ export default function NotifikasiPage() {
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="notification" />
+        <HeaderChat activeTab="group" />
         <Search />
-        <CategoryNotif/>
-        <ViewNotifikasi/>
+        <CategoryGroup />
+        <ListGroup/>
         <MobileMenu/>
       </motion.div>
 

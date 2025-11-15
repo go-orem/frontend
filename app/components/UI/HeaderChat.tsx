@@ -4,7 +4,7 @@ import IconSet from "../icons/IconSet";
 import { useModal } from "./modal/ModalContext";
 
 interface HeaderChatProps {
-  activeTab: "chats" | "channel" | "notification" | "settings"; // tab aktif
+  activeTab: "chats" | "channel" | "notification" | "group" | "settings";
 }
 
 function HeaderChat({ activeTab }: HeaderChatProps) {
@@ -15,6 +15,7 @@ function HeaderChat({ activeTab }: HeaderChatProps) {
     chats: "Chats",
     channel: "Channel",
     notification: "Notification",
+    group: "Group",
     settings: "Settings",
   };
 
@@ -28,7 +29,6 @@ function HeaderChat({ activeTab }: HeaderChatProps) {
           </div>
         </div>
         <div className="flex space-x-3">
-          {/* tombol tambahan */}
           <button className="cursor-pointer hover:bg-(--hovercolor) p-2 rounded-full">
             <IconNewChat />
           </button>

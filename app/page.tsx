@@ -6,6 +6,7 @@ import ChatSidebar from "./components/layout/chat/Page";
 import ChannelPage from "./components/layout/channel/ChannelPage";
 import NotifikasiPage from "./components/layout/notifikasi/NotifikasiPage";
 import SettingsPage from "./components/layout/settings/SettingsPage";
+import GroupPage from "./components/layout/group/Page";
 
 function ChatContent() {
   return <ChatSidebar />;
@@ -18,6 +19,9 @@ function ChannelContent() {
 }
 function SettingsContent() {
   return <SettingsPage />;
+}
+function SettingGroup() {
+  return <GroupPage />;
 }
 // dst...
 
@@ -32,6 +36,8 @@ export default function Layout() {
         return <NotifContent />;
       case 2:
         return <ChannelContent />;
+      case 3:
+        return <SettingGroup />;
       case 10:
         return <SettingsContent />;
       default:

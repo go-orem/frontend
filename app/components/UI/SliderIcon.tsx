@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+
 type SliderItem = { label: string };
 
 export default function SliderIcon() {
@@ -16,8 +17,9 @@ export default function SliderIcon() {
     { label: "Kontak" },
   ];
 
-  // refs for dragging + momentum
   const slider = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
@@ -26,16 +28,12 @@ export default function SliderIcon() {
   const lastTime = useRef(0);
   const momentumID = useRef<number | null>(null);
 
-  // apply momentum (iOS style physics)
   const momentum = () => {
     if (!slider.current) return;
-
-    const friction = 0.95; // slowdown speed
+    const friction = 0.95;
     velocity.current *= friction;
-
     slider.current.scrollLeft -= velocity.current;
 
-    // stop when velocity is tiny
     if (Math.abs(velocity.current) > 0.3) {
       momentumID.current = requestAnimationFrame(momentum);
     } else {
@@ -46,7 +44,6 @@ export default function SliderIcon() {
 
   const onMouseDown = (e: React.MouseEvent) => {
     if (!slider.current) return;
-
     isDragging.current = true;
     slider.current.classList.add("cursor-grabbing");
 
@@ -68,12 +65,10 @@ export default function SliderIcon() {
     const walk = x - startX.current;
     slider.current.scrollLeft = scrollLeft.current - walk;
 
-    // compute velocity
     const now = Date.now();
     const dx = e.pageX - lastX.current;
     const dt = now - lastTime.current;
-
-    velocity.current = dx / dt * 20; // scaled speed
+    velocity.current = (dx / dt) * 20;
 
     lastX.current = e.pageX;
     lastTime.current = now;
@@ -82,11 +77,18 @@ export default function SliderIcon() {
   const endDrag = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
-
     slider.current?.classList.remove("cursor-grabbing");
-
-    // start momentium
     momentum();
+  };
+
+  const handleClick = (idx: number) => {
+    setActiveIndex(idx);
+
+    // scroll clicked item into view
+    const itemEl = itemRefs.current[idx];
+    if (itemEl && slider.current) {
+      itemEl.scrollIntoView({ behavior: "smooth", inline: "center" });
+    }
   };
 
   return (
@@ -105,11 +107,14 @@ export default function SliderIcon() {
           return (
             <div
               key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className="group relative flex flex-col items-center justify-center pb-1 cursor-pointer"
+              ref={(el) => {
+                itemRefs.current[idx] = el ?? null; // <--- perbaikan di sini
+              }}
+              onClick={() => handleClick(idx)}
+              className="group relative flex flex-row items-center justify-center pb-1 cursor-pointer"
             >
               <div
-                className={`flex items-center space-x-2 font-mono text-sm transition-colors duration-200 ${
+                className={`flex items-center space-x-2 font-mono text-sm transition-colors duration-200 whitespace-nowrap ${
                   isActive
                     ? "text-(--primarycolor)"
                     : "text-gray-400 group-hover:text-(--primarycolor)"
