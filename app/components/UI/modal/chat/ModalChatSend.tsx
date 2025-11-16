@@ -60,18 +60,17 @@ export default function ModalChatSend({
       </div>
 
       {/* GRID */}
-      <div className="p-4 max-h-[45vh] overflow-auto text-gray-200">
-        <div className="grid grid-cols-5 gap-4">
+      <div className="pt-2 pb-2 max-h-[20vh] overflow-auto text-gray-200">
+        <div className="grid grid-cols-8 gap-4">
           {mediaItems.map((item, idx) => (
             <button
               key={idx}
-              className="flex flex-col items-center gap-2 p-3 rounded-lg 
-              bg-white/5 hover:bg-white/10 transition"
+              className="flex flex-col items-center gap-2 p-1 rounded-lg transition cursor-pointer"
               onClick={() => console.log("Kirim:", item.label)}
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center 
-              bg-white/10 hover:bg-white/20 transition"
+                className="w-10 h-10 rounded-full flex items-center justify-center 
+                hover:bg-(--hovercolor) transition"
               >
                 {item.icon}
               </div>

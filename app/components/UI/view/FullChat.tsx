@@ -309,7 +309,7 @@ export default function ChatWindow() {
 
       <div
         className={`${
-          openModalChat ? "mb-51" : "mb-0"
+          openModalChat ? "mb-41" : "mb-0"
         } transition-all duration-300`}
       >
         <ChatFooter
