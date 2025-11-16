@@ -1,4 +1,5 @@
 "use client";
+import HistoryOrem from "@/app/components/icons/IconWallet/HistoryOrem";
 import React from "react";
 
 interface ModalSearchChatProps {
@@ -7,13 +8,17 @@ interface ModalSearchChatProps {
 
 const ModalSearchChat: React.FC<ModalSearchChatProps> = ({ onCancel }) => {
   return (
-    <div className="flex items-center w-full h-full relative">
-      {/* Input search */}
-      <input
-        id="header-search"
-        type="search"
-        placeholder="Cari atau chat..."
-        className="
+    <aside className="flex items-center w-full h-full relative gap-2">
+        <div>
+            <HistoryOrem/>
+        </div>
+      <div className="flex items-center w-full h-full relative">
+        {/* Input search */}
+        <input
+          id="header-search"
+          type="search"
+          placeholder="Cari atau chat..."
+          className="
           w-full
           rounded-full
           border
@@ -30,17 +35,18 @@ const ModalSearchChat: React.FC<ModalSearchChatProps> = ({ onCancel }) => {
           focus:ring-1
           focus:ring-(--primarycolor)
         "
-        autoFocus
-      />
+          autoFocus
+        />
 
-      {/* Tombol batal */}
-      <button
-        className="absolute right-0 mr-2 text-gray-400 hover:text-white font-mono text-sm"
-        onClick={onCancel}
-      >
-        <span className="font-bold text-lg pr-3 cursor-pointer">❎</span>
-      </button>
-    </div>
+        {/* Tombol batal */}
+        <button
+          className="absolute right-0 mr-2 text-gray-400 hover:text-white font-mono text-sm"
+          onClick={onCancel}
+        >
+          <span className="font-bold text-lg pr-3 cursor-pointer">❎</span>
+        </button>
+      </div>
+    </aside>
   );
 };
 
