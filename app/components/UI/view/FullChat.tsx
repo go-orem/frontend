@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useModal } from "../modal/ModalContext";
 import ChatFooter from "./ChatFooter";
+import ModalChatSend from "../modal/chat/ModalChatSend";
+import { useModalChat } from "../modal/chat/ModalChatContext";
 
 type FullChatProps = {
   id: number;
@@ -270,6 +272,8 @@ export default function ChatWindow() {
     },
   ]);
 
+  const { openModalChat, setOpenModalChat } = useModalChat();
+
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -294,15 +298,31 @@ export default function ChatWindow() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col overflow-x-auto h-screen bg-[url('https://i.pinimg.com/736x/c6/69/0c/c6690caf0ff598a60ae714931b491f62.jpg')] object-cover bg-center">
+    <div className="relative flex flex-col overflow-x-auto h-screen bg-[url('https://i.pinimg.com/736x/c6/69/0c/c6690caf0ff598a60ae714931b491f62.jpg')] object-cover bg-center">
+      {/* CHAT CONTENT */}
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((msg, i) => (
           <ChatBubble key={i} {...msg} />
         ))}
         <div ref={messagesEndRef} />
       </div>
-      {/* Footer Chat */}
-      <ChatFooter input={input} setInput={setInput} sendMessage={sendMessage} />
+
+      <div
+        className={`${
+          openModalChat ? "mb-51" : "mb-0"
+        } transition-all duration-300`}
+      >
+        <ChatFooter
+          input={input}
+          setInput={setInput}
+          sendMessage={sendMessage}
+        />
+      </div>
+
+      <ModalChatSend
+        open={openModalChat}
+        onClose={() => setOpenModalChat(false)}
+      />
     </div>
   );
 }

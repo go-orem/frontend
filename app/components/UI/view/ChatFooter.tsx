@@ -5,7 +5,8 @@ import data from "@emoji-mart/data";
 import dynamic from "next/dynamic";
 import IconKirim from "../../icons/IconKirim";
 import EmojiPicker from "@emoji-mart/react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import DynamicEmojiButton from "../Emoji/DynamicEmojiButton";
+import { useModalChat } from "../modal/chat/ModalChatContext";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 
@@ -20,6 +21,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
   setInput,
   sendMessage,
 }) => {
+  const { openModalChat, setOpenModalChat } = useModalChat();
   const [showEmoji, setShowEmoji] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -62,21 +64,32 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
       {/* Footer Chat */}
       <div className="bottom-0 left-0 w-full p-2 pb-1 pl-5.5 pr-5.5 bg-transparent flex items-center space-x-4">
         {/* Emoji Button */}
-        <button
-          className={`text-xl cursor-pointer transition-transform duration-200 ${
-            showEmoji ? "scale-125" : "scale-100"
-          }`}
-          onClick={() => setShowEmoji(!showEmoji)}
-        >
-          <div className="w-7 h-7">
-            <DotLottieReact src="/animations/LMAO.lottie" loop autoplay />
-          </div>
-        </button>
+        <DynamicEmojiButton
+          showEmoji={showEmoji}
+          toggleEmoji={() => setShowEmoji((s) => !s)}
+          emojiList={[
+            "/animations/LMAO.lottie",
+            "/animations/1.lottie",
+            "/animations/2.lottie",
+            "/animations/3.lottie",
+            "/animations/4.lottie",
+            "/animations/5.lottie",
+          ]}
+          intervalMs={2000}
+          random={true}
+          pauseWhileOpen={true}
+          sizePx={26}
+          transitionMs={350}
+        />
 
         {/* Attachment Button */}
-        <button className="text-xl cursor-pointer transition-transform duration-200 hover:scale-110">
+        <button
+          onClick={() => setOpenModalChat(prev => !prev)}
+          className="text-xl cursor-pointer transition-transform duration-200 hover:scale-110"
+        >
           🔗
         </button>
+        
 
         {/* Textarea */}
         <textarea

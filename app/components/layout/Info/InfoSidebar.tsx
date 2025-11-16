@@ -54,7 +54,7 @@ export default function InfoSidebar({
             className="w-full h-44 object-cover"
           />
         ) : (
-          <div className="w-full h-32 bg-gradient-to-r from-[#0f1724] to-[#0b1220]" />
+          <div className="w-full h-32 bg-linear-to-r from-[#0f1724] to-[#0b1220]" />
         )}
 
         <button
@@ -141,7 +141,7 @@ export default function InfoSidebar({
                     // ini disable semua border/outline/ring
                     "focus:outline-none focus:ring-0 border-0 outline-none ring-0",
                     selected
-                      ? "bg-[var(--hovercolor)] text-white"
+                      ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
                   )
                 }
