@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
 
 type ModalChatSendProps = {
@@ -13,9 +13,14 @@ export default function ModalChatSend({
   onClose,
   width = "100%",
 }: ModalChatSendProps) {
-  if (!open) return null;
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
@@ -23,6 +28,8 @@ export default function ModalChatSend({
     if (open) document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
+
+  if (!isClient || !open) return null;
 
   const mediaItems = [
     { label: "Photo", icon: <WalletOrem /> },
