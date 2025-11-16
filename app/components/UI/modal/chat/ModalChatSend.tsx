@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import IconFoto from "@/app/components/icons/IconFoto";
+import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
 
 type ModalChatSendProps = {
   open: boolean;
@@ -25,12 +25,14 @@ export default function ModalChatSend({
   }, [open, onClose]);
 
   const mediaItems = [
-    { label: "Foto", icon: <IconFoto /> },
-    { label: "Video", icon: <IconFoto /> },
-    { label: "Kamera", icon: <IconFoto /> },
-    { label: "Dokumen", icon: <IconFoto /> },
-    { label: "Lokasi", icon: <IconFoto /> },
-    { label: "Kontak", icon: <IconFoto /> },
+    { label: "Photo", icon: <WalletOrem /> },
+    { label: "Video", icon: <WalletOrem /> },
+    { label: "Camera", icon: <WalletOrem /> },
+    { label: "Documents", icon: <WalletOrem /> },
+    { label: "Locations", icon: <WalletOrem /> },
+    { label: "Contact", icon: <WalletOrem /> },
+    { label: "Poll", icon: <WalletOrem /> },
+    { label: "Send", icon: <WalletOrem /> },
   ];
 
   return (
