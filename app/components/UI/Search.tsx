@@ -26,7 +26,7 @@ const Search: FC<SearchProps> = () => {
           placeholder-gray-500
           focus:outline-none
           focus:ring-1
-          focus:ring-[var(--primarycolor)]
+          focus:ring-(--primarycolor)
         "
       />
 

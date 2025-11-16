@@ -31,7 +31,7 @@ function ChatCard({ name_group, member, online_user, img }: ChatItem) {
     <HoverGif gifUrl="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3d3oxMHJqNGRteHNnYm9seXdmeGhmZjF1ODU1cTFnNWFrMGdoN3NjZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/13sI05qVwRXrVe/giphy.gif">
       <div className="flex p-3 justify-between rounded-xl cursor-pointer transition-colors duration-300 ease-in-out">
         <div className="flex space-x-3 items-center">
-          <div className="profile w-11">
+          <div className="profile w-12">
             <img
               className={`w-auto aspect-square rounded-full object-cover`}
               src={img}
@@ -44,8 +44,8 @@ function ChatCard({ name_group, member, online_user, img }: ChatItem) {
           </div>
         </div>
         <div>
-          <span className="flex flex-col gap-y-1 items-center font-light text-xs font-mono text-gray-300">
-            <button className="p-2 bg-(--hovercolor) text-xs rounded-full cursor-pointer">
+          <span className="flex flex-col gap-y-1 items-center font-semibold text-xs font-mono text-gray-700">
+            <button className="p-2 bg-(--primarycolor) text-xs rounded-full cursor-pointer">
               Subcribe
             </button>
             <div className="flex font-mono text-xs text-gray-400 items-center gap-1.5">
