@@ -11,10 +11,9 @@ import {
 } from "./ChartToken";
 
 import MobileNavFooter from "./MobileNavFooter";
-import IconAdd from "@/app/components/icons/IconAdd";
-import IconKirim from "@/app/components/icons/IconKirim";
-
 import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
+import ReceiveOrem from "@/app/components/icons/IconWallet/ReceiveOrem";
+import SendQrOrem from "@/app/components/icons/IconWallet/SendQrOrem";
 
 interface WalletSettingsProps {
   data: any;
@@ -33,8 +32,9 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
   const [activeTab, setActiveTab] = useState("line");
 
   const IconWallet = [
-    { icon: <IconAdd />, label: "send" },
-    { icon: <IconKirim />, label: "Receive" },
+    { icon: <SendQrOrem />, label: "QR" },
+    { icon: <SendQrOrem />, label: "Send" },
+    { icon: <ReceiveOrem />, label: "Receive" },
     { icon: <WalletOrem />, label: "Swap" },
   ];
 
@@ -129,6 +129,28 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
       {/* BALANCE */}
       <CardBalance data={data} />
 
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        {[
+          { icon: "💎", name: "OREM-X", amt: "12.4", usd: "7.12" },
+          { icon: "🔥", name: "OREM-Burn", amt: "4.9", usd: "1.03" },
+        ].map((a, i) => (
+          <div
+            key={i}
+            className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-2 hover:border-[#30d5ff]/40 transition"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#30d5ff]/20 flex items-center justify-center text-lg">
+              {a.icon}
+            </div>
+            <div>
+              <p className="text-sm font-bold">{a.name}</p>
+              <p className="text-xs text-gray-400">
+                {a.amt} • ${a.usd}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* ADDRESS */}
       <div className="mt-5 backdrop-blur-xl bg-white/5 rounded-lg p-3 border border-white/10">
         <p className="text-xs text-gray-400">Wallet Address</p>
@@ -138,7 +160,7 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
       </div>
 
       {/* ACTION BUTTONS */}
-      <div className="grid grid-cols-3 gap-3 mt-6">
+      <div className="grid grid-cols-4 gap-3 mt-6">
         {IconWallet.map((b, i) => (
           <button
             key={i}
@@ -173,28 +195,6 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
               </p>
             </div>
           </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {[
-            { icon: "💎", name: "OREM-X", amt: "12.4", usd: "7.12" },
-            { icon: "🔥", name: "OREM-Burn", amt: "4.9", usd: "1.03" },
-          ].map((a, i) => (
-            <div
-              key={i}
-              className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-2 hover:border-[#30d5ff]/40 transition"
-            >
-              <div className="w-8 h-8 rounded-full bg-[#30d5ff]/20 flex items-center justify-center text-lg">
-                {a.icon}
-              </div>
-              <div>
-                <p className="text-sm font-bold">{a.name}</p>
-                <p className="text-xs text-gray-400">
-                  {a.amt} • ${a.usd}
-                </p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
