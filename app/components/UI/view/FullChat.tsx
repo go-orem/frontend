@@ -110,7 +110,9 @@ function ChatBubble({
                 : "bg-(--hovercolor) text-gray-100 rounded-bl-none"
             }`}
         >
-          {message}
+          <div className="whitespace-pre-wrap wrap-break-word leading-relaxed">
+            {message}
+          </div>
 
           {isMe && (
             <div className="flex items-center justify-end mt-1">

@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import InfoSidebar from "../Info/InfoSidebar";
-// import AccountSidebar from "./AccountSidebar";
-// import WalletSidebar from "./WalletSidebar";
 import AccountSettings from "./account/Page";
 import WalletSettings from "./wallet/Page";
 import WhitepaperSettings from "./whitepaper/Page";

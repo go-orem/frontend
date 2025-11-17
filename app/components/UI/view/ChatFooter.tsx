@@ -7,6 +7,7 @@ import IconKirim from "../../icons/IconKirim";
 import EmojiPicker from "@emoji-mart/react";
 import DynamicEmojiButton from "../Emoji/DynamicEmojiButton";
 import { useModalChat } from "../modal/chat/ModalChatContext";
+import TextareaChat from "./chatinput/TextareaChat";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 
@@ -84,32 +85,14 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
 
         {/* Attachment Button */}
         <button
-          onClick={() => setOpenModalChat(prev => !prev)}
+          onClick={() => setOpenModalChat((prev) => !prev)}
           className="text-xl cursor-pointer transition-transform duration-200 hover:scale-110"
         >
           🔗
         </button>
-        
 
         {/* Textarea */}
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onInput={(e) => {
-            const target = e.target as HTMLTextAreaElement;
-            target.style.height = "auto";
-            target.style.height = target.scrollHeight + "px";
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          placeholder="Tulis pesan..."
-          className="flex-1 px-4 py-2 text-sm rounded-xl bg-gray-800 text-white outline-none font-mono resize-none leading-relaxed max-h-32 overflow-y-auto"
-          rows={1}
-        />
+        <TextareaChat value={input} onChange={setInput} onEnter={sendMessage} />
 
         {/* Send Button */}
         <button
