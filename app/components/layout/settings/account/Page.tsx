@@ -22,6 +22,7 @@ import { logout } from "@/lib/auth";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import Web3LoginButton from "@/app/components/auth/Web3LoginButton";
+import GoogleLoginButton from "@/app/components/auth/GoogleLoginButton";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingsProps {
@@ -100,6 +101,8 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
               Please log in to access account settings.
             </p>
             <Web3LoginButton />
+            <div className="py-1"></div>
+            <GoogleLoginButton />
           </div>
         </aside>
       </>

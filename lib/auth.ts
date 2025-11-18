@@ -26,12 +26,19 @@ export async function login(email: string, password: string) {
 }
 
 export async function loginGoogle(idToken: string) {
-  const res = await fetch("/api/auth/google", {
+  const res = await fetch("/api/login/google", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idToken }),
+    body: JSON.stringify({
+      provider: "google",
+      credential: { id_token: idToken },
+    }),
   });
-  if (!res.ok) throw new Error("Google login failed");
+
+  if (!res.ok) {
+    throw new Error("Google login failed");
+  }
+
   return res.json();
 }
 
