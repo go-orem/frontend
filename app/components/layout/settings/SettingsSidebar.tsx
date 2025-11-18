@@ -16,7 +16,11 @@ export default function SettingSidebar({
   return (
     <div className="w-auto h-full border-[0.5px] border-gray-800 bg-[--background]">
       {activeSidebar === "account" && (
-        <AccountSettings data={data} onClose={onClose} />
+        <AccountSettings
+          variant={data?.variant}
+          data={data}
+          onClose={onClose}
+        />
       )}
       {activeSidebar === "wallet" && (
         <WalletSettings data={data} onClose={onClose} />

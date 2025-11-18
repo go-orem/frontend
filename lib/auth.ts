@@ -60,3 +60,11 @@ export async function getMe() {
   if (!res.ok) throw new Error("Failed to fetch user");
   return res.json(); // { id, username, email, roles, ... }
 }
+
+export async function logout() {
+  const res = await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Logout failed");
+  return res.json();
+}

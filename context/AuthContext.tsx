@@ -10,10 +10,29 @@ import {
 import { getMe } from "@/lib/auth";
 
 type User = {
-  id: string;
-  username: string;
-  email?: string;
-  roles?: string[];
+  user: {
+    id: string;
+    username: string;
+    email: string | null;
+    is_active: boolean;
+  };
+  auth_identities: Array<{
+    id: string;
+    provider: string;
+    provider_uid: string;
+  }>;
+  profile: {
+    avatar_url: string | null;
+    avatar_mime: string | null;
+    background_url: string | null;
+    background_mime: string | null;
+    badge_url: string | null;
+    badge_hover_url: string | null;
+    badge_hover_mime: string | null;
+    bio: string | null;
+    public_name: string | null;
+    show_public_name: boolean;
+  };
 };
 
 type AuthContextType = {

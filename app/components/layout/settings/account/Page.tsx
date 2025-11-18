@@ -17,6 +17,10 @@ import IconEdit from "@/app/components/icons/IconEdit";
 import IconGear from "@/app/components/icons/IconGear";
 import AnimeBadgeAvatar from "@/app/components/UI/profile/ProfileAvatar";
 import IconAdd from "@/app/components/icons/IconAdd";
+import IconLogout from "@/app/components/icons/IconLogout";
+import { logout } from "@/lib/auth";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingsProps {
@@ -38,12 +42,23 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
   const tabs = ["Love", "Momen", "Jakarta", "etc"];
   const [enabled, setEnabled] = useState(false);
   const [visibilityEnabled, setVisibilityEnabled] = useState(false);
+  const { refreshUser } = useAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
 
   const { setOpenGift } = useGift();
   const { openModal } = useModal();
 
+  // handle logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.reload();
+      refreshUser();
+    } catch (err) {
+      toast.error("Logout failed");
+    }
+  };
   return (
     <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
       {/* HEADER */}
@@ -311,9 +326,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             <IconAdd />
             <span className="text-sm font-mono text-gray-300">Tambah akun</span>
           </button>
-          <button className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer">
-            <IconSubcribe />
-            <span className="text-sm font-mono text-gray-300">Hapus akun</span>
+          <button
+            onClick={() => handleLogout()}
+            className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <IconLogout />
+            <span className="text-sm font-mono text-gray-300">Log Out</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}

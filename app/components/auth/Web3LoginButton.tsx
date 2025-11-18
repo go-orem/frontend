@@ -5,9 +5,11 @@ import { ethers } from "ethers";
 import { toast } from "sonner"; // import toaster
 import { getWeb3Nonce, loginWeb3 } from "@/lib/auth";
 import IconMetamask from "../icons/IconAuth/IconMetamask";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Web3LoginButton() {
   const [loading, setLoading] = useState(false);
+  const { refreshUser } = useAuth();
 
   async function handleLogin() {
     setLoading(true);
@@ -25,6 +27,9 @@ export default function Web3LoginButton() {
 
       // 3. Login via lib
       const data = await loginWeb3(address, signature, nonce);
+
+      // refresh user context
+      await refreshUser();
 
       // token otomatis diset di cookie oleh proxy route
       toast.success(`Login success! Welcome ${data.user.username}`);
