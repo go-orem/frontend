@@ -1,38 +1,33 @@
-"use client";
-
 import { useState } from "react";
 import { ethers } from "ethers";
-import { toast } from "sonner"; // import toaster
+import { toast } from "sonner";
 import { getWeb3Nonce, loginWeb3 } from "@/lib/auth";
 import IconMetamask from "../icons/IconAuth/IconMetamask";
 import { useAuth } from "@/context/AuthContext";
 
-export default function Web3LoginButton() {
+type Web3LoginButtonProps = {
+  onSuccess?: (user: any) => void;
+};
+
+export default function Web3LoginButton({ onSuccess }: Web3LoginButtonProps) {
   const [loading, setLoading] = useState(false);
   const { refreshUser } = useAuth();
 
   async function handleLogin() {
     setLoading(true);
     try {
-      // connect ke wallet
       const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
 
-      // 1. Ambil nonce via lib
       const { nonce } = await getWeb3Nonce(address);
-
-      // 2. Sign nonce
       const signature = await signer.signMessage(nonce);
-
-      // 3. Login via lib
       const data = await loginWeb3(address, signature, nonce);
 
-      // refresh user context
       await refreshUser();
-
-      // token otomatis diset di cookie oleh proxy route
       toast.success(`Login success! Welcome ${data.user.username}`);
+
+      if (onSuccess) onSuccess(data);
     } catch (err: any) {
       toast.error(`Login failed: ${err.message}`);
     } finally {

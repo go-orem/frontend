@@ -1,10 +1,19 @@
 import { NextResponse } from "next/server";
+import { getServerToken } from "@/lib/getServerToken";
 
 export async function POST(req: Request) {
-  // forward ke backend Go
+  const token = await getServerToken();
+
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
   });
 
   let data: any = {};
