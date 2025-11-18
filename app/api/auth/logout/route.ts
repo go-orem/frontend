@@ -20,16 +20,13 @@ export async function POST(req: Request) {
   try {
     data = await res.json();
   } catch {
-    // backend tidak mengembalikan JSON
     data = { message: "Logged out" };
   }
 
-  // jika backend error → teruskan ke client
   if (!res.ok) {
     return NextResponse.json(data, { status: res.status });
   }
 
-  // hapus cookie token dengan opsi yang sama seperti set()
   const response = NextResponse.json(data);
   response.cookies.set("token", "", {
     httpOnly: true,

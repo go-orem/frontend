@@ -18,7 +18,6 @@ export async function POST(req: Request) {
     return NextResponse.json(data, { status: res.status });
   }
 
-  // Backend Go balikin { user, token }
   const response = NextResponse.json(data);
   response.cookies.set("token", data.token, {
     httpOnly: true,

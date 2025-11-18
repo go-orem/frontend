@@ -4,7 +4,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // forward ke backend Golang
     const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
