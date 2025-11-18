@@ -1,5 +1,12 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
+import { AnimatePresence } from "framer-motion";
+import { TextareaCore, DropdownMenu, PasteBanner } from "./components";
+import { useAutoResize } from "./hooks/useAutoResize";
+import { useAutocomplete } from "./hooks/useAutocomplate"; // pastikan nama file benar
+import { usePasteHandler } from "./hooks/usePasteHandler";
+import { useSyntaxHighlight } from "./hooks/useSyntaxHighlight"; // hook XSS-safe
+import { MENTIONS, SLASH_CMDS, LANGS, EMOJIS } from "./constants";
 
 type Props = {
   value: string;
@@ -8,60 +15,104 @@ type Props = {
 };
 
 export default function TextareaChat({ value, onChange, onEnter }: Props) {
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [height, setHeight] = useState(42); // untuk deteksi tinggi
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+  const { highlight } = useSyntaxHighlight();
 
-  const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      onEnter();
+  const { height, autoResize, computeDropClass } = useAutoResize(taRef);
 
-      // RESET height textarea setelah kirim pesan
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "42px";
-        setHeight(42);
-      }
-    }
+  const {
+    mentionOpen, slashOpen, emojiOpen, langOpen,
+    mentionList, slashList, emojiList, langList,
+    highlightIndex, setHighlightIndex,
+    handleChange: acHandleChange, handleKey: acHandleKey,
+    selectMention, runSlash, selectEmoji, selectLang, closeAll
+  } = useAutocomplete(taRef, value, onChange, autoResize);
+
+  const {
+    pasteCandidate, pasteIsCodeLike, onPaste: phOnPaste,
+    acceptPasteAsCode: phAcceptPasteAsCode, rejectPasteAsCode: phRejectPasteAsCode
+  } = usePasteHandler();
+
+  // handle change & keydown
+  const handleChange = (text: string) => acHandleChange(text);
+  const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => acHandleKey(e, onEnter);
+
+  const replaceRange = (text: string, start: number, end: number, insert: string) =>
+    text.slice(0, start) + insert + text.slice(end);
+
+  const onPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => phOnPaste(e, taRef);
+
+  const acceptPasteAsCode = () => {
+    const res = phAcceptPasteAsCode(value, replaceRange, onChange, taRef) as any;
+    if (!res) return;
+    closeAll();
+    requestAnimationFrame(() => {
+      taRef.current?.focus();
+      taRef.current?.setSelectionRange(res.pos, res.pos);
+      autoResize();
+    });
   };
 
-  // auto resize + update height
-  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
-    const el = e.currentTarget;
-    el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-
-    setHeight(el.scrollHeight);
+  const rejectPasteAsCode = () => {
+    const res = phRejectPasteAsCode(value, replaceRange, onChange, taRef) as any;
+    if (!res) return;
+    closeAll();
+    requestAnimationFrame(() => {
+      taRef.current?.focus();
+      taRef.current?.setSelectionRange(res.pos, res.pos);
+      autoResize();
+    });
   };
 
-  // LOGIC rounded otomatis
-  const dynamicRounded =
-    height < 52
-      ? "rounded-full"
-      : height < 90
-      ? "rounded-2xl"
-      : "rounded-xl";
+  const dropCls = computeDropClass();
 
   return (
-    <textarea
-      ref={textareaRef}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      onInput={handleInput}
-      onKeyDown={handleKey}
-      placeholder="Tulis pesan..."
-      className={`
-        w-full px-4 py-2.5 text-sm
-        bg-gray-800 text-white
-        outline-none font-mono
-        resize-none leading-[1.45]
-        min-h-[42px] max-h-[150px] overflow-y-auto
-        placeholder:text-gray-500
-        border border-gray-700/40
-        shadow-inner
-        transition-all duration-150
-        ${dynamicRounded}
-      `}
-      rows={1}
-    />
+    <div className="relative w-full">
+      {/* Banner untuk paste */}
+      <AnimatePresence>
+        <PasteBanner
+          pasteCandidate={pasteCandidate}
+          accept={acceptPasteAsCode}
+          reject={rejectPasteAsCode}
+        />
+      </AnimatePresence>
+
+      {/* Preview kode XSS-safe */}
+      {pasteCandidate && pasteIsCodeLike && (
+        <pre className="bg-(--background) text-white p-2 rounded overflow-x-auto mb-2">
+          <code dangerouslySetInnerHTML={{ __html: highlight(pasteCandidate) }} />
+        </pre>
+      )}
+
+      {/* Textarea input */}
+      <TextareaCore
+        textareaRef={taRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKey}
+        onPaste={onPaste}
+        height={height}
+      />
+
+      {/* Dropdown untuk mentions / slash / emoji / bahasa */}
+      <AnimatePresence>
+        <DropdownMenu
+          mentionOpen={mentionOpen}
+          slashOpen={slashOpen}
+          emojiOpen={emojiOpen}
+          langOpen={langOpen}
+          dropCls={dropCls}
+          mentionList={mentionList}
+          slashList={slashList}
+          emojiList={emojiList}
+          langList={langList}
+          highlightIndex={highlightIndex}
+          onSelectMention={selectMention}
+          onRunSlash={runSlash}
+          onSelectEmoji={selectEmoji}
+          onSelectLang={selectLang}
+        />
+      </AnimatePresence>
+    </div>
   );
 }
