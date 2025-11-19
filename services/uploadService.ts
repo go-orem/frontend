@@ -1,3 +1,5 @@
+import { getMimeType } from "@/utils/mimeMapper";
+
 export async function uploadFiles(files: File[]) {
   const formData = new FormData();
   files.forEach((file) => formData.append("file", file));
@@ -13,5 +15,9 @@ export async function uploadFiles(files: File[]) {
     throw new Error(data.error || "Upload failed");
   }
 
-  return data.data;
+  const results = Array.isArray(data.data) ? data.data : [data.data];
+  return results.map((r: any) => ({
+    ...r,
+    mime: getMimeType(r.resource_type, r.format),
+  }));
 }
