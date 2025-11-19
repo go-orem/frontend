@@ -1,4 +1,3 @@
-// lib/getServerToken.ts
 import { cookies } from "next/headers";
 
 export async function getServerToken() {

@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { ModalChatProvider } from "./components/UI/modal/chat/ModalChatContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import SplashScreen from "./components/UI/SplashScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,7 @@ export default function RootLayout({
               <ModalChatProvider>
                 <GiftProvider>
                   <Toaster richColors closeButton />
-                  {children}
+                  <SplashScreen>{children}</SplashScreen>
                   <FloatingMenu />
                 </GiftProvider>
               </ModalChatProvider>
