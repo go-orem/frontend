@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { X } from "lucide-react";
 import MemberList from "@/app/components/UI/view/MemberList";
@@ -17,6 +17,12 @@ import IconEdit from "@/app/components/icons/IconEdit";
 import IconGear from "@/app/components/icons/IconGear";
 import AnimeBadgeAvatar from "@/app/components/UI/profile/ProfileAvatar";
 import IconAdd from "@/app/components/icons/IconAdd";
+import IconLogout from "@/app/components/icons/IconLogout";
+import { logout } from "@/lib/auth";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import Web3LoginButton from "@/app/components/auth/Web3LoginButton";
+import GoogleLoginButton from "@/app/components/auth/GoogleLoginButton";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingsProps {
@@ -36,21 +42,80 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
   onClose,
 }) => {
   const tabs = ["Love", "Momen", "Jakarta", "etc"];
+  const [userData, setUserData] = useState<any>(data);
   const [enabled, setEnabled] = useState(false);
   const [visibilityEnabled, setVisibilityEnabled] = useState(false);
+  const { refreshUser, isLoggedIn, user } = useAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
 
   const { setOpenGift } = useGift();
   const { openModal } = useModal();
 
+  // handle logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.reload();
+      refreshUser();
+      toast.success("Logged out successfully");
+    } catch (err) {
+      toast.error("Logout failed");
+    }
+  };
+
+  useEffect(() => {
+    // merge data setelah login
+    setUserData((prevData: any) => ({
+      ...prevData,
+      ...{
+        name: user?.user?.username,
+        avatar: user?.profile?.avatar_url || "/profile.png",
+        cover: user?.profile?.background_url || "/cover-placeholder.png",
+        status: "Online",
+        bio: user?.profile?.bio || "Deskripsi contoh untuk user",
+        members: [],
+      },
+    }));
+  }, [user]);
+
+  // close button right top sidebar
+  const closeButton = (
+    <button
+      onClick={onClose}
+      className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 cursor-pointer"
+      aria-label="Close sidebar"
+    >
+      <X size={18} />
+    </button>
+  );
+
+  if (!isLoggedIn) {
+    return (
+      <>
+        <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
+          <div className="p-4 flex-1 flex flex-col items-center justify-center">
+            {closeButton}
+            <h2 className="text-lg font-mono mb-2">You are not logged in</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              Please log in to access account settings.
+            </p>
+            <Web3LoginButton />
+            <div className="py-1"></div>
+            <GoogleLoginButton />
+          </div>
+        </aside>
+      </>
+    );
+  }
+
   return (
     <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
       {/* HEADER */}
       <div className="relative">
-        {data?.cover ? (
+        {userData?.cover ? (
           <img
-            src={data.cover}
+            src={userData.cover}
             alt="cover"
             className="w-full h-44 object-cover"
           />
@@ -58,13 +123,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
           <div className="w-full h-32 bg-gradient-to-r from-[#0f1724] to-[#0b1220]" />
         )}
 
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 cursor-pointer"
-          aria-label="Close sidebar"
-        >
-          <X size={18} />
-        </button>
+        {closeButton}
 
         <div className="p-3 py-3 flex gap-3 justify-between">
           <div>
@@ -72,19 +131,21 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
               <AnimeBadgeAvatar
                 src={
                   variant === "user"
-                    ? data?.avatar
-                    : data?.cover ?? "/group-placeholder.png"
+                    ? userData?.avatar
+                    : userData?.cover ?? "/group-placeholder.png"
                 }
               />
             </div>
             <div className="ml-1 flex justify-center">
               <div className="flex flex-col">
-                <div className="text-lg font-black font-mono">{data?.name}</div>
+                <div className="text-lg font-black font-mono">
+                  {userData?.name}
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-gray-400 font-mono">
                     {variant === "user"
-                      ? data?.status ?? "Online"
-                      : `${(data?.members ?? []).length} anggota`}
+                      ? userData?.status ?? "Online"
+                      : `${(userData?.members ?? []).length} anggota`}
                   </div>
                   <span className="text-sm text-gray-400 font-mono">
                     <strong>#</strong>syarifa💖
@@ -107,7 +168,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
         {/* BIO */}
         <div>
           <p className="text-[0.775rem] font-mono text-gray-300">
-            {variant === "user" ? data?.bio : data?.description}
+            {variant === "user" ? userData?.bio : userData?.description}
           </p>
         </div>
 
@@ -128,7 +189,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
         {variant === "group" && (
           <div>
             <h3 className="text-sm font-mono mb-2">Anggota</h3>
-            <MemberList members={data?.members ?? []} />
+            <MemberList members={userData?.members ?? []} />
           </div>
         )}
 
@@ -234,7 +295,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             {/* MEDIA */}
             <Tab.Panel>
               <div className="grid grid-cols-3 gap-2 font-mono">
-                {(data?.mediaItems ?? []).map((m: any, i: number) => (
+                {(userData?.mediaItems ?? []).map((m: any, i: number) => (
                   <img
                     key={i}
                     src={m.src}
@@ -242,7 +303,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
                     className="w-full h-20 object-cover rounded-md"
                   />
                 ))}
-                {(data?.mediaItems ?? []).length === 0 && (
+                {(userData?.mediaItems ?? []).length === 0 && (
                   <div className="text-xs text-gray-500 col-span-3">
                     Tidak ada media
                   </div>
@@ -253,12 +314,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             {/* FILES */}
             <Tab.Panel>
               <ul className="space-y-2 font-mono">
-                {(data?.files ?? []).map((f: string, i: number) => (
+                {(userData?.files ?? []).map((f: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     {f}
                   </li>
                 ))}
-                {(data?.files ?? []).length === 0 && (
+                {(userData?.files ?? []).length === 0 && (
                   <div className="text-xs text-gray-500">Tidak ada file</div>
                 )}
               </ul>
@@ -267,12 +328,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             {/* VOICE */}
             <Tab.Panel>
               <ul className="space-y-2 font-mono">
-                {(data?.voice ?? []).map((v: string, i: number) => (
+                {(userData?.voice ?? []).map((v: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     🎙️ {v}
                   </li>
                 ))}
-                {(data?.voice ?? []).length === 0 && (
+                {(userData?.voice ?? []).length === 0 && (
                   <div className="text-xs text-gray-500">Tidak ada voice</div>
                 )}
               </ul>
@@ -281,7 +342,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             {/* LINKS */}
             <Tab.Panel>
               <ul className="space-y-2 font-mono">
-                {(data?.links ?? []).map((l: string, i: number) => (
+                {(userData?.links ?? []).map((l: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     <a
                       href={l}
@@ -293,7 +354,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
                     </a>
                   </li>
                 ))}
-                {(data?.links ?? []).length === 0 && (
+                {(userData?.links ?? []).length === 0 && (
                   <div className="text-xs font-mono text-gray-500">
                     Tidak ada link
                   </div>
@@ -311,9 +372,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             <IconAdd />
             <span className="text-sm font-mono text-gray-300">Tambah akun</span>
           </button>
-          <button className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer">
-            <IconSubcribe />
-            <span className="text-sm font-mono text-gray-300">Hapus akun</span>
+          <button
+            onClick={() => handleLogout()}
+            className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <IconLogout />
+            <span className="text-sm font-mono text-gray-300">Log Out</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}

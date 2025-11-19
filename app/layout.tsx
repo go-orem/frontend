@@ -7,6 +7,7 @@ import { GiftProvider } from "./components/UI/modal/GiftContext";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { ModalChatProvider } from "./components/UI/modal/chat/ModalChatContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,17 +34,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <ModalProvider>
-            <ModalChatProvider>
-              <GiftProvider>
-                <Toaster richColors closeButton />
-                {children}
-                <FloatingMenu />
-              </GiftProvider>
-            </ModalChatProvider>
-          </ModalProvider>
-        </AuthProvider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <AuthProvider>
+            <ModalProvider>
+              <ModalChatProvider>
+                <GiftProvider>
+                  <Toaster richColors closeButton />
+                  {children}
+                  <FloatingMenu />
+                </GiftProvider>
+              </ModalChatProvider>
+            </ModalProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import IconReply from "@/app/components/icons/IconReply";
 import IconSet from "@/app/components/icons/IconSet";
 import IconSuka from "@/app/components/icons/IconSuka";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
+import { useAuth } from "@/context/AuthContext";
 
 const settingsMenu = [
   { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
@@ -39,14 +40,30 @@ export default function SettingsView() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
   const [selectedData, setSelectedData] = useState<any>(null);
+  const { user, refreshUser } = useAuth();
 
-  const handleOpenSidebar = (item: any) => {
+  const handleOpenSidebar = async (item: any) => {
     if (selectedMenu === item.key && showSidebar) {
       handleCloseSidebar();
       return;
     }
 
     setSelectedMenu(item.key);
+    if (item.key === "account") {
+      await refreshUser();
+      setSelectedData({
+        name: user?.user?.username,
+        variant: item.variant,
+        avatar: user?.profile?.avatar_url || "/profile.png",
+        cover: user?.profile?.background_url || "/cover-placeholder.png",
+        status: "Online",
+        description: `Informasi detail untuk menu ${item.name}`,
+        bio: user?.profile?.bio || "Deskripsi contoh untuk user",
+        members: [],
+      });
+      setShowSidebar(true);
+      return;
+    }
     setSelectedData({
       name: item.name,
       variant: item.variant,

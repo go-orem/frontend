@@ -26,12 +26,19 @@ export async function login(email: string, password: string) {
 }
 
 export async function loginGoogle(idToken: string) {
-  const res = await fetch("/api/auth/google", {
+  const res = await fetch("/api/login/google", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ idToken }),
+    body: JSON.stringify({
+      provider: "google",
+      credential: { id_token: idToken },
+    }),
   });
-  if (!res.ok) throw new Error("Google login failed");
+
+  if (!res.ok) {
+    throw new Error("Google login failed");
+  }
+
   return res.json();
 }
 
@@ -59,4 +66,12 @@ export async function getMe() {
   const res = await fetch("/api/auth/me");
   if (!res.ok) throw new Error("Failed to fetch user");
   return res.json(); // { id, username, email, roles, ... }
+}
+
+export async function logout() {
+  const res = await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Logout failed");
+  return res.json();
 }
