@@ -1,4 +1,3 @@
-// lib/auth.ts
 "use client";
 
 export async function register(

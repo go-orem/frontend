@@ -120,7 +120,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
             className="w-full h-44 object-cover"
           />
         ) : (
-          <div className="w-full h-32 bg-gradient-to-r from-[#0f1724] to-[#0b1220]" />
+          <div className="w-full h-32 bg-linear-to-r from-[#0f1724] to-[#0b1220]" />
         )}
 
         {closeButton}
@@ -281,7 +281,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
                   classNames(
                     "px-4 py-2 text-sm font-mono cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
                     selected
-                      ? "bg-[var(--hovercolor)] text-white"
+                      ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
                   )
                 }
