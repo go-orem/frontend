@@ -17,16 +17,18 @@ export default function GoogleLoginButton({
   const { refreshUser } = useAuth();
 
   const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
       setLoading(true);
       try {
-        // implicit flow → access_token
-        const res = await fetch("/api/login/google", {
+        const res = await fetch("/api/auth/login/google", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             provider: "google",
-            credential: { id_token: tokenResponse.access_token },
+            credential: {
+              code: codeResponse.code,
+            },
           }),
         });
 
@@ -44,7 +46,6 @@ export default function GoogleLoginButton({
       }
     },
     onError: () => toast.error("Google login failed"),
-    flow: "implicit", // bisa diganti "auth-code" untuk backend yang tukar code → token
   });
 
   return (
