@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TextareaCore, DropdownMenu, PasteBanner } from "./components";
 import { useAutoResize } from "./hooks/useAutoResize";
@@ -64,6 +64,12 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
   };
 
   const dropCls = computeDropClass();
+
+  useEffect(() => {
+    if (value.trim() === "") {
+      setHeight(42);
+    }
+  }, [value, setHeight]);
 
   return (
     <div className="relative w-full">
