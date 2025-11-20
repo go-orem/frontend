@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 import HoverGif from "./effects/HoverEffects";
+import { useModal } from "./modal/ModalContext";
 
 interface ChatItem {
   id: number;

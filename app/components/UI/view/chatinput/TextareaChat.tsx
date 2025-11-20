@@ -3,9 +3,8 @@ import React, { useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TextareaCore, DropdownMenu, PasteBanner } from "./components";
 import { useAutoResize } from "./hooks/useAutoResize";
-import { useAutocomplete } from "./hooks/useAutocomplate"; // pastikan nama file benar
+import { useAutocomplete } from "./hooks/useAutocomplate";
 import { usePasteHandler } from "./hooks/usePasteHandler";
-import { useSyntaxHighlight } from "./hooks/useSyntaxHighlight"; // hook XSS-safe
 import { MENTIONS, SLASH_CMDS, LANGS, EMOJIS } from "./constants";
 
 type Props = {
@@ -16,9 +15,8 @@ type Props = {
 
 export default function TextareaChat({ value, onChange, onEnter }: Props) {
   const taRef = useRef<HTMLTextAreaElement | null>(null);
-  const { highlight } = useSyntaxHighlight();
 
-  const { height, autoResize, computeDropClass } = useAutoResize(taRef);
+  const { height, autoResize, computeDropClass, setHeight } = useAutoResize(taRef);
 
   const {
     mentionOpen, slashOpen, emojiOpen, langOpen,
@@ -33,10 +31,11 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
     acceptPasteAsCode: phAcceptPasteAsCode, rejectPasteAsCode: phRejectPasteAsCode
   } = usePasteHandler();
 
-  // handle change & keydown
   const handleChange = (text: string) => acHandleChange(text);
+
   const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => acHandleKey(e, onEnter);
 
+  // replaceRange is still useful for paste handler results
   const replaceRange = (text: string, start: number, end: number, insert: string) =>
     text.slice(0, start) + insert + text.slice(end);
 
@@ -68,33 +67,13 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
 
   return (
     <div className="relative w-full">
-      {/* Banner untuk paste */}
+
       <AnimatePresence>
-        <PasteBanner
-          pasteCandidate={pasteCandidate}
-          accept={acceptPasteAsCode}
-          reject={rejectPasteAsCode}
-        />
+        <PasteBanner pasteCandidate={pasteCandidate} accept={acceptPasteAsCode} reject={rejectPasteAsCode} />
       </AnimatePresence>
 
-      {/* Preview kode XSS-safe */}
-      {pasteCandidate && pasteIsCodeLike && (
-        <pre className="bg-(--background) text-white p-2 rounded overflow-x-auto mb-2">
-          <code dangerouslySetInnerHTML={{ __html: highlight(pasteCandidate) }} />
-        </pre>
-      )}
+      <TextareaCore textareaRef={taRef} value={value} onChange={handleChange} onKeyDown={handleKey} onPaste={onPaste} height={height} />
 
-      {/* Textarea input */}
-      <TextareaCore
-        textareaRef={taRef}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKey}
-        onPaste={onPaste}
-        height={height}
-      />
-
-      {/* Dropdown untuk mentions / slash / emoji / bahasa */}
       <AnimatePresence>
         <DropdownMenu
           mentionOpen={mentionOpen}
