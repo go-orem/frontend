@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconChat from "../icons/IconChat";
 import IconChannel from "../icons/IconChannel";
 import IconNotifikasi from "../icons/IconNotifikasi";
@@ -17,6 +17,7 @@ import IconProfile from "../icons/IconProfile";
 import Sparkles from "../UI/effects/SparklesLangganan";
 import AuthSidebar from "../auth/AuthSidebar";
 import IconLogout from "../icons/IconLogout";
+import { useAuth } from "@/context/AuthContext";
 
 type MenuItem = {
   icon: React.ComponentType;
@@ -24,10 +25,15 @@ type MenuItem = {
   href: string;
 };
 
-export default function Sidebar({ onMenuClick }: { onMenuClick: (index: number) => void }) {
+export default function Sidebar({
+  onMenuClick,
+}: {
+  onMenuClick: (index: number) => void;
+}) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openAuth, setOpen] = useState(false);
+  const { isLoggedIn } = useAuth();
 
   const menuTop: MenuItem[] = [
     { icon: IconChat, label: "Chat", href: "/chat" },
@@ -88,6 +94,12 @@ export default function Sidebar({ onMenuClick }: { onMenuClick: (index: number) 
     chunkedMenu.push(menuTop.slice(i, i + 4));
   }
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setActiveIndex(3); // Reset to first menu if not logged in
+    }
+  }, [isLoggedIn]);
+
   return (
     <nav className="flex flex-col p-2 items-center justify-between w-15 h-screen border-r border-gray-700">
       <ul className="space-y-2 w-full flex flex-col items-center">
@@ -118,7 +130,10 @@ export default function Sidebar({ onMenuClick }: { onMenuClick: (index: number) 
           open={openSidebar}
           onClose={() => setOpenSidebar(false)}
         />
-        <button onClick={() => setOpen(true)} className="relative cursor-pointer">
+        <button
+          onClick={() => setOpen(true)}
+          className="relative cursor-pointer"
+        >
           <IconLogout />
         </button>
         <AuthSidebar open={openAuth} onClose={() => setOpen(false)} />

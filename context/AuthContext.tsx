@@ -38,6 +38,7 @@ type User = {
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  refreshing: boolean;
   isLoggedIn: boolean;
   refreshUser: () => Promise<void>;
 };
@@ -47,21 +48,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   async function refreshUser() {
-    setLoading(true);
+    setRefreshing(true);
     try {
       const me = await getMe();
       setUser(me);
     } catch {
       setUser(null);
     } finally {
-      setLoading(false);
+      setRefreshing(false);
     }
   }
 
   useEffect(() => {
-    refreshUser();
+    // initial load
+    (async () => {
+      try {
+        const me = await getMe();
+        setUser(me);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   return (
@@ -69,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         loading,
+        refreshing,
         isLoggedIn: !!user,
         refreshUser,
       }}

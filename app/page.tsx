@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/layout/Sidebar";
 import SplitView from "./components/layout/view/Page";
 import ChatSidebar from "./components/layout/chat/Page";
@@ -7,6 +7,7 @@ import ChannelPage from "./components/layout/channel/ChannelPage";
 import NotifikasiPage from "./components/layout/notifikasi/NotifikasiPage";
 import SettingsPage from "./components/layout/settings/SettingsPage";
 import GroupPage from "./components/layout/group/Page";
+import { useAuth } from "@/context/AuthContext";
 
 function ChatContent() {
   return <ChatSidebar />;
@@ -27,6 +28,7 @@ function SettingGroup() {
 
 export default function Layout() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { isLoggedIn } = useAuth();
 
   const renderContent = () => {
     switch (activeIndex) {
@@ -44,6 +46,12 @@ export default function Layout() {
         return <div className="p-4 text-white">Pilih menu</div>;
     }
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setActiveIndex(3);
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="flex">

@@ -51,19 +51,22 @@ export default function SettingsView() {
     setSelectedMenu(item.key);
     if (item.key === "account") {
       await refreshUser();
-      setSelectedData({
-        name: user?.user?.username,
-        variant: item.variant,
-        avatar: user?.profile?.avatar_url || "/profile.png",
-        cover: user?.profile?.background_url || "/cover-placeholder.png",
-        status: "Online",
-        description: `Informasi detail untuk menu ${item.name}`,
-        bio: user?.profile?.bio || "Deskripsi contoh untuk user",
-        members: [],
-      });
+      if (user) {
+        setSelectedData({
+          name: user?.user?.username,
+          variant: item.variant,
+          avatar: user?.profile?.avatar_url || "/profile.png",
+          cover: user?.profile?.background_url || "/cover-placeholder.png",
+          status: "Online",
+          description: `Informasi detail untuk menu ${item.name}`,
+          bio: user?.profile?.bio || "Deskripsi contoh untuk user",
+          members: [],
+        });
+      }
       setShowSidebar(true);
       return;
     }
+
     setSelectedData({
       name: item.name,
       variant: item.variant,
