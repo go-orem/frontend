@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
+import IconSendPhoto from "@/app/components/icons/IconMediaSendChat/IconSendPhoto";
+import IconSendVideo from "@/app/components/icons/IconMediaSendChat/IconSendVideo";
 
 type ModalChatSendProps = {
   open: boolean;
@@ -32,14 +34,14 @@ export default function ModalChatSend({
   if (!isClient || !open) return null;
 
   const mediaItems = [
-    { label: "Photo", icon: <WalletOrem /> },
-    { label: "Video", icon: <WalletOrem /> },
-    { label: "Camera", icon: <WalletOrem /> },
-    { label: "Documents", icon: <WalletOrem /> },
-    { label: "Locations", icon: <WalletOrem /> },
-    { label: "Contact", icon: <WalletOrem /> },
-    { label: "Poll", icon: <WalletOrem /> },
-    { label: "Send", icon: <WalletOrem /> },
+    { label: "Photo", icon: <IconSendPhoto /> },
+    { label: "Video", icon: <IconSendVideo /> },
+    { label: "Camera", icon: <IconSendPhoto /> },
+    { label: "Documents", icon: <IconSendVideo /> },
+    { label: "Locations", icon: <IconSendPhoto /> },
+    { label: "Contact", icon: <IconSendPhoto /> },
+    { label: "Poll", icon: <IconSendPhoto /> },
+    { label: "Send", icon: <IconSendVideo /> },
   ];
 
   return (
@@ -58,11 +60,11 @@ export default function ModalChatSend({
       `}
     >
       {/* HEADER */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
-        <h3 className="text-sm font-black font-mono text-white">Kirim Media</h3>
+      <div className="flex items-center justify-between pb-1 pt-1 pr-8 pl-8 border-b border-white/10">
+        <h3 className="text-sm font-black font-mono text-white">Media</h3>
         <button
           onClick={onClose}
-          className="rounded-full p-2 text-gray-300 hover:text-white"
+          className="rounded-full p-2 text-gray-300 hover:text-white cursor-pointer"
         >
           ✕
         </button>
