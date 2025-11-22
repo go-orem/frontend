@@ -23,7 +23,7 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
   const ctx = React.useContext(WebRTCContext) as any;
   const backdropCls = ctx?.showPiP
     ? "bg-transparent pointer-events-auto"
-    : "bg-black/30 backdrop-blur-[48px]";
+    : "bg-(--background)/30 backdrop-blur-[48px]";
 
   return (
     <AnimatePresence>
@@ -33,7 +33,7 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 24 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className="relative w-[94%] max-w-3xl h-[640px] bg-linear-to-tl from-white/5 via-white/10 to-white/5 backdrop-blur-3xl border border-white/10 rounded-[36px] shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
+          className="relative w-[94%] max-w-5xl h-[700px] bg-linear-to-tl from-white/5 via-white/10 to-white/5 backdrop-blur-3xl border border-white/10 rounded-[36px] shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
         >
           <ModalInner onClose={onClose} />
         </motion.div>
