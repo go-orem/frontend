@@ -33,7 +33,7 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 24 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className="relative w-[94%] max-w-5xl h-[700px] bg-linear-to-tl from-white/5 via-white/10 to-white/5 backdrop-blur-3xl border border-white/10 rounded-[36px] shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
+          className="relative w-[94%] max-w-5xl h-[700px] bg-linear-to-tl from-(--background)/5 via-white/10 to-white/5 backdrop-blur-3xl border border-white/10 rounded-[36px] shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
         >
           <ModalInner onClose={onClose} />
         </motion.div>
@@ -80,9 +80,9 @@ function ModalInner({ onClose }: { onClose: () => void }) {
   return (
     <div className="absolute inset-0 flex flex-col">
       {/* Header */}
-      <div className="absolute top-0 left-0 w-full h-20 z-20 flex items-center justify-between px-6 bg-linear-to-r from-white/5 via-white/10 to-white/5 backdrop-blur-3xl border-b border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
+      <div className="absolute top-0 left-0 bottom-0 w-full h-20 z-20 flex items-center justify-between px-6 bg-linear-to-r from-(--background)/5 via-(--background)/10 to-white/5 backdrop-blur-3xl border-b border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,255,200,0.3)] animate-pulse">
+          <div className="w-16 h-16 rounded-full bg-(--backgorund)/10 border border-white/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,255,200,0.3)] animate-pulse">
             <img
               src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjJoODk3aTR1ODJmYXh3bWk4NmlkN2Z2cHJ1MzA5N2l2djV3bTZvcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z7wIVXPnpm1DiJDdsU/giphy.gif"
               className="w-full h-full object-cover rounded-full"
@@ -104,7 +104,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Content */}
-      <div className="absolute inset-0 pt-20 pb-24">
+      <div className="absolute inset-0 pt-20 pb-6">
         <CallRoot onClose={handleClose} />
       </div>
     </div>
