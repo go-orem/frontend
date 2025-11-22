@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import IconVideo from "../../icons/IconVideo";
 import IconCall from "../../icons/IconCall";
 import IconSearch from "../../icons/IconSearch";
+
 import ModalSearchChat from "../modal/searchchat/ModalSearchChat";
+import CallLauncher from "../modal/videocall/CallLauncher";
 
 interface HeaderSplitProps {
   onProfileClick: () => void;
@@ -11,9 +13,16 @@ interface HeaderSplitProps {
 
 const HeaderSplit: React.FC<HeaderSplitProps> = ({ onProfileClick }) => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   return (
     <div className="header-atas w-auto h-15 p-2 pl-5.5 pr-5.5 flex justify-between border-b-[0.5px] border-gray-700 items-center bg-(--background)">
+
+      {/* FIXED — CallLauncher hanya muncul ketika videoOpen = true */}
+      {videoOpen && (
+        <CallLauncher open={videoOpen} onClose={() => setVideoOpen(false)} />
+      )}
+
       {searchOpen ? (
         <ModalSearchChat onCancel={() => setSearchOpen(false)} />
       ) : (
@@ -30,13 +39,21 @@ const HeaderSplit: React.FC<HeaderSplitProps> = ({ onProfileClick }) => {
               />
             </div>
             <div>
-              <div className="name font-mono text-sm font-semibold">Syarifa</div>
+              <div className="name font-mono text-sm font-semibold">
+                Syarifa
+              </div>
               <p className="font-mono text-xs text-gray-400">Mengetik...</p>
             </div>
           </div>
+
           <div className="flex space-x-6 cursor-pointer">
-            <IconVideo />
+            {/* OPEN VIDEO CALL UI */}
+            <button className="cursor-pointer" onClick={() => setVideoOpen(true)}>
+              <IconVideo />
+            </button>
+
             <IconCall />
+
             <button className="cursor-pointer" onClick={() => setSearchOpen(true)}>
               <IconSearch />
             </button>
