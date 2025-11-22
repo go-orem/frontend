@@ -84,7 +84,7 @@ function ModalInner({ onClose }: { onClose: () => void }) {
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,255,200,0.3)] animate-pulse">
             <img
-              src="/api/avatar/user1.png"
+              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjJoODk3aTR1ODJmYXh3bWk4NmlkN2Z2cHJ1MzA5N2l2djV3bTZvcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z7wIVXPnpm1DiJDdsU/giphy.gif"
               className="w-full h-full object-cover rounded-full"
             />
           </div>
