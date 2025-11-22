@@ -23,7 +23,7 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
   const ctx = React.useContext(WebRTCContext) as any;
   const backdropCls = ctx?.showPiP
     ? "bg-transparent pointer-events-auto"
-    : "bg-(--background)/30 backdrop-blur-[48px]";
+    : "bg-(--background)/30 backdrop-blur-[38px]";
 
   return (
     <AnimatePresence>

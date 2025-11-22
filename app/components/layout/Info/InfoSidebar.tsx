@@ -261,7 +261,7 @@ export default function InfoSidebar({
               </div>
               <div className="pt-2">
                 <span className="text-xs text-gray-500">
-                  Pesen di enkripsi end to end,
+                  Encrypt end to end, Orem Network
                   <br /> pelajari selengkapnya
                 </span>
               </div>
