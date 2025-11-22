@@ -1,8 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import WalletOrem from "@/app/components/icons/IconWallet/WalletOrem";
 import IconSendPhoto from "@/app/components/icons/IconMediaSendChat/IconSendPhoto";
 import IconSendVideo from "@/app/components/icons/IconMediaSendChat/IconSendVideo";
+import IconSendCamera from "@/app/components/icons/IconMediaSendChat/IconSendCamera";
+import IconSendDocs from "@/app/components/icons/IconMediaSendChat/IconSendDocs";
+import IconSendLocations from "@/app/components/icons/IconMediaSendChat/IconSendLocations";
+import IconSendContact from "@/app/components/icons/IconMediaSendChat/IconSendContact";
+import IconSendPoll from "@/app/components/icons/IconMediaSendChat/IconSendPoll";
 
 type ModalChatSendProps = {
   open: boolean;
@@ -36,11 +40,11 @@ export default function ModalChatSend({
   const mediaItems = [
     { label: "Photo", icon: <IconSendPhoto /> },
     { label: "Video", icon: <IconSendVideo /> },
-    { label: "Camera", icon: <IconSendPhoto /> },
-    { label: "Documents", icon: <IconSendVideo /> },
-    { label: "Locations", icon: <IconSendPhoto /> },
-    { label: "Contact", icon: <IconSendPhoto /> },
-    { label: "Poll", icon: <IconSendPhoto /> },
+    { label: "Camera", icon: <IconSendCamera /> },
+    { label: "Documents", icon: <IconSendDocs /> },
+    { label: "Locations", icon: <IconSendLocations /> },
+    { label: "Contact", icon: <IconSendContact /> },
+    { label: "Poll", icon: <IconSendPoll /> },
     { label: "Send", icon: <IconSendVideo /> },
   ];
 

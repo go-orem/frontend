@@ -250,7 +250,7 @@ export default function InfoSidebar({
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2 cursor-pointer">
             <div className="flex items-center gap-3">
               <IconStar />
-              <span>Pesan berbintang</span>
+              <span>Like chat</span>
             </div>
           </div>
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2 cursor-pointer">
