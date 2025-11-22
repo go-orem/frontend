@@ -33,7 +33,7 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 24 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className="relative w-[94%] max-w-5xl h-[700px] bg-linear-to-tl from-(--background)/5 via-white/10 to-white/5 backdrop-blur-3xl border border-white/10 rounded-[36px] shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
+          className="relative w-[94%] max-w-5xl h-[700px] bg-linear-to-tl from-(--hovercolor)/5 via-(--background)/10 to-white/5 backdrop-blur-3xl border border-(--primarycolor)/30 rounded-4xl shadow-[0_20px_40px_rgba(0,0,0,0.25)] overflow-hidden"
         >
           <ModalInner onClose={onClose} />
         </motion.div>
