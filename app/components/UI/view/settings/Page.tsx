@@ -151,6 +151,8 @@ export default function SettingsView() {
                 ? "wallet"
                 : selectedMenu === "whitepaper"
                 ? "whitepaper"
+                : selectedMenu === "privacy"
+                ? "privacy"
                 : "info"
             }
             data={selectedData}
