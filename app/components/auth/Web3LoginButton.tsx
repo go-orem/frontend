@@ -16,8 +16,17 @@ export default function Web3LoginButton({ onSuccess }: Web3LoginButtonProps) {
     setLoading(true);
     try {
       const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+      const accounts = await provider.send("eth_accounts", []);
+
+      if (!accounts || accounts.length === 0) {
+        await provider.send("eth_requestAccounts", []);
+      }
+
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
+
+      console.log("address", address);
 
       const { nonce } = await authService.getWeb3Nonce(address);
       const signature = await signer.signMessage(nonce);
