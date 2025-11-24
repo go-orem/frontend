@@ -1,4 +1,3 @@
-// utils/mimeMapper.ts
 export function getMimeType(resourceType: string, format: string): string {
   const map: Record<string, string> = {
     "image-jpg": "image/jpeg",

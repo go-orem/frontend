@@ -7,7 +7,7 @@ import ChannelPage from "./components/layout/channel/ChannelPage";
 import NotifikasiPage from "./components/layout/notifikasi/NotifikasiPage";
 import SettingsPage from "./components/layout/settings/SettingsPage";
 import GroupPage from "./components/layout/group/Page";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 
 function ChatContent() {
   return <ChatSidebar />;

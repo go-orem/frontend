@@ -1,7 +1,7 @@
 "use client";
 
+import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
 
 export default function SplashScreen({
   children,

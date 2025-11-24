@@ -9,7 +9,6 @@ import IconVideo from "@/app/components/icons/IconVideo";
 import IconChat from "@/app/components/icons/IconChat";
 import { useModal } from "@/app/components/UI/modal/ModalContext";
 import { useGift } from "@/app/components/UI/modal/GiftContext";
-import IconSubcribe from "@/app/components/icons/IconSubcribe";
 import IconEnkripsi from "@/app/components/icons/IconEnkripsi";
 import IconBisu from "@/app/components/icons/IconBisu";
 import SidebarSharePanel from "@/app/components/UI/modal/PopupShare";
@@ -18,11 +17,10 @@ import IconGear from "@/app/components/icons/IconGear";
 import AnimeBadgeAvatar from "@/app/components/UI/profile/ProfileAvatar";
 import IconAdd from "@/app/components/icons/IconAdd";
 import IconLogout from "@/app/components/icons/IconLogout";
-import { logout } from "@/lib/auth";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
 import Web3LoginButton from "@/app/components/auth/Web3LoginButton";
 import GoogleLoginButton from "@/app/components/auth/GoogleLoginButton";
+import { useAuth } from "@/hooks/useAuth";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingsProps {
@@ -45,7 +43,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({
   const [userData, setUserData] = useState<any>(data);
   const [enabled, setEnabled] = useState(false);
   const [visibilityEnabled, setVisibilityEnabled] = useState(false);
-  const { refreshUser, isLoggedIn, user } = useAuth();
+  const { refreshUser, isLoggedIn, user, logout } = useAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
 

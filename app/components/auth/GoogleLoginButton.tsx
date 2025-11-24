@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
 import IconGoogle from "../icons/IconAuth/IconGoogle";
+import { useAuth } from "@/hooks/useAuth";
 
 type GoogleLoginButtonProps = {
   onSuccess?: (user: any) => void;
@@ -36,9 +36,9 @@ export default function GoogleLoginButton({
         if (!res.ok) throw new Error(data.error || "Login failed");
 
         await refreshUser();
-        toast.success(`Login success! Welcome ${data.user.username}`);
+        toast.success(`Login success! Welcome ${data.data.user.username}`);
 
-        if (onSuccess) onSuccess(data.user);
+        if (onSuccess) onSuccess(data.data.user);
       } catch (err: any) {
         toast.error(`Login failed: ${err.message}`);
       } finally {
