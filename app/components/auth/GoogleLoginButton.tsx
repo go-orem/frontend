@@ -30,6 +30,7 @@ export default function GoogleLoginButton({
               code: codeResponse.code,
             },
           }),
+          credentials: "include",
         });
 
         const data = await res.json();
