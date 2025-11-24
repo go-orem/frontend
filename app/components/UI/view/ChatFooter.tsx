@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import data from "@emoji-mart/data";
 import dynamic from "next/dynamic";
-import IconKirim from "../../icons/IconKirim";
 import EmojiPicker from "@emoji-mart/react";
 import DynamicEmojiButton from "../Emoji/DynamicEmojiButton";
 import { useModalChat } from "../modal/chat/ModalChatContext";
 import TextareaChat from "./chatinput/TextareaChat";
+import IconMic from "../../icons/IconMediaSendChat/IconMic";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 
@@ -63,7 +63,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
   return (
     <div ref={wrapperRef} className="relative w-full">
       {/* Footer Chat */}
-      <div className="bottom-0 left-0 w-full p-2 pb-1 pl-5.5 pr-5.5 bg-transparent flex items-center space-x-4">
+      <div className="bottom-0 left-0 w-full p-2 pb-1 pl-5.5 pr-5.5 bg-transparent flex items-center space-x-3">
         {/* Emoji Button */}
         <DynamicEmojiButton
           showEmoji={showEmoji}
@@ -97,9 +97,9 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
         {/* Send Button */}
         <button
           onClick={sendMessage}
-          className="p-2.5 items-center align-middle rounded-full bg-(--primarycolor) cursor-pointer transition-transform duration-200 hover:scale-110"
+          className="p-2.5 items-center align-middle rounded-full bg-(--hovercolor) cursor-pointer transition-transform duration-200 hover:scale-110"
         >
-          <IconKirim />
+          <IconMic />
         </button>
       </div>
 

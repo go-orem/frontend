@@ -21,9 +21,9 @@ export default function TextareaCore({ textareaRef, value, onChange, onKeyDown, 
       onPaste={onPaste}
       className={`
           w-full px-4 py-2.5 text-sm font-mono
-          bg-gray-800 text-white outline-none resize-none
+          bg-(--background) text-white outline-none resize-none
           leading-[1.45] min-h-[42px] max-h-[300px] overflow-y-auto
-          border border-gray-700/40 shadow-inner transition-all duration-150
+          border border-gray-500/40 shadow-inner transition-all duration-150
 
           ${
             height < 52

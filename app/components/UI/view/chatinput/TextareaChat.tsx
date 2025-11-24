@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TextareaCore, DropdownMenu, PasteBanner } from "./components";
 import { useAutoResize } from "./hooks/useAutoResize";
@@ -16,6 +16,8 @@ type Props = {
 export default function TextareaChat({ value, onChange, onEnter }: Props) {
   const taRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const [isTyping, setIsTyping] = React.useState(false);
+
   const { height, autoResize, computeDropClass, setHeight } = useAutoResize(taRef);
 
   const {
@@ -31,11 +33,19 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
     acceptPasteAsCode: phAcceptPasteAsCode, rejectPasteAsCode: phRejectPasteAsCode
   } = usePasteHandler();
 
-  const handleChange = (text: string) => acHandleChange(text);
+  const handleChange = (text: string) => {
+    if (!isTyping) setIsTyping(true);
+    acHandleChange(text);
+  };
 
-  const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => acHandleKey(e, onEnter);
+  const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    acHandleKey(e, () => {
+      onEnter();
+      setIsTyping(false);
+      setHeight(46); // reset rounded-full height
+    });
+  };
 
-  // replaceRange is still useful for paste handler results
   const replaceRange = (text: string, start: number, end: number, insert: string) =>
     text.slice(0, start) + insert + text.slice(end);
 
@@ -65,12 +75,6 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
 
   const dropCls = computeDropClass();
 
-  useEffect(() => {
-    if (value.trim() === "") {
-      setHeight(42);
-    }
-  }, [value, setHeight]);
-
   return (
     <div className="relative w-full">
 
@@ -78,7 +82,22 @@ export default function TextareaChat({ value, onChange, onEnter }: Props) {
         <PasteBanner pasteCandidate={pasteCandidate} accept={acceptPasteAsCode} reject={rejectPasteAsCode} />
       </AnimatePresence>
 
-      <TextareaCore textareaRef={taRef} value={value} onChange={handleChange} onKeyDown={handleKey} onPaste={onPaste} height={height} />
+      <div
+        className={`
+          transition-all duration-200 w-full
+          ${isTyping ? "rounded-2xl" : "rounded-full"}
+          bg-(--background-input) border border-white/10
+        `}
+      >
+        <TextareaCore
+          textareaRef={taRef}
+          value={value}
+          onChange={handleChange}
+          onKeyDown={handleKey}
+          onPaste={onPaste}
+          height={height}
+        />
+      </div>
 
       <AnimatePresence>
         <DropdownMenu

@@ -3,13 +3,20 @@ import React from "react";
 import AccountSettings from "./account/Page";
 import WalletSettings from "./wallet/Page";
 import WhitepaperSettings from "./whitepaper/Page";
+import PrivacySettings from "./privacy/Page";
 
 export default function SettingSidebar({
   activeSidebar,
   data,
   onClose,
 }: {
-  activeSidebar: "info" | "account" | "wallet" | "whitepaper" | "setting";
+  activeSidebar:
+    | "info"
+    | "account"
+    | "wallet"
+    | "whitepaper"
+    | "privacy"
+    | "settings";
   data: any;
   onClose: () => void;
 }) {
@@ -27,6 +34,9 @@ export default function SettingSidebar({
       )}
       {activeSidebar === "whitepaper" && (
         <WhitepaperSettings data={data} onClose={onClose} />
+      )}
+      {activeSidebar === "privacy" && (
+        <PrivacySettings data={data} onClose={onClose} />
       )}
     </div>
   );

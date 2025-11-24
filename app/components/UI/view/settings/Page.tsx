@@ -15,7 +15,7 @@ const settingsMenu = [
   { name: "Wallet", icon: <IconSuka />, key: "wallet", variant: "user" },
   { name: "Edit", icon: <IconEdit />, key: "edit", variant: "user" },
   { name: "Settings", icon: <IconGear />, key: "setting", variant: "group" },
-  { name: "Privacy", icon: <IconReply />, key: "privacy", variant: "user" },
+  { name: "Privacy $ Security", icon: <IconReply />, key: "privacy", variant: "user" },
   { name: "Chat", icon: <IconSuka />, key: "chat", variant: "user" },
   { name: "Folder", icon: <IconSuka />, key: "folder", variant: "group" },
   { name: "Bahasa", icon: <IconSuka />, key: "language", variant: "user" },
@@ -151,6 +151,8 @@ export default function SettingsView() {
                 ? "wallet"
                 : selectedMenu === "whitepaper"
                 ? "whitepaper"
+                : selectedMenu === "privacy"
+                ? "privacy"
                 : "info"
             }
             data={selectedData}
