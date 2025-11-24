@@ -7,6 +7,7 @@ import IconSendDocs from "@/app/components/icons/IconMediaSendChat/IconSendDocs"
 import IconSendLocations from "@/app/components/icons/IconMediaSendChat/IconSendLocations";
 import IconSendContact from "@/app/components/icons/IconMediaSendChat/IconSendContact";
 import IconSendPoll from "@/app/components/icons/IconMediaSendChat/IconSendPoll";
+import SendOrem from "@/app/components/icons/IconWallet/SendOrem";
 
 type ModalChatSendProps = {
   open: boolean;
@@ -45,7 +46,7 @@ export default function ModalChatSend({
     { label: "Locations", icon: <IconSendLocations /> },
     { label: "Contact", icon: <IconSendContact /> },
     { label: "Poll", icon: <IconSendPoll /> },
-    { label: "Send", icon: <IconSendVideo /> },
+    { label: "Send", icon: <SendOrem /> },
   ];
 
   return (

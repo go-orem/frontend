@@ -16,7 +16,7 @@ export default function SettingSidebar({
     | "wallet"
     | "whitepaper"
     | "privacy"
-    | "setting";
+    | "settings";
   data: any;
   onClose: () => void;
 }) {

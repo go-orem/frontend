@@ -9,8 +9,8 @@ export default function CategoryGroup() {
 
   const menu: SliderItem[] = [
     { label: "Hot🔥" },
-    { label: "New" },
-    { label: "Indonesia" },
+    { label: "New🧩" },
+    { label: "Indonesia🇮🇩" },
     { label: "Token" },
     { label: "Trending" },
     { label: "Blockchain" },
