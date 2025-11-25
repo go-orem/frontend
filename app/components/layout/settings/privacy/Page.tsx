@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, ChevronRight, ArrowLeft } from "lucide-react";
+import { X, ChevronRight, } from "lucide-react";
 
 // =====================
 // IMPORT SUB-PAGES
@@ -13,6 +13,7 @@ import MutedUsersPage from "./MutedUsersPage";
 import RestrictedUsersPage from "./RestrictedUsersPage";
 import DataOnChainPage from "./DataOnChainPage";
 import ActiveSessionsPage from "./ActiveSessionsPage";
+import IconArrowRight from "@/app/components/icons/IconArrowRight";
 
 // =====================
 // PRIVACY PAGE INDEX
@@ -49,7 +50,7 @@ export default function PrivacySettings({ data, onClose }: any) {
             onClick={() => setActivePage(null)}
             className="p-2 rounded-full bg-black/40 hover:bg-(--hovercolor)"
           >
-            <ArrowLeft size={18} />
+            <IconArrowRight/>
           </button>
         ) : (
           <button

@@ -5,7 +5,6 @@ import IconGear from "@/app/components/icons/IconGear";
 import IconLogout from "@/app/components/icons/IconLogout";
 import IconProfile from "@/app/components/icons/IconProfile";
 import IconReply from "@/app/components/icons/IconReply";
-import IconSet from "@/app/components/icons/IconSet";
 import IconSuka from "@/app/components/icons/IconSuka";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
 import { useAuth } from "@/hooks/useAuth";
@@ -117,7 +116,7 @@ export default function SettingsView() {
                   </span>
                 </button>
                 <span>
-                  <IconSet />
+                  <IconArrowRight/>
                 </span>
               </div>
 
