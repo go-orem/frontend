@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import IconEdit from "@/app/components/icons/IconEdit";
-import IconGear from "@/app/components/icons/IconGear";
-import IconLogout from "@/app/components/icons/IconLogout";
-import IconProfile from "@/app/components/icons/IconProfile";
-import IconReply from "@/app/components/icons/IconReply";
-import IconSuka from "@/app/components/icons/IconSuka";
+import IconEdit from "@/components/icons/IconEdit";
+import IconGear from "@/components/icons/IconGear";
+import IconLogout from "@/components/icons/IconLogout";
+import IconProfile from "@/components/icons/IconProfile";
+import IconReply from "@/components/icons/IconReply";
+import IconSet from "@/components/icons/IconSet";
+import IconSuka from "@/components/icons/IconSuka";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -116,7 +117,7 @@ export default function SettingsView() {
                   </span>
                 </button>
                 <span>
-                  <IconArrowRight/>
+                  <IconSet />
                 </span>
               </div>
 
