@@ -1,5 +1,5 @@
+import { IconSearch } from "@/components/icons";
 import { FC } from "react";
-import IconSearch from "../icons/IconSearch";
 
 interface SearchProps {}
 

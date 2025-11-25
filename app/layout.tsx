@@ -9,6 +9,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ModalChatProvider } from "./components/UI/modal/chat/ModalChatContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import SplashScreen from "./components/UI/SplashScreen";
+import LayoutClient from "./layoutClient"; // ⬅️ client wrapper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
@@ -43,7 +44,9 @@ export default function RootLayout({
               <ModalChatProvider>
                 <GiftProvider>
                   <Toaster richColors closeButton />
-                  <SplashScreen>{children}</SplashScreen>
+                  <LayoutClient>
+                    <SplashScreen>{children}</SplashScreen>
+                  </LayoutClient>
                   <FloatingMenu />
                 </GiftProvider>
               </ModalChatProvider>

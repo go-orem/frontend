@@ -4,23 +4,25 @@ import React, { useEffect, useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { X } from "lucide-react";
 import MemberList from "@/app/components/UI/view/MemberList";
-import IconCall from "@/app/components/icons/IconCall";
-import IconVideo from "@/app/components/icons/IconVideo";
-import IconChat from "@/app/components/icons/IconChat";
 import { useModal } from "@/app/components/UI/modal/ModalContext";
 import { useGift } from "@/app/components/UI/modal/GiftContext";
-import IconEnkripsi from "@/app/components/icons/IconEnkripsi";
-import IconBisu from "@/app/components/icons/IconBisu";
 import SidebarSharePanel from "@/app/components/UI/modal/PopupShare";
-import IconEdit from "@/app/components/icons/IconEdit";
-import IconGear from "@/app/components/icons/IconGear";
 import AnimeBadgeAvatar from "@/app/components/UI/profile/ProfileAvatar";
-import IconAdd from "@/app/components/icons/IconAdd";
-import IconLogout from "@/app/components/icons/IconLogout";
 import { toast } from "sonner";
-import Web3LoginButton from "@/app/components/auth/Web3LoginButton";
-import GoogleLoginButton from "@/app/components/auth/GoogleLoginButton";
+import Web3LoginButton from "@/components/auth/Web3LoginButton";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  IconAdd,
+  IconBisu,
+  IconCall,
+  IconChat,
+  IconEdit,
+  IconEnkripsi,
+  IconGear,
+  IconLogout,
+  IconVideo,
+} from "@/components/icons";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingsProps {

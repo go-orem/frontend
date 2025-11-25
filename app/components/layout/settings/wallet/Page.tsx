@@ -11,10 +11,12 @@ import {
 } from "./ChartToken";
 
 import MobileNavFooter from "./MobileNavFooter";
-import ReceiveOrem from "@/app/components/icons/IconWallet/ReceiveOrem";
-import SendQrOrem from "@/app/components/icons/IconWallet/SendQrOrem";
-import SendOrem from "@/app/components/icons/IconWallet/SendOrem";
-import SwapOrem from "@/app/components/icons/IconWallet/SwapOrem";
+import {
+  IconReceiveOrem,
+  IconSendOrem,
+  IconSendQrOrem,
+  IconSwapOrem,
+} from "@/components/icons";
 
 interface WalletSettingsProps {
   data: any;
@@ -33,10 +35,10 @@ export default function WalletSettings({ data, onClose }: WalletSettingsProps) {
   const [activeTab, setActiveTab] = useState("line");
 
   const IconWallet = [
-    { icon: <SendQrOrem />, label: "QR" },
-    { icon: <SendOrem />, label: "Send" },
-    { icon: <ReceiveOrem />, label: "Receive" },
-    { icon: <SwapOrem />, label: "Swap" },
+    { icon: <IconSendQrOrem />, label: "QR" },
+    { icon: <IconSendOrem />, label: "Send" },
+    { icon: <IconReceiveOrem />, label: "Receive" },
+    { icon: <IconSwapOrem />, label: "Swap" },
   ];
 
   // sample data

@@ -1,6 +1,4 @@
-import React from "react";
-import IconNewChat from "../icons/IconNewChat";
-import IconSet from "../icons/IconSet";
+import { IconNewChat, IconSet } from "@/components/icons";
 import { useModal } from "./modal/ModalContext";
 
 interface HeaderChatProps {

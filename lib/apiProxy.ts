@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerToken } from "./getServerToken";
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080/api";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080";
 
 export async function proxyRequest(
   path: string,
@@ -10,7 +9,7 @@ export async function proxyRequest(
   methodOverride?: string
 ) {
   try {
-    const url = `${BACKEND_URL}${path}`;
+    const url = `${BACKEND_URL}/api${path}`;
 
     const token = await getServerToken();
 

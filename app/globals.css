@@ -50,30 +50,56 @@ body {
   display: none;
 }
 
+.animate-fade {
+  animation: fade 1s ease-in-out infinite alternate;
+}
+
 /* Neon border */
-.neon-border {
+/* Base style */
+.neon-border,
+.neon-border-hover {
   position: relative;
   border: 1px solid transparent;
 }
 
+/* Default active neon-border (selalu muncul) */
 .neon-border::before {
   content: "";
   position: absolute;
-  inset: 0; /* menutupi seluruh button */
-  padding: 2px; /* tebal border */
+  inset: 0;
+  padding: 2px;
   border-radius: inherit;
   background: linear-gradient(90deg, #30d5ff, #ff3ec2, #30d5ff);
   background-size: 300% 100%;
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-          mask-composite: exclude; 
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
   z-index: -1;
+  animation: neon-border-animation 2s linear infinite;
+}
+
+/* Neon khusus saat hover */
+.neon-border-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #30d5ff, #ff3ec2, #30d5ff);
+  background-size: 300% 100%;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  z-index: -1;
+}
+
+/* Aktif saat hover */
+.neon-border-hover:hover::before {
+  opacity: 1;
   animation: neon-border-animation 2s linear infinite;
 }
 
@@ -96,18 +122,37 @@ body {
 }
 
 @keyframes stream {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes stream-delayed {
-  0% { transform: translateX(-200%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-200%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-
+@keyframes fade {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -11,7 +11,7 @@ export async function GET(
   }
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE}/auth/web3/nonce/${address}`,
+    `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/web3/nonce/${address}`,
     { method: "GET" }
   );
 

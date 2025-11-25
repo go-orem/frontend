@@ -3,21 +3,15 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useModal } from "./ModalContext";
-import {
-  Send,
-  CornerUpRight,
-  AtSign,
-  Flag,
-  Smile,
-  User,
-  CheckCircle,
-} from "lucide-react";
-import IconReply from "../../icons/IconReply";
-import IconForward from "../../icons/IconForward";
-import IconWhisper from "../../icons/IconWhisper";
-import IconProfile from "../../icons/IconProfile";
-import IconSuka from "../../icons/IconSuka";
+import { AtSign, Flag } from "lucide-react";
 import EmojiPickerButton from "../Emoji/EmojiPickerButton";
+import {
+  IconForward,
+  IconProfile,
+  IconReply,
+  IconSuka,
+  IconWhisper,
+} from "@/components/icons";
 
 export default function FloatingMenu() {
   const { modalData, closeModal } = useModal();

@@ -1,13 +1,16 @@
 "use client";
-import React, { useState } from "react";
-import IconEdit from "@/app/components/icons/IconEdit";
-import IconGear from "@/app/components/icons/IconGear";
-import IconLogout from "@/app/components/icons/IconLogout";
-import IconProfile from "@/app/components/icons/IconProfile";
-import IconReply from "@/app/components/icons/IconReply";
-import IconSuka from "@/app/components/icons/IconSuka";
+import { useState } from "react";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  IconEdit,
+  IconGear,
+  IconLogout,
+  IconProfile,
+  IconReply,
+  IconSet,
+  IconSuka,
+} from "@/components/icons";
 
 const settingsMenu = [
   { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
@@ -116,7 +119,7 @@ export default function SettingsView() {
                   </span>
                 </button>
                 <span>
-                  <IconArrowRight/>
+                  <IconSet />
                 </span>
               </div>
 

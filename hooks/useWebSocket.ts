@@ -22,7 +22,7 @@ export function useWebSocket(roomId?: string) {
     if (!token) return;
 
     const ws = new WebSocket(
-      `ws:${process.env.NEXT_PUBLIC_BASE}/ws?token=${token}`
+      `ws:${process.env.NEXT_PUBLIC_API_BASE}/ws?token=${token}`
     );
 
     ws.onopen = () => {

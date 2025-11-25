@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderSplit from "../../UI/view/HeaderSplit";
 import FullChat from "../../UI/view/FullChat";
-import InfoSidebar from "../Info/InfoSidebar";
+import InfoSidebar from "../../../../components/pages/chat/InfoSidebar";
 
 export default function SplitView() {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -84,7 +84,9 @@ export default function SplitView() {
     <div className="flex h-screen w-full overflow-hidden">
       <div
         className={`flex flex-col transition-all duration-300 ${
-          openSidebar ? "basis-[calc(100%-350px)]" : "basis-full"
+          openSidebar
+            ? "w-0 opacity-0 overflow-hidden lg:opacity-100 lg:w-[calc(100%-350px)]"
+            : "w-full opacity-100"
         }`}
       >
         <HeaderSplit onProfileClick={() => setOpenSidebar(!openSidebar)} />

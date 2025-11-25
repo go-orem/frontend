@@ -7,7 +7,7 @@ import EmojiPicker from "@emoji-mart/react";
 import DynamicEmojiButton from "../Emoji/DynamicEmojiButton";
 import { useModalChat } from "../modal/chat/ModalChatContext";
 import TextareaChat from "./chatinput/TextareaChat";
-import IconMic from "../../icons/IconMediaSendChat/IconMic";
+import { IconMic } from "@/components/icons";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 
@@ -97,7 +97,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
         {/* Send Button */}
         <button
           onClick={sendMessage}
-          className="items-center align-middle cursor-pointer transition-transform duration-200 hover:scale-110"
+          className="p-2.5 items-center align-middle rounded-full bg-(--hovercolor) cursor-pointer transition-transform duration-200 hover:scale-110"
         >
           <IconMic />
         </button>
