@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import IconVideo from "../../icons/IconVideo";
-import IconCall from "../../icons/IconCall";
-import IconSearch from "../../icons/IconSearch";
+import IconVideo from "../../../../components/icons/IconVideo";
+import IconCall from "../../../../components/icons/IconCall";
+import IconSearch from "../../../../components/icons/IconSearch";
 
 import ModalSearchChat from "../modal/searchchat/ModalSearchChat";
 import CallLauncher from "../modal/videocall/CallLauncher";
@@ -17,7 +17,6 @@ const HeaderSplit: React.FC<HeaderSplitProps> = ({ onProfileClick }) => {
 
   return (
     <div className="header-atas w-auto h-15 p-2 pl-5.5 pr-5.5 flex justify-between border-b-[0.5px] border-gray-700 items-center bg-(--background)">
-
       {/* FIXED — CallLauncher hanya muncul ketika videoOpen = true */}
       {videoOpen && (
         <CallLauncher open={videoOpen} onClose={() => setVideoOpen(false)} />
@@ -48,13 +47,19 @@ const HeaderSplit: React.FC<HeaderSplitProps> = ({ onProfileClick }) => {
 
           <div className="flex space-x-6 cursor-pointer">
             {/* OPEN VIDEO CALL UI */}
-            <button className="cursor-pointer" onClick={() => setVideoOpen(true)}>
+            <button
+              className="cursor-pointer"
+              onClick={() => setVideoOpen(true)}
+            >
               <IconVideo />
             </button>
 
             <IconCall />
 
-            <button className="cursor-pointer" onClick={() => setSearchOpen(true)}>
+            <button
+              className="cursor-pointer"
+              onClick={() => setSearchOpen(true)}
+            >
               <IconSearch />
             </button>
           </div>

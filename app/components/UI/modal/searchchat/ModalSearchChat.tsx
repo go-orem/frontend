@@ -1,5 +1,5 @@
 "use client";
-import HistoryOrem from "@/app/components/icons/IconWallet/HistoryOrem";
+import HistoryOrem from "@/components/icons/IconWallet/HistoryOrem";
 import React from "react";
 
 interface ModalSearchChatProps {
@@ -9,9 +9,9 @@ interface ModalSearchChatProps {
 const ModalSearchChat: React.FC<ModalSearchChatProps> = ({ onCancel }) => {
   return (
     <aside className="flex items-center w-full h-full relative gap-2">
-        <div>
-            <HistoryOrem/>
-        </div>
+      <div>
+        <HistoryOrem />
+      </div>
       <div className="flex items-center w-full h-full relative">
         {/* Input search */}
         <input

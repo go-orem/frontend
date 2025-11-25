@@ -1,22 +1,22 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import IconChat from "../icons/IconChat";
-import IconChannel from "../icons/IconChannel";
-import IconNotifikasi from "../icons/IconNotifikasi";
-import IconGroup from "../icons/IconGroup";
-import IconNearby from "../icons/IconNearby";
-import IconAdd from "../icons/IconAdd";
-import IconStorage from "../icons/IconStorage";
-import IconMusic from "../icons/IconMusic";
+import IconChat from "../../../components/icons/IconChat";
+import IconChannel from "../../../components/icons/IconChannel";
+import IconNotifikasi from "../../../components/icons/IconNotifikasi";
+import IconGroup from "../../../components/icons/IconGroup";
+import IconNearby from "../../../components/icons/IconNearby";
+import IconAdd from "../../../components/icons/IconAdd";
+import IconStorage from "../../../components/icons/IconStorage";
+import IconMusic from "../../../components/icons/IconMusic";
 import DarkModeToggle from "../UI/DarkMode";
-import IconBantuan from "../icons/IconBantuan";
-import IconGame from "../icons/IconGame";
+import IconBantuan from "../../../components/icons/IconBantuan";
+import IconGame from "../../../components/icons/IconGame";
 import LanggananSidebar from "../UI/profile/LanggananSidebar";
-import IconProfile from "../icons/IconProfile";
+import IconProfile from "../../../components/icons/IconProfile";
 import Sparkles from "../UI/effects/SparklesLangganan";
 import AuthSidebar from "../auth/AuthSidebar";
-import IconLogout from "../icons/IconLogout";
+import IconLogout from "../../../components/icons/IconLogout";
 import { useAuth } from "@/hooks/useAuth";
 
 type MenuItem = {
@@ -33,7 +33,7 @@ export default function Sidebar({
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openAuth, setOpen] = useState(false);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, loading: loadingAuth } = useAuth();
 
   const menuTop: MenuItem[] = [
     { icon: IconChat, label: "Chat", href: "/chat" },
@@ -95,13 +95,14 @@ export default function Sidebar({
   }
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    console.log("isLoggedIn", isLoggedIn);
+    if (!isLoggedIn && !loadingAuth) {
       setActiveIndex(3); // Reset to first menu if not logged in
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, loadingAuth]);
 
   return (
-    <nav className="flex flex-col p-2 items-center justify-between w-15 h-screen border-r border-gray-700">
+    <nav className="flex flex-col p-2 items-center justify-between w-[60px] max-h-screen border-r border-gray-700 overflow-y-scroll">
       <ul className="space-y-2 w-full flex flex-col items-center">
         {chunkedMenu.map((group, gIndex) => (
           <React.Fragment key={gIndex}>

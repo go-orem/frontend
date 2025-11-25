@@ -52,7 +52,7 @@ export default function ChannelPage() {
   return (
     <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg]"
+        className="flex flex-col pt-3 pb-0 border-r overflow-hidden border-gray-700 bg-[--sidebar-bg]"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -65,7 +65,7 @@ export default function ChannelPage() {
         <Search />
         <SliderIcon />
         <ListChat />
-        <MobileMenu/>
+        <MobileMenu />
       </motion.div>
 
       {/* garis drag */}

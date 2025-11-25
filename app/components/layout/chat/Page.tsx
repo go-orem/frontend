@@ -6,12 +6,20 @@ import ListChat from "../../UI/ListChat";
 import HeaderChat from "../../UI/HeaderChat";
 import SliderIcon from "../../UI/SliderIcon";
 import MobileMenu from "../../UI/MobileMenu";
+import { useAuth } from "@/hooks/useAuth";
+import SidebarPanelLoading from "@/components/UI/sidebar-panel/SidebarPanelLoading";
+import SidebarPanelGuest from "@/components/UI/sidebar-panel/SidebarPanelGuest";
 
-export default function ChatSidebar() {
-  const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
+export default function ChatSidebar({
+  onListClick,
+}: {
+  onListClick?: (chat: any) => void;
+}) {
+  const [sidebarWidth, setSidebarWidth] = useState<number>(430);
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const { isLoggedIn, loading: loadingAuth } = useAuth();
 
   // baca dari localStorage sekali, tanpa flicker
   useEffect(() => {
@@ -40,6 +48,7 @@ export default function ChatSidebar() {
   };
 
   useEffect(() => {
+    window.dispatchEvent(new Event("sidebar-panel-width-updated"));
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
     return () => {
@@ -52,7 +61,7 @@ export default function ChatSidebar() {
   return (
     <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg]"
+        className="flex flex-col pt-3 pb-0 border-r overflow-scroll border-gray-700 bg-[--sidebar-bg]"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -62,16 +71,22 @@ export default function ChatSidebar() {
         }
       >
         <HeaderChat activeTab="chats" />
-        <Search />
-        <SliderIcon />
-        <ListChat />
-        <MobileMenu/>
+        {loadingAuth && <SidebarPanelLoading />}
+        {!isLoggedIn && <SidebarPanelGuest />}
+        {isLoggedIn && !loadingAuth && (
+          <>
+            <Search />
+            <SliderIcon />
+            <ListChat onListClick={onListClick} />
+            <MobileMenu />
+          </>
+        )}
       </motion.div>
 
       {/* garis drag */}
       <div
         onMouseDown={handleMouseDown}
-        className={`cursor-col-resize w-[0.5px] 
+        className={`cursor-col-resize w-[0.5px] relative z-10
           ${isDragging ? "bg-[--primarycolor]" : "bg-gray-700"}`}
         style={{ minHeight: "100%" }}
       />

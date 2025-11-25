@@ -1,6 +1,6 @@
 import React from "react";
 import { useModal } from "../../modal/ModalContext";
-import IconSetting from "@/app/components/icons/IconSetting";
+import IconSetting from "@/components/icons/IconSetting";
 
 interface HeaderChatProps {
   activeTab: "chats" | "channel" | "notification" | "settings"; // tab aktif

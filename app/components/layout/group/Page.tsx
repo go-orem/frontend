@@ -49,9 +49,9 @@ export default function GroupPage() {
 
   // saat masih load pertama kali, langsung render width terakhir tanpa animasi
   return (
-    <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
+    <div className={`w-full flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg]"
+        className="max-w-full flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg] overflow-scroll"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -63,8 +63,8 @@ export default function GroupPage() {
         <HeaderChat activeTab="group" />
         <Search />
         <CategoryGroup />
-        <ListGroup/>
-        <MobileMenu/>
+        <ListGroup />
+        <MobileMenu />
       </motion.div>
 
       {/* garis drag */}

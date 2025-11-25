@@ -11,10 +11,10 @@ import {
 } from "./ChartToken";
 
 import MobileNavFooter from "./MobileNavFooter";
-import ReceiveOrem from "@/app/components/icons/IconWallet/ReceiveOrem";
-import SendQrOrem from "@/app/components/icons/IconWallet/SendQrOrem";
-import SendOrem from "@/app/components/icons/IconWallet/SendOrem";
-import SwapOrem from "@/app/components/icons/IconWallet/SwapOrem";
+import ReceiveOrem from "@/components/icons/IconWallet/ReceiveOrem";
+import SendQrOrem from "@/components/icons/IconWallet/SendQrOrem";
+import SendOrem from "@/components/icons/IconWallet/SendOrem";
+import SwapOrem from "@/components/icons/IconWallet/SwapOrem";
 
 interface WalletSettingsProps {
   data: any;

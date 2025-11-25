@@ -63,9 +63,9 @@ export default function NotifikasiPage() {
       >
         <HeaderChat activeTab="notification" />
         <Search />
-        <CategoryNotif/>
-        <ViewNotifikasi/>
-        <MobileMenu/>
+        <CategoryNotif />
+        <ViewNotifikasi />
+        <MobileMenu />
       </motion.div>
 
       {/* garis drag */}

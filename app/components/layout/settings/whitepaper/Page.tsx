@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { X } from "lucide-react";
 import SidebarSharePanel from "@/app/components/UI/modal/PopupShare";
-import IconAdd from "@/app/components/icons/IconAdd";
+import IconAdd from "@/components/icons/IconAdd";
 
 // ✅ Tipe props untuk komponen
 interface WhitepaperSettingsProps {
@@ -84,9 +84,7 @@ const WhitepaperSettings: React.FC<WhitepaperSettingsProps> = ({
                   />
                 ))}
                 {(data?.mediaItems ?? []).length === 0 && (
-                  <div className="text-xs text-gray-500 col-span-3">
-                    media
-                  </div>
+                  <div className="text-xs text-gray-500 col-span-3">media</div>
                 )}
               </div>
             </Tab.Panel>

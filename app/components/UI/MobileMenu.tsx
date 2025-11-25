@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import IconSetting from "../icons/IconSetting";
-import IconCall from "../icons/IconCall";
-import IconChat from "../icons/IconChat";
-import IconCerita from "../icons/IconCerita";
+import IconSetting from "../../../components/icons/IconSetting";
+import IconCall from "../../../components/icons/IconCall";
+import IconChat from "../../../components/icons/IconChat";
+import IconCerita from "../../../components/icons/IconCerita";
 
 type MobileMenuProps = {
   onMenuClick?: (index: number) => void;

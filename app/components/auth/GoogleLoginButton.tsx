@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { toast } from "sonner";
-import IconGoogle from "../icons/IconAuth/IconGoogle";
+import IconGoogle from "../../../components/icons/IconAuth/IconGoogle";
 import { useAuth } from "@/hooks/useAuth";
 
 type GoogleLoginButtonProps = {

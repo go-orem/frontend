@@ -12,11 +12,11 @@ import {
   User,
   CheckCircle,
 } from "lucide-react";
-import IconReply from "../../icons/IconReply";
-import IconForward from "../../icons/IconForward";
-import IconWhisper from "../../icons/IconWhisper";
-import IconProfile from "../../icons/IconProfile";
-import IconSuka from "../../icons/IconSuka";
+import IconReply from "../../../../components/icons/IconReply";
+import IconForward from "../../../../components/icons/IconForward";
+import IconWhisper from "../../../../components/icons/IconWhisper";
+import IconProfile from "../../../../components/icons/IconProfile";
+import IconSuka from "../../../../components/icons/IconSuka";
 import EmojiPickerButton from "../Emoji/EmojiPickerButton";
 
 export default function FloatingMenu() {

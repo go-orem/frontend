@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE}/auth/web3/login`,
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/web3/login`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

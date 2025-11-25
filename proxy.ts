@@ -5,11 +5,11 @@ export function proxy(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   if (
-    req.nextUrl.pathname.startsWith("/app/chat") ||
-    req.nextUrl.pathname.startsWith("/app/settings")
+    req.nextUrl.pathname.startsWith("/chat") ||
+    req.nextUrl.pathname.startsWith("/settings")
   ) {
     if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/group", req.url));
     }
   }
 
@@ -17,5 +17,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/chat/:path*", "/app/settings/:path*"],
+  matcher: ["/chat/:path*", "/settings/:path*"],
 };

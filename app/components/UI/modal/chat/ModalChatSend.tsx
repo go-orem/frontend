@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import IconSendPhoto from "@/app/components/icons/IconMediaSendChat/IconSendPhoto";
-import IconSendVideo from "@/app/components/icons/IconMediaSendChat/IconSendVideo";
-import IconSendCamera from "@/app/components/icons/IconMediaSendChat/IconSendCamera";
-import IconSendDocs from "@/app/components/icons/IconMediaSendChat/IconSendDocs";
-import IconSendLocations from "@/app/components/icons/IconMediaSendChat/IconSendLocations";
-import IconSendContact from "@/app/components/icons/IconMediaSendChat/IconSendContact";
-import IconSendPoll from "@/app/components/icons/IconMediaSendChat/IconSendPoll";
-import SendOrem from "@/app/components/icons/IconWallet/SendOrem";
+import IconSendPhoto from "@/components/icons/IconMediaSendChat/IconSendPhoto";
+import IconSendVideo from "@/components/icons/IconMediaSendChat/IconSendVideo";
+import IconSendCamera from "@/components/icons/IconMediaSendChat/IconSendCamera";
+import IconSendDocs from "@/components/icons/IconMediaSendChat/IconSendDocs";
+import IconSendLocations from "@/components/icons/IconMediaSendChat/IconSendLocations";
+import IconSendContact from "@/components/icons/IconMediaSendChat/IconSendContact";
+import IconSendPoll from "@/components/icons/IconMediaSendChat/IconSendPoll";
+import SendOrem from "@/components/icons/IconWallet/SendOrem";
 
 type ModalChatSendProps = {
   open: boolean;

@@ -8,8 +8,8 @@ import React, {
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SparklesSub from "../UI/effects/SparklesSub";
-import IconGoogle from "../icons/IconAuth/IconGoogle";
-import IconApple from "../icons/IconAuth/IconApple";
+import IconGoogle from "../../../components/icons/IconAuth/IconGoogle";
+import IconApple from "../../../components/icons/IconAuth/IconApple";
 import Web3LoginButton from "./Web3LoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
 

@@ -5,18 +5,18 @@ import { useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { X } from "lucide-react";
 import MemberList from "../../UI/view/MemberList";
-import IconCall from "../../icons/IconCall";
-import IconVideo from "../../icons/IconVideo";
-import IconChat from "../../icons/IconChat";
+import IconCall from "../../../../components/icons/IconCall";
+import IconVideo from "../../../../components/icons/IconVideo";
+import IconChat from "../../../../components/icons/IconChat";
 import { useModal } from "../../UI/modal/ModalContext";
 import { useGift } from "../../UI/modal/GiftContext";
-import IconSubcribe from "../../icons/IconSubcribe";
-import IconStar from "../../icons/IconStar";
-import IconEnkripsi from "../../icons/IconEnkripsi";
-import IconBisu from "../../icons/IconBisu";
+import IconSubcribe from "../../../../components/icons/IconSubcribe";
+import IconStar from "../../../../components/icons/IconStar";
+import IconEnkripsi from "../../../../components/icons/IconEnkripsi";
+import IconBisu from "../../../../components/icons/IconBisu";
 import SidebarSharePanel from "../../UI/modal/PopupShare";
-import IconEdit from "../../icons/IconEdit";
-import IconGear from "../../icons/IconGear";
+import IconEdit from "../../../../components/icons/IconEdit";
+import IconGear from "../../../../components/icons/IconGear";
 import AnimeBadgeAvatar from "../../UI/profile/ProfileAvatar";
 
 function classNames(...classes: string[]) {
