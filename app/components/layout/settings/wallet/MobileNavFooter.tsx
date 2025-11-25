@@ -1,17 +1,19 @@
-import AppOrem from "@/components/icons/IconWallet/AppOrem";
-import HistoryOrem from "@/components/icons/IconWallet/HistoryOrem";
-import RewardOrem from "@/components/icons/IconWallet/RewardOrem";
-import WalletOrem from "@/components/icons/IconWallet/WalletOrem";
+import {
+  IconAppOrem,
+  IconHistoryOrem,
+  IconRewardOrem,
+  IconWalletOrem,
+} from "@/components/icons";
 import React from "react";
 
 type MobileNavFooter = { icon: React.ComponentType; label?: string };
 
 function MobileNavFooter() {
   const items = [
-    { icon: <WalletOrem />, label: "Wallet" },
-    { icon: <RewardOrem />, label: "Reward" },
-    { icon: <HistoryOrem />, label: "History" },
-    { icon: <AppOrem />, label: "Apps" },
+    { icon: <IconWalletOrem />, label: "Wallet" },
+    { icon: <IconRewardOrem />, label: "Reward" },
+    { icon: <IconHistoryOrem />, label: "History" },
+    { icon: <IconAppOrem />, label: "Apps" },
   ];
 
   return (

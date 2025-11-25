@@ -1,19 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Search from "../../UI/Search";
-import ListChat from "../../UI/ListChat";
-import HeaderChat from "../../UI/HeaderChat";
-import SliderIcon from "../../UI/SliderIcon";
-import MobileMenu from "../../UI/MobileMenu";
+import MobileMenu from "../../../../app/components/UI/MobileMenu";
+import HeaderSettings from "../../../../app/components/UI/view/settings/HeaderSettings";
+import SettingsView from "../../../../app/components/UI/view/settings/Page";
+import Search from "../../../../app/components/UI/Search";
 
-export default function ChannelPage() {
+export default function SettingSidebarPanel() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // baca dari localStorage sekali, tanpa flicker
   useEffect(() => {
     const saved = localStorage.getItem("sidebarWidth");
     const width = saved ? parseInt(saved) : 430;
@@ -52,7 +50,7 @@ export default function ChannelPage() {
   return (
     <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="flex flex-col pt-3 pb-0 border-r overflow-hidden border-gray-700 bg-[--sidebar-bg]"
+        className="flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg]"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -61,10 +59,9 @@ export default function ChannelPage() {
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="channel" />
+        <HeaderSettings activeTab="settings" />
         <Search />
-        <SliderIcon />
-        <ListChat />
+        <SettingsView />
         <MobileMenu />
       </motion.div>
 

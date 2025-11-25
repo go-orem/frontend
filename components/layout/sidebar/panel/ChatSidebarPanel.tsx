@@ -1,16 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Search from "../../UI/Search";
-import ListChat from "../../UI/ListChat";
-import HeaderChat from "../../UI/HeaderChat";
-import SliderIcon from "../../UI/SliderIcon";
-import MobileMenu from "../../UI/MobileMenu";
+import Search from "../../../../app/components/UI/Search";
+import ListChat from "../../../../app/components/UI/ListChat";
+import HeaderChat from "../../../../app/components/UI/HeaderChat";
+import SliderIcon from "../../../../app/components/UI/SliderIcon";
+import MobileMenu from "../../../../app/components/UI/MobileMenu";
 import { useAuth } from "@/hooks/useAuth";
-import SidebarPanelLoading from "@/components/UI/sidebar-panel/SidebarPanelLoading";
-import SidebarPanelGuest from "@/components/UI/sidebar-panel/SidebarPanelGuest";
+import {
+  SidebarPanelGuest,
+  SidebarPanelLoading,
+} from "@/components/UI/sidebar-panel";
 
-export default function ChatSidebar({
+export default function ChatSidebarPanel({
   onListClick,
 }: {
   onListClick?: (chat: any) => void;

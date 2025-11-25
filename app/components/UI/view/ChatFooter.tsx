@@ -7,7 +7,7 @@ import EmojiPicker from "@emoji-mart/react";
 import DynamicEmojiButton from "../Emoji/DynamicEmojiButton";
 import { useModalChat } from "../modal/chat/ModalChatContext";
 import TextareaChat from "./chatinput/TextareaChat";
-import IconMic from "../../../../components/icons/IconMediaSendChat/IconMic";
+import { IconMic } from "@/components/icons";
 
 const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
 

@@ -1,28 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Sidebar from "./components/layout/Sidebar";
+import { useEffect, useState } from "react";
 import SplitView from "./components/layout/view/Page";
-import ChatSidebar from "./components/layout/chat/Page";
-import ChannelPage from "./components/layout/channel/ChannelPage";
-import NotifikasiPage from "./components/layout/notifikasi/NotifikasiPage";
-import SettingsPage from "./components/layout/settings/SettingsPage";
-import GroupPage from "./components/layout/group/Page";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  ChannelSidebarPanel,
+  ChatSidebarPanel,
+  GroupSidebarPanel,
+  NotificationSidebarPanel,
+  SettingSidebarPanel,
+  Sidebar,
+} from "@/components/layout/sidebar";
 
 function ChatContent() {
-  return <ChatSidebar />;
+  return <ChatSidebarPanel />;
 }
 function NotifContent() {
-  return <NotifikasiPage />;
+  return <NotificationSidebarPanel />;
 }
 function ChannelContent() {
-  return <ChannelPage />;
+  return <ChannelSidebarPanel />;
 }
 function SettingsContent() {
-  return <SettingsPage />;
+  return <SettingSidebarPanel />;
 }
 function SettingGroup() {
-  return <GroupPage />;
+  return <GroupSidebarPanel />;
 }
 // dst...
 

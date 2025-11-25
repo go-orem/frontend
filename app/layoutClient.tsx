@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Sidebar from "./components/layout/Sidebar";
-import ChatSidebar from "./components/layout/chat/Page";
-import ChannelPage from "./components/layout/channel/ChannelPage";
-import NotifikasiPage from "./components/layout/notifikasi/NotifikasiPage";
-import SettingsPage from "./components/layout/settings/SettingsPage";
-import GroupPage from "./components/layout/group/Page";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import {
+  ChannelSidebarPanel,
+  ChatSidebarPanel,
+  GroupSidebarPanel,
+  NotificationSidebarPanel,
+  SettingSidebarPanel,
+  Sidebar,
+} from "@/components/layout/sidebar";
 
 export default function LayoutClient({
   children,
@@ -65,15 +67,15 @@ export default function LayoutClient({
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
-        return <ChatSidebar onListClick={onChatSelect} />;
+        return <ChatSidebarPanel onListClick={onChatSelect} />;
       case 1:
-        return <NotifikasiPage />;
+        return <NotificationSidebarPanel />;
       case 2:
-        return <ChannelPage />;
+        return <ChannelSidebarPanel />;
       case 3:
-        return <GroupPage />;
+        return <GroupSidebarPanel />;
       case 10:
-        return <SettingsPage />;
+        return <SettingSidebarPanel />;
       default:
         return <></>;
     }

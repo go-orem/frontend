@@ -1,7 +1,7 @@
 "use client";
 
-import GoogleLoginButton from "@/app/components/auth/GoogleLoginButton";
-import Web3LoginButton from "@/app/components/auth/Web3LoginButton";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+import Web3LoginButton from "@/components/auth/Web3LoginButton";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
 

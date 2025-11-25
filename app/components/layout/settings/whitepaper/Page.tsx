@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Switch, Tab } from "@headlessui/react";
+import { Tab } from "@headlessui/react";
 import { X } from "lucide-react";
 import SidebarSharePanel from "@/app/components/UI/modal/PopupShare";
-import IconAdd from "@/components/icons/IconAdd";
+import { IconAdd } from "@/components/icons";
 
 // ✅ Tipe props untuk komponen
 interface WhitepaperSettingsProps {

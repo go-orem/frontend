@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "sonner";
-import IconMetamask from "../../../components/icons/IconAuth/IconMetamask";
 import { useAuth } from "@/hooks/useAuth";
+import { IconMetamask } from "../icons";
 
 type Web3LoginButtonProps = {
   onSuccess?: (user: any) => void;

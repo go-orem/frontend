@@ -1,13 +1,15 @@
 "use client";
+import {
+  IconSendCamera,
+  IconSendContact,
+  IconSendDocs,
+  IconSendLocations,
+  IconSendOrem,
+  IconSendPhoto,
+  IconSendPoll,
+  IconSendVideo,
+} from "@/components/icons";
 import React, { useEffect, useState } from "react";
-import IconSendPhoto from "@/components/icons/IconMediaSendChat/IconSendPhoto";
-import IconSendVideo from "@/components/icons/IconMediaSendChat/IconSendVideo";
-import IconSendCamera from "@/components/icons/IconMediaSendChat/IconSendCamera";
-import IconSendDocs from "@/components/icons/IconMediaSendChat/IconSendDocs";
-import IconSendLocations from "@/components/icons/IconMediaSendChat/IconSendLocations";
-import IconSendContact from "@/components/icons/IconMediaSendChat/IconSendContact";
-import IconSendPoll from "@/components/icons/IconMediaSendChat/IconSendPoll";
-import SendOrem from "@/components/icons/IconWallet/SendOrem";
 
 type ModalChatSendProps = {
   open: boolean;
@@ -46,7 +48,7 @@ export default function ModalChatSend({
     { label: "Locations", icon: <IconSendLocations /> },
     { label: "Contact", icon: <IconSendContact /> },
     { label: "Poll", icon: <IconSendPoll /> },
-    { label: "Send", icon: <SendOrem /> },
+    { label: "Send", icon: <IconSendOrem /> },
   ];
 
   return (

@@ -7,11 +7,10 @@ import React, {
   useMemo,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SparklesSub from "../UI/effects/SparklesSub";
-import IconGoogle from "../../../components/icons/IconAuth/IconGoogle";
-import IconApple from "../../../components/icons/IconAuth/IconApple";
+import SparklesSub from "../../app/components/UI/effects/SparklesSub";
 import Web3LoginButton from "./Web3LoginButton";
 import GoogleLoginButton from "./GoogleLoginButton";
+import { IconApple } from "../icons";
 
 type TabItem = {
   name: string;

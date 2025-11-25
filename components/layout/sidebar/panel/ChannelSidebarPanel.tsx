@@ -1,18 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Search from "../../UI/Search";
-import HeaderChat from "../../UI/HeaderChat";
-import MobileMenu from "../../UI/MobileMenu";
-import ListGroup from "./ListGroup";
-import CategoryGroup from "./CategoryGroup";
+import Search from "../../../../app/components/UI/Search";
+import ListChat from "../../../../app/components/UI/ListChat";
+import HeaderChat from "../../../../app/components/UI/HeaderChat";
+import SliderIcon from "../../../../app/components/UI/SliderIcon";
+import MobileMenu from "../../../../app/components/UI/MobileMenu";
 
-export default function GroupPage() {
+export default function ChannelSidebarPanel() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // baca dari localStorage sekali, tanpa flicker
   useEffect(() => {
     const saved = localStorage.getItem("sidebarWidth");
     const width = saved ? parseInt(saved) : 430;
@@ -49,9 +50,9 @@ export default function GroupPage() {
 
   // saat masih load pertama kali, langsung render width terakhir tanpa animasi
   return (
-    <div className={`w-full flex h-screen ${isDragging ? "select-none" : ""}`}>
+    <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="max-w-full flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg] overflow-scroll"
+        className="flex flex-col pt-3 pb-0 border-r overflow-hidden border-gray-700 bg-[--sidebar-bg]"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -60,10 +61,10 @@ export default function GroupPage() {
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="group" />
+        <HeaderChat activeTab="channel" />
         <Search />
-        <CategoryGroup />
-        <ListGroup />
+        <SliderIcon />
+        <ListChat />
         <MobileMenu />
       </motion.div>
 

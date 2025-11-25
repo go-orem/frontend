@@ -1,5 +1,5 @@
 import React from "react";
-import HoverGif from "../../UI/effects/HoverEffects";
+import HoverGif from "../../../app/components/UI/effects/HoverEffects";
 
 interface ChatItem {
   id: number;
@@ -40,7 +40,9 @@ function ChatCard({ name_group, member, online_user, img }: ChatItem) {
           </div>
           <div>
             <div className="name font-mono font-semibold">{name_group}</div>
-            <p className="font-mono text-sm text-gray-400">{member}K subcribers</p>
+            <p className="font-mono text-sm text-gray-400">
+              {member}K subcribers
+            </p>
           </div>
         </div>
         <div>

@@ -108,7 +108,7 @@ export default function CategoryGroup() {
             <div
               key={idx}
               ref={(el) => {
-                itemRefs.current[idx] = el ?? null; // <--- perbaikan di sini
+                itemRefs.current[idx] = el ?? null;
               }}
               onClick={() => handleClick(idx)}
               className="group relative flex flex-row items-center justify-center pb-1 cursor-pointer"
@@ -125,7 +125,11 @@ export default function CategoryGroup() {
 
               <span
                 className={`absolute -bottom-1 h-1 rounded-full bg-(--primarycolor) transition-all duration-300 ease-in-out
-                ${isActive ? "w-10 opacity-100" : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"}`}
+                ${
+                  isActive
+                    ? "w-10 opacity-100"
+                    : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
+                }`}
               />
             </div>
           );

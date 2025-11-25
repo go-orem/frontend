@@ -1,9 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import IconVideo from "../../../../components/icons/IconVideo";
-import IconCall from "../../../../components/icons/IconCall";
-import IconSearch from "../../../../components/icons/IconSearch";
 
+import { useState } from "react";
+import { IconCall, IconSearch, IconVideo } from "@/components/icons";
 import ModalSearchChat from "../modal/searchchat/ModalSearchChat";
 import CallLauncher from "../modal/videocall/CallLauncher";
 

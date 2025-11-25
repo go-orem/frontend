@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderSplit from "../../UI/view/HeaderSplit";
 import FullChat from "../../UI/view/FullChat";
-import InfoSidebar from "../Info/InfoSidebar";
+import InfoSidebar from "../../../../components/pages/chat/InfoSidebar";
 
 export default function SplitView() {
   const [openSidebar, setOpenSidebar] = useState(false);

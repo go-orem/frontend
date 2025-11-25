@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import IconNewChat from "@/components/icons/IconNewChat";
-import IconChannel from "@/components/icons/IconChannel";
-import IconGroup from "@/components/icons/IconGroup";
-import IconNotifikasi from "@/components/icons/IconNotifikasi";
-import IconProfile from "@/components/icons/IconProfile";
-import IconSetting from "@/components/icons/IconSetting";
+import {
+  IconChannel,
+  IconGroup,
+  IconNewChat,
+  IconNotifikasi,
+  IconProfile,
+  IconSetting,
+} from "@/components/icons";
 
 const menuItems = [
   {

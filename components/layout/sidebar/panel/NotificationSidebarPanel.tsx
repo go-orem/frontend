@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Search from "../../UI/Search";
-import HeaderChat from "../../UI/HeaderChat";
-import MobileMenu from "../../UI/MobileMenu";
-import ViewNotifikasi from "../../UI/view/notifikasi/Page";
-import CategoryNotif from "../../UI/view/notifikasi/Category";
+import Search from "../../../../app/components/UI/Search";
+import HeaderChat from "../../../../app/components/UI/HeaderChat";
+import MobileMenu from "../../../../app/components/UI/MobileMenu";
+import ViewNotifikasi from "../../../../app/components/UI/view/notifikasi/Page";
+import CategoryNotif from "../../../../app/components/UI/view/notifikasi/Category";
 
-export default function NotifikasiPage() {
+export default function NotificationSidebarPanel() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);

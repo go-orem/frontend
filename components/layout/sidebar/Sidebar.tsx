@@ -1,23 +1,25 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import IconChat from "../../../components/icons/IconChat";
-import IconChannel from "../../../components/icons/IconChannel";
-import IconNotifikasi from "../../../components/icons/IconNotifikasi";
-import IconGroup from "../../../components/icons/IconGroup";
-import IconNearby from "../../../components/icons/IconNearby";
-import IconAdd from "../../../components/icons/IconAdd";
-import IconStorage from "../../../components/icons/IconStorage";
-import IconMusic from "../../../components/icons/IconMusic";
-import DarkModeToggle from "../UI/DarkMode";
-import IconBantuan from "../../../components/icons/IconBantuan";
-import IconGame from "../../../components/icons/IconGame";
-import LanggananSidebar from "../UI/profile/LanggananSidebar";
-import IconProfile from "../../../components/icons/IconProfile";
-import Sparkles from "../UI/effects/SparklesLangganan";
-import AuthSidebar from "../auth/AuthSidebar";
-import IconLogout from "../../../components/icons/IconLogout";
+import DarkModeToggle from "../../../app/components/UI/DarkMode";
+import LanggananSidebar from "../../../app/components/UI/profile/LanggananSidebar";
+import Sparkles from "../../../app/components/UI/effects/SparklesLangganan";
+import AuthSidebar from "../../auth/AuthSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  IconAdd,
+  IconBantuan,
+  IconChannel,
+  IconChat,
+  IconGame,
+  IconGroup,
+  IconLogout,
+  IconMusic,
+  IconNearby,
+  IconNotifikasi,
+  IconProfile,
+  IconStorage,
+} from "@/components/icons";
 
 type MenuItem = {
   icon: React.ComponentType;

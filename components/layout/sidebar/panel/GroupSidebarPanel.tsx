@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import MobileMenu from "../../UI/MobileMenu";
-import CategoryNotif from "../../UI/view/notifikasi/Category";
-import HeaderSettings from "../../UI/view/settings/HeaderSettings";
-import SettingsView from "../../UI/view/settings/Page";
-import Search from "../../UI/Search";
+import Search from "../../../../app/components/UI/Search";
+import HeaderChat from "../../../../app/components/UI/HeaderChat";
+import MobileMenu from "../../../../app/components/UI/MobileMenu";
+import ListGroup from "../../../pages/group/ListGroup";
+import CategoryGroup from "../../../pages/group/CategoryGroup";
 
-export default function SettingsPage() {
+export default function GroupSidebarPanel() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
@@ -49,9 +49,9 @@ export default function SettingsPage() {
 
   // saat masih load pertama kali, langsung render width terakhir tanpa animasi
   return (
-    <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
+    <div className={`w-full flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg]"
+        className="max-w-full flex flex-col pt-3 pb-0 border-r border-gray-700 bg-[--sidebar-bg] overflow-scroll"
         initial={false} // biar gak animasi saat mount
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -60,9 +60,10 @@ export default function SettingsPage() {
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderSettings activeTab="settings" />
+        <HeaderChat activeTab="group" />
         <Search />
-        <SettingsView />
+        <CategoryGroup />
+        <ListGroup />
         <MobileMenu />
       </motion.div>
 

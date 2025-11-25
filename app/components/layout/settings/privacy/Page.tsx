@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, ChevronRight, } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 
 // =====================
 // IMPORT SUB-PAGES
@@ -13,7 +13,7 @@ import MutedUsersPage from "./MutedUsersPage";
 import RestrictedUsersPage from "./RestrictedUsersPage";
 import DataOnChainPage from "./DataOnChainPage";
 import ActiveSessionsPage from "./ActiveSessionsPage";
-import IconArrowRight from "@/app/components/icons/IconArrowRight";
+import { IconArrowRight } from "@/components/icons";
 
 // =====================
 // PRIVACY PAGE INDEX
@@ -32,15 +32,13 @@ const pages: any = {
 // MAIN SETTINGS PAGE
 // =====================
 export default function PrivacySettings({ data, onClose }: any) {
-  const [activePage, setActivePage] =
-    useState<null | keyof typeof pages>(null);
+  const [activePage, setActivePage] = useState<null | keyof typeof pages>(null);
 
   const PageComponent = activePage ? pages[activePage].component : null;
   const pageTitle = activePage ? pages[activePage].title : "Privacy & Security";
 
   return (
     <aside className="relative h-full bg-[--background] text-gray-200 flex flex-col">
-
       {/* HEADER */}
       <div className="p-4 pt-2.5 flex items-center justify-between">
         <h2 className="text-md font-semibold font-mono">{pageTitle}</h2>
@@ -50,7 +48,7 @@ export default function PrivacySettings({ data, onClose }: any) {
             onClick={() => setActivePage(null)}
             className="p-2 rounded-full bg-black/40 hover:bg-(--hovercolor)"
           >
-            <IconArrowRight/>
+            <IconArrowRight />
           </button>
         ) : (
           <button
@@ -65,14 +63,21 @@ export default function PrivacySettings({ data, onClose }: any) {
       {/* MAIN MENU */}
       {!activePage && (
         <div className="flex-1 overflow-y-auto divide-y divide-white/5">
-
           {/* BASIC PRIVACY */}
-          <MenuItem label="Last Seen & Online" sub="Everyone" onClick={() => setActivePage("lastSeen")} />
+          <MenuItem
+            label="Last Seen & Online"
+            sub="Everyone"
+            onClick={() => setActivePage("lastSeen")}
+          />
           <ToggleItem label="Read Receipts" />
           <ToggleItem label="Typing Indicator" />
 
           {/* MESSAGE PRIVACY */}
-          <MenuItem label="Forwarded Messages" sub="Nobody can link back" onClick={() => setActivePage("forwarding")} />
+          <MenuItem
+            label="Forwarded Messages"
+            sub="Nobody can link back"
+            onClick={() => setActivePage("forwarding")}
+          />
           <ToggleItem label="Allow Forwarding" />
           <ToggleItem label="Show Sender Attribution" />
           <ToggleItem label="Include Message Hash (Blockchain)" />
@@ -87,16 +92,31 @@ export default function PrivacySettings({ data, onClose }: any) {
           <ToggleItem label="Disable Chat Export" />
 
           {/* CONTACT CONTROL */}
-          <MenuItem label="Blocked Users" sub="3 users blocked" onClick={() => setActivePage("blocked")} />
-          <MenuItem label="Muted Users" onClick={() => setActivePage("muted")} />
-          <MenuItem label="Restricted Users" onClick={() => setActivePage("restricted")} />
+          <MenuItem
+            label="Blocked Users"
+            sub="3 users blocked"
+            onClick={() => setActivePage("blocked")}
+          />
+          <MenuItem
+            label="Muted Users"
+            onClick={() => setActivePage("muted")}
+          />
+          <MenuItem
+            label="Restricted Users"
+            onClick={() => setActivePage("restricted")}
+          />
 
           {/* SESSIONS */}
-          <MenuItem label="Active Sessions" onClick={() => setActivePage("sessions")} />
+          <MenuItem
+            label="Active Sessions"
+            onClick={() => setActivePage("sessions")}
+          />
 
           {/* BLOCKCHAIN DATA */}
-          <MenuItem label="Data Stored on Chain" onClick={() => setActivePage("datachain")} />
-
+          <MenuItem
+            label="Data Stored on Chain"
+            onClick={() => setActivePage("datachain")}
+          />
         </div>
       )}
 
