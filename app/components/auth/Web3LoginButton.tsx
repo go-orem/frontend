@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "sonner";
-import { getWeb3Nonce, loginWeb3 } from "@/lib/auth";
 import IconMetamask from "../icons/IconAuth/IconMetamask";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 
 type Web3LoginButtonProps = {
   onSuccess?: (user: any) => void;
@@ -11,18 +10,27 @@ type Web3LoginButtonProps = {
 
 export default function Web3LoginButton({ onSuccess }: Web3LoginButtonProps) {
   const [loading, setLoading] = useState(false);
-  const { refreshUser } = useAuth();
+  const { refreshUser, authService } = useAuth();
 
   async function handleLogin() {
     setLoading(true);
     try {
       const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+      const accounts = await provider.send("eth_accounts", []);
+
+      if (!accounts || accounts.length === 0) {
+        await provider.send("eth_requestAccounts", []);
+      }
+
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
 
-      const { nonce } = await getWeb3Nonce(address);
+      console.log("address", address);
+
+      const { nonce } = await authService.getWeb3Nonce(address);
       const signature = await signer.signMessage(nonce);
-      const data = await loginWeb3(address, signature, nonce);
+      const data = await authService.loginWeb3(address, signature, nonce);
 
       await refreshUser();
       toast.success(`Login success! Welcome ${data.user.username}`);

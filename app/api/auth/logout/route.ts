@@ -1,40 +1,15 @@
+import { proxyRequest } from "@/lib/apiProxy";
 import { NextResponse } from "next/server";
-import { getServerToken } from "@/lib/getServerToken";
 
 export async function POST(req: Request) {
-  const token = await getServerToken();
+  // forward ke backend untuk logout
+  const result = await proxyRequest("/auth/logout", req);
 
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+  // hapus cookie token di sisi Next.js
+  const response = NextResponse.json(await result.json(), {
+    status: result.status,
   });
-
-  let data: any = {};
-  try {
-    data = await res.json();
-  } catch {
-    data = { message: "Logged out" };
-  }
-
-  if (!res.ok) {
-    return NextResponse.json(data, { status: res.status });
-  }
-
-  const response = NextResponse.json(data);
-  response.cookies.set("token", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-    expires: new Date(0),
-  });
+  response.cookies.delete("token");
 
   return response;
 }

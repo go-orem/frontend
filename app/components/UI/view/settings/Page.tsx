@@ -7,15 +7,19 @@ import IconProfile from "@/app/components/icons/IconProfile";
 import IconReply from "@/app/components/icons/IconReply";
 import IconSuka from "@/app/components/icons/IconSuka";
 import SettingSidebar from "@/app/components/layout/settings/SettingsSidebar";
-import { useAuth } from "@/context/AuthContext";
-import IconArrowRight from "@/app/components/icons/IconArrowRight";
+import { useAuth } from "@/hooks/useAuth";
 
 const settingsMenu = [
   { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
   { name: "Wallet", icon: <IconSuka />, key: "wallet", variant: "user" },
   { name: "Edit", icon: <IconEdit />, key: "edit", variant: "user" },
   { name: "Settings", icon: <IconGear />, key: "setting", variant: "group" },
-  { name: "Privacy $ Security", icon: <IconReply />, key: "privacy", variant: "user" },
+  {
+    name: "Privacy $ Security",
+    icon: <IconReply />,
+    key: "privacy",
+    variant: "user",
+  },
   { name: "Chat", icon: <IconSuka />, key: "chat", variant: "user" },
   { name: "Folder", icon: <IconSuka />, key: "folder", variant: "group" },
   { name: "Bahasa", icon: <IconSuka />, key: "language", variant: "user" },

@@ -17,7 +17,7 @@ import IconProfile from "../icons/IconProfile";
 import Sparkles from "../UI/effects/SparklesLangganan";
 import AuthSidebar from "../auth/AuthSidebar";
 import IconLogout from "../icons/IconLogout";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 
 type MenuItem = {
   icon: React.ComponentType;

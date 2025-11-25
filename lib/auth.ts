@@ -1,5 +1,7 @@
 "use client";
 
+import { handleResponse } from "@/utils/response";
+
 export async function register(
   username: string,
   email: string,
@@ -10,8 +12,7 @@ export async function register(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, email, password }),
   });
-  if (!res.ok) throw new Error("Register failed");
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function login(email: string, password: string) {
@@ -20,8 +21,7 @@ export async function login(email: string, password: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  if (!res.ok) throw new Error("Login failed");
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function loginGoogle(idToken: string) {
@@ -33,18 +33,12 @@ export async function loginGoogle(idToken: string) {
       credential: { id_token: idToken },
     }),
   });
-
-  if (!res.ok) {
-    throw new Error("Google login failed");
-  }
-
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function getWeb3Nonce(address: string) {
   const res = await fetch(`/api/auth/web3/nonce?address=${address}`);
-  if (!res.ok) throw new Error("Failed to get nonce");
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function loginWeb3(
@@ -57,20 +51,15 @@ export async function loginWeb3(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ address, signature, nonce }),
   });
-  if (!res.ok) throw new Error("Web3 login failed");
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function getMe() {
   const res = await fetch("/api/auth/me");
-  if (!res.ok) throw new Error("Failed to fetch user");
-  return res.json(); // { id, username, email, roles, ... }
+  return handleResponse(res);
 }
 
 export async function logout() {
-  const res = await fetch("/api/auth/logout", {
-    method: "POST",
-  });
-  if (!res.ok) throw new Error("Logout failed");
-  return res.json();
+  const res = await fetch("/api/auth/logout", { method: "POST" });
+  return handleResponse(res);
 }
