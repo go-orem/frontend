@@ -8,14 +8,13 @@ export default function CategoryGroup() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const menu: SliderItem[] = [
-    { label: "Hot🔥" },
-    { label: "New🧩" },
-    { label: "Indonesia🇮🇩" },
-    { label: "Token" },
-    { label: "Trending" },
-    { label: "Blockchain" },
-    { label: "Announcement" },
-    { label: "Super Long Category Label Example" },
+    { label: "Hot 🔥" },
+    { label: "New 🧩" },
+    { label: "Indonesia 🇮🇩" },
+    { label: "Token 🪙" },
+    { label: "Trending 🚀" },
+    { label: "Blockchain 🦄" },
+    { label: "Announcement 📢" },
   ];
 
   const slider = useRef<HTMLDivElement | null>(null);

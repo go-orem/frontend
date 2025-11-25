@@ -97,7 +97,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
         {/* Send Button */}
         <button
           onClick={sendMessage}
-          className="p-2.5 items-center align-middle rounded-full bg-(--hovercolor) cursor-pointer transition-transform duration-200 hover:scale-110"
+          className="items-center align-middle cursor-pointer transition-transform duration-200 hover:scale-110"
         >
           <IconMic />
         </button>
