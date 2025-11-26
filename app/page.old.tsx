@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import SplitView from "./components/layout/view/Page";
 import { useAuth } from "@/hooks/useAuth";
 import {
   ChannelSidebarPanel,
@@ -9,7 +8,8 @@ import {
   NotificationSidebarPanel,
   SettingSidebarPanel,
   Sidebar,
-} from "@/components/layout/sidebar";
+} from "@/components/sidebar";
+import { MainContent } from "@/components/layout";
 
 function ChatContent() {
   return <ChatSidebarPanel />;
@@ -60,7 +60,7 @@ export default function Layout() {
       <Sidebar onMenuClick={(idx) => setActiveIndex(idx)} />
       <div className="flex-1 bg-[--background]">{renderContent()}</div>
 
-      <SplitView />
+      <MainContent />
     </div>
   );
 }

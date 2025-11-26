@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
-import LoadingAuth from "@/components/UI/LoadingAuth";
 import { Landing, LandingGuest } from "@/components/pages/dashboard";
+import { LoadingAuth } from "@/components/UI";
 
 export default function HomePage() {
   const { isLoggedIn, loading: loadingAuth } = useAuth();

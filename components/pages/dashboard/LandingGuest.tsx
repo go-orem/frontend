@@ -1,8 +1,7 @@
 "use client";
 
+import { GoogleLoginButton, Web3LoginButton } from "@/components/auth";
 import { motion } from "framer-motion";
-import Web3LoginButton from "@/components/auth/Web3LoginButton";
-import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 export default function LandingGuest() {
   return (

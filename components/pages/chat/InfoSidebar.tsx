@@ -1,14 +1,8 @@
 "use client";
 
-import React from "react";
 import { useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { X } from "lucide-react";
-import MemberList from "../../../app/components/UI/view/MemberList";
-import { useModal } from "../../../app/components/UI/modal/ModalContext";
-import { useGift } from "../../../app/components/UI/modal/GiftContext";
-import SidebarSharePanel from "../../../app/components/UI/modal/PopupShare";
-import AnimeBadgeAvatar from "../../../app/components/UI/profile/ProfileAvatar";
 import {
   IconBisu,
   IconCall,
@@ -20,6 +14,9 @@ import {
   IconSubcribe,
   IconVideo,
 } from "@/components/icons";
+import { PopupShare } from "@/components/modals";
+import { useGift, useModal } from "@/context";
+import { MemberList, ProfileAvatar } from "@/components/UI";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -70,7 +67,7 @@ export default function InfoSidebar({
         <div className="p-3 py-3 flex gap-3 justify-between">
           <div>
             <div className="-mt-8 flex">
-              <AnimeBadgeAvatar
+              <ProfileAvatar
                 src={
                   variant === "user"
                     ? data.avatar
@@ -299,7 +296,7 @@ export default function InfoSidebar({
           >
             <IconGear />
           </button>
-          <SidebarSharePanel
+          <PopupShare
             open={shareOpen}
             setOpen={setShareOpen}
             url="https://bloop.id"

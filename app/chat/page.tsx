@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import SplitView from "../components/layout/view/Page";
+import SplitView from "../../components/layout/MainContent";
 import { useRouter } from "next/navigation";
 
 export default function ChatPage() {

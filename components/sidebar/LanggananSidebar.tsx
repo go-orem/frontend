@@ -7,17 +7,13 @@ import React, {
   useMemo,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconApple } from "../icons";
-import Web3LoginButton from "./Web3LoginButton";
-import GoogleLoginButton from "./GoogleLoginButton";
 import { SparklesSub } from "../UI";
 
 type TabItem = {
   name: string;
-  price?: string;
+  price: string;
   iconUrl: string;
-  items?: string[];
-  type?: "login" | "register" | "guest" | "info";
+  items: string[];
 };
 
 type SidebarProps = {
@@ -61,7 +57,7 @@ function Sparkles({ count = 5 }: { count?: number }) {
   );
 }
 
-export default function AuthSidebar({ open, onClose }: SidebarProps) {
+export default function LanggananSidebar({ open, onClose }: SidebarProps) {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -71,22 +67,38 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
 
   const tabs: TabItem[] = [
     {
-      name: "Masuk",
+      name: "Mulai",
+      price: "$3/",
       iconUrl:
         "https://cuandigitalkit.com/wp-content/uploads/2025/09/subcribe.png",
-      type: "login",
+
+      items: [
+        "🔥 Login Device",
+        "🦋 2FA",
+        "✅ Session",
+        "🎁 Bonus",
+        "🚀 Unlimited",
+      ],
     },
     {
-      name: "More Wallet",
+      name: "Mulai Aja",
+      price: "$10/",
       iconUrl:
         "https://cuandigitalkit.com/wp-content/uploads/2025/09/subcribe.png",
-      type: "register",
+      items: ["Video call", "Unlimited audio call"],
     },
     {
-      name: "Masuk Tamu",
+      name: "Mulai Gass",
+      price: "$30/",
       iconUrl:
         "https://cuandigitalkit.com/wp-content/uploads/2025/09/subcribe.png",
-      type: "guest",
+      items: [
+        "Nama token",
+        "Deskripsi",
+        "Total supply",
+        "Smart contract copy",
+        "Harga saat ini",
+      ],
     },
   ];
 
@@ -138,7 +150,6 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
             exit={{ x: "-100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {/* TAB BUTTONS */}
             <div className="relative w-max bg-(--background) border-r border-gray-700">
               <div className="flex flex-col p-2 space-y-1 relative z-10">
                 {tabs.map((tab, idx) => (
@@ -167,7 +178,6 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
               </div>
             </div>
 
-            {/* CONTENT */}
             <div className="flex-1 p-4 overflow-auto border-r border-gray-700">
               <motion.h2
                 className="text-lg font-mono font-bold mb-4"
@@ -176,81 +186,92 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.18 }}
               >
-                {tabs[activeTab]?.name}
+                <div className="flex justify-between items-end">
+                  {tabs[activeTab]?.name || ""}
+                  {tabs[activeTab]?.price && (
+                    <div className="text-2xl font-bold text-(--primarycolor)">
+                      <div>
+                        {tabs[activeTab].price}
+                        <span className="text-xs">Bulan</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-light text-gray-300">
+                          Dibayar per tahun
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </motion.h2>
 
-              {/* Konten sesuai tab */}
-              {tabs[activeTab].type === "login" && (
-                <form className="space-y-3">
-                  <div>
-                    <p>Login and create wallet</p>
-                  </div>
+              <div className="space-y-3">
+                {tabs[activeTab]?.items?.map((item, idx) => (
+                  <motion.div
+                    key={item}
+                    className="p-3 rounded bg-(--hovercolor) hover:animate-pulse transition-colors cursor-pointer"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.12 + idx * 0.06 }}
+                  >
+                    {item}
+                  </motion.div>
+                )) || null}
+              </div>
+              <div className="mt-14 relative">
+                {/* Button */}
+                <button className="relative z-10 w-full px-4 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                  Gas Berlangganan
+                </button>
+                <SparklesSub count={10} />
 
-                  {/* Button */}
-                  <div className="mt-14 relative space-y-3">
-                    {/* web3 */}
-                    <Web3LoginButton />
+                <motion.div
+                  className="absolute -top-10.5 w-17 h-auto z-0 pointer-events-none"
+                  animate={{
+                    y: [0, -3, 0],
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 10, -10, 0],
+                  }}
+                  transition={{ duration: 1.8, repeat: Infinity }}
+                  whileHover={{ opacity: 0 }} // ngilang saat hover
+                >
+                  <img
+                    src="https://cuandigitalkit.com/wp-content/uploads/2025/09/ChatGPT-Image-Aug-25-2025-03_02_12-PM-2.png"
+                    alt="Sparkles"
+                    className="w-full h-auto"
+                  />
+                </motion.div>
+              </div>
 
-                    {/* google */}
-                    <GoogleLoginButton />
+              <div className="mt-4">
+                <p className="text-sm font-light font-mono text-gray-400">
+                  <span className="font-bold text-sm text-white">
+                    Penting:{" "}
+                  </span>
+                  Pembayaran bisa kamu pilih tersedia untuk crypto, langsung
+                  dari wallet kamu atau menggunakan payment gateway
+                </p>
+              </div>
 
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <IconApple />
-                        <span>Apple</span>
-                      </div>
-                    </button>
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <img
-                          className="w-6 h-auto"
-                          src="https://coinlaunch.space/media/images/4/8/5/0/4850.sp3ow1.192x192.png"
-                          alt=""
-                        />
-                        <span>Phantom</span>
-                      </div>
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {tabs[activeTab].type === "register" && (
-                <form className="space-y-3">
-                  <div>
-                    <p className="text-gray-300">
-                      Kami tidak menyimpan dana anda ataupun private key, dan
-                      kami bertindak sebagai non custodial semua wallet dan dana
-                      anda yang pegang di wallet dompet anda
-                    </p>
-                  </div>
-                  <div className="mt-7 relative">
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <img
-                          className="w-6 h-auto"
-                          src="https://coinlaunch.space/media/images/4/8/5/0/4850.sp3ow1.192x192.png"
-                          alt=""
-                        />
-                        <span>Phantom</span>
-                      </div>
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {tabs[activeTab].type === "guest" && (
-                <div className="space-y-3">
-                  <p className="text-gray-300">
-                    Login sebagai tamu untuk mencoba aplikasi tanpa membuat akun
-                  </p>
-                  <div className="mt-14 relative">
-                    <button className="relative z-10 w-full px-4 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
-                      Masuk Sebagai Tamu
-                    </button>
-                    <SparklesSub count={10} />
-                  </div>
-                </div>
-              )}
+              <motion.div
+                className="absolute w-100 h-auto -bottom-20 -right-40 rounded-full p-1.5"
+                animate={{
+                  y: [0, -3, 0, -4, 0, -3, 0], // naik-turun variatif
+                  x: [0, 2, -10, 1, 0, 0], // gerakan horizontal halus
+                  scale: [1, 1, 1], // variasi scale
+                  rotate: [0, 6, -6, 4, -4, 0], // rotasi ringan
+                }}
+                transition={{
+                  duration: 4, // lebih smooth
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <SparklesSub count={30} />
+                <img
+                  src="https://cuandigitalkit.com/wp-content/uploads/2025/09/Gemini_Generated_Image_p0c5mdp0c5mdp0c5-2.png"
+                  alt="Floating"
+                />
+              </motion.div>
             </div>
           </motion.aside>
         </>

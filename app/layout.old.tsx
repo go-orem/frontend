@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ModalProvider } from "./components/UI/modal/ModalContext";
-import FloatingMenu from "./components/UI/modal/FloatingMenu";
-import { GiftProvider } from "./components/UI/modal/GiftContext";
 import { Toaster } from "sonner";
-import { AuthProvider } from "@/context/AuthContext";
-import { ModalChatProvider } from "./components/UI/modal/chat/ModalChatContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import SplashScreen from "./components/UI/SplashScreen";
+import {
+  AuthProvider,
+  GiftProvider,
+  ModalChatProvider,
+  ModalProvider,
+} from "@/context";
+import { FloatingMenuChat, SplashScreen } from "@/components/UI";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +45,7 @@ export default function RootLayout({
                 <GiftProvider>
                   <Toaster richColors closeButton />
                   <SplashScreen>{children}</SplashScreen>
-                  <FloatingMenu />
+                  <FloatingMenuChat />
                 </GiftProvider>
               </ModalChatProvider>
             </ModalProvider>
