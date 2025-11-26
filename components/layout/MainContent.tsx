@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import InfoSidebar from "../pages/chat/InfoSidebar";
 import { ChatWindow, HeaderSplit } from "../UI";
+import { InfoSidebar } from "../pages/chat";
 
 export default function MainContent() {
   const [openSidebar, setOpenSidebar] = useState(false);

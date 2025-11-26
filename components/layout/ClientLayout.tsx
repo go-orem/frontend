@@ -54,7 +54,7 @@ export default function ClientLayout({
   const onChatSelect = (val: any) => {
     console.log("selected", val);
     setIsActiveContent(true);
-    router.push("/chat");
+    router.push(`/channel/${val}`);
   };
 
   const onSidebarClick = (idx: number) => {

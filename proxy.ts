@@ -4,12 +4,9 @@ import type { NextRequest } from "next/server";
 export function proxy(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
-  if (
-    req.nextUrl.pathname.startsWith("/chat") ||
-    req.nextUrl.pathname.startsWith("/settings")
-  ) {
+  if (req.nextUrl.pathname.startsWith("/channel")) {
     if (!token) {
-      return NextResponse.redirect(new URL("/group", req.url));
+      return NextResponse.redirect(new URL("/public", req.url));
     }
   }
 
@@ -17,5 +14,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/chat/:path*", "/settings/:path*"],
+  matcher: ["/channel/:path*"],
 };
