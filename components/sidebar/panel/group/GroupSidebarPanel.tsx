@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import HeaderChat from "../HeaderSidebarPanel";
 import ListGroup from "./GroupSidebarList";
 import CategoryGroup from "./GroupSidebarCategory";
-import { Search } from "lucide-react";
-import { MobileMenu } from "@/components/UI";
+import { MobileMenu, Search } from "@/components/UI";
 
 export default function GroupSidebarPanel() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
@@ -61,7 +60,7 @@ export default function GroupSidebarPanel() {
         }
       >
         <HeaderChat activeTab="group" />
-        <Search />
+        <Search/>
         <CategoryGroup />
         <ListGroup />
         <MobileMenu />
