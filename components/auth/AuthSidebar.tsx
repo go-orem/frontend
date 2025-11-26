@@ -132,7 +132,7 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
           />
 
           <motion.aside
-            className="fixed left-0 top-0 h-full w-xl bg-custom-radial z-50 font-mono text-sm text-white flex"
+            className="fixed left-0 top-0 h-full w-xl bg-custom-radial z-50  text-sm text-white flex"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
@@ -170,7 +170,7 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
             {/* CONTENT */}
             <div className="flex-1 p-4 overflow-auto border-r border-gray-700">
               <motion.h2
-                className="text-lg font-mono font-bold mb-4"
+                className="text-lg  font-bold mb-4"
                 key={tabs[activeTab]?.name || "Tab"}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -194,13 +194,13 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                     {/* google */}
                     <GoogleLoginButton />
 
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <IconApple />
                         <span>Apple</span>
                       </div>
                     </button>
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <img
                           className="w-6 h-auto"
@@ -224,7 +224,7 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                     </p>
                   </div>
                   <div className="mt-7 relative">
-                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                    <button className="relative z-10 w-full px-6 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       <div className="flex items-center gap-3">
                         <img
                           className="w-6 h-auto"
@@ -244,7 +244,7 @@ export default function AuthSidebar({ open, onClose }: SidebarProps) {
                     Login sebagai tamu untuk mencoba aplikasi tanpa membuat akun
                   </p>
                   <div className="mt-14 relative">
-                    <button className="relative z-10 w-full px-4 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                    <button className="relative z-10 w-full px-4 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                       Masuk Sebagai Tamu
                     </button>
                     <SparklesSub count={10} />

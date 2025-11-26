@@ -28,7 +28,7 @@ function CategoryNotif() {
             >
               {/* Icon + Label */}
               <div
-                className={`flex items-center space-x-2 font-mono text-sm transition-colors ease-in-out ${
+                className={`flex items-center space-x-2  text-sm transition-colors ease-in-out ${
                   isActive
                     ? "text-(--primarycolor)"
                     : "text-gray-400 group-hover:text-[--primarycolor]"

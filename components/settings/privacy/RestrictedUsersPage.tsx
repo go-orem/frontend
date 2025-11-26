@@ -17,7 +17,7 @@ export default function RestrictedUsersPage({ onBack }: any) {
             className="p-3 bg-white/5 rounded-md flex justify-between items-center"
           >
             <div>
-              <div className="font-mono text-sm">{u.name}</div>
+              <div className=" text-sm">{u.name}</div>
               <div className="text-xs text-gray-400">{u.reason}</div>
             </div>
 

@@ -62,9 +62,7 @@ export default function GiftPanel({
         } bg-(--background)/70 backdrop-blur-lg border-l border-(--primarycolor)/60 shadow-lg rounded-2xl`}
       >
         <div className="flex items-center justify-between p-4">
-          <h3 className="text-sm font-black font-mono text-white">
-            Kirim Hadiah 🎁 💐
-          </h3>
+          <h3 className="text-sm font-black  text-white">Kirim Hadiah 🎁 💐</h3>
           <button
             onClick={onClose}
             aria-label="Tutup panel hadiah"
@@ -86,7 +84,7 @@ export default function GiftPanel({
                   {({ selected }) => (
                     <>
                       <span
-                        className={`font-mono text-sm transition-colors ${
+                        className={` text-sm transition-colors ${
                           selected
                             ? "text-[--primarycolor]"
                             : "text-gray-400 group-hover:text-[--primarycolor]"
@@ -121,9 +119,12 @@ export default function GiftPanel({
                       onClick={() => console.log("Pilih hadiah", item)}
                     >
                       <div className="w-12 h-12 rounded-md flex items-center justify-center">
-                        <img src="https://cuandigitalkit.com/wp-content/uploads/2025/09/subcribe.png" alt="" />
+                        <img
+                          src="https://cuandigitalkit.com/wp-content/uploads/2025/09/subcribe.png"
+                          alt=""
+                        />
                       </div>
-                      <span className="text-xs font-mono">{item}</span>
+                      <span className="text-xs ">{item}</span>
                     </button>
                   ))}
                 </TabPanel>
@@ -132,7 +133,7 @@ export default function GiftPanel({
           </TabGroup>
 
           <div className="mt-6">
-            <button className="w-full px-4 py-2 rounded-full font-mono text-sm font-bold text-white transition-colors ease-in-out neon-border cursor-pointer">
+            <button className="w-full px-4 py-2 rounded-full  text-sm font-bold text-white transition-colors ease-in-out neon-border cursor-pointer">
               Kirim
             </button>
           </div>

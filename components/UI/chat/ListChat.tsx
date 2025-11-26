@@ -45,12 +45,12 @@ function ChatCard({
             />
           </div>
           <div>
-            <div className="name font-mono font-semibold">{name}</div>
-            <p className="font-mono text-sm text-gray-400">{message}</p>
+            <div className="name  font-semibold">{name}</div>
+            <p className=" text-sm text-gray-400">{message}</p>
           </div>
         </div>
         <div>
-          <span className="font-light items-start text-xs font-mono text-gray-400">
+          <span className="font-light items-start text-xs  text-gray-400">
             {time}
           </span>
         </div>

@@ -114,7 +114,7 @@ export default function SettingSidebarView() {
               >
                 <button className="flex space-x-4 items-center cursor-pointer">
                   {item.icon}
-                  <span className="text-sm font-mono font-light text-gray-400 cursor-pointer">
+                  <span className="text-sm  font-light text-gray-400 cursor-pointer">
                     {item.name}
                   </span>
                 </button>
@@ -134,7 +134,7 @@ export default function SettingSidebarView() {
             <div className="flex justify-between w-full hover:bg-(--hovercolor) p-5 rounded-xl cursor-pointer transition-all">
               <button className="flex space-x-4 items-center">
                 <IconLogout />
-                <span className="text-sm font-mono font-light text-gray-400">
+                <span className="text-sm  font-light text-gray-400">
                   Keluar
                 </span>
               </button>

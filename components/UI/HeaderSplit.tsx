@@ -36,10 +36,8 @@ const HeaderSplit: React.FC<HeaderSplitProps> = ({ onProfileClick }) => {
               />
             </div>
             <div>
-              <div className="name font-mono text-sm font-semibold">
-                Syarifa
-              </div>
-              <p className="font-mono text-xs text-gray-400">Mengetik...</p>
+              <div className="name  text-sm font-semibold">Syarifa</div>
+              <p className=" text-xs text-gray-400">Mengetik...</p>
             </div>
           </div>
 

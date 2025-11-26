@@ -97,12 +97,12 @@ function ChatBubble({
             isMe ? "justify-end" : "justify-start"
           }`}
         >
-          <div className="name font-mono text-sm font-semibold">{name}</div>
-          <p className="font-mono text-xs text-gray-400">{time}</p>
+          <div className="name  text-sm font-semibold">{name}</div>
+          <p className=" text-xs text-gray-400">{time}</p>
         </div>
 
         <div
-          className={`max-w-xs md:max-w-md px-4 py-2 rounded-2xl font-mono text-sm relative
+          className={`max-w-xs md:max-w-md px-4 py-2 rounded-2xl  text-sm relative
             ${
               isMe
                 ? "bg-gray-800 text-white rounded-br-none"

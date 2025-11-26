@@ -77,8 +77,8 @@ export default function InfoSidebar({
             </div>
             <div className="ml-1 flex justify-center">
               <div className="flex flex-col">
-                <div className="text-lg font-black font-mono">{data.name}</div>
-                <div className="text-xs text-gray-400 font-mono">
+                <div className="text-lg font-black ">{data.name}</div>
+                <div className="text-xs text-gray-400 ">
                   {variant === "user"
                     ? data.status ?? "Online"
                     : `${(data.members ?? []).length} anggota`}
@@ -98,10 +98,10 @@ export default function InfoSidebar({
       <div className="px-4 pb-6 flex-1 overflow-y-auto space-y-4">
         {/* intro / bio / description */}
         <div>
-          <p className="text-[0.775rem] font-mono text-gray-300">
+          <p className="text-[0.775rem]  text-gray-300">
             {variant === "user" ? data.bio : data.description}
           </p>
-          <p className="text-[0.775rem] font-mono text-gray-300">
+          <p className="text-[0.775rem]  text-gray-300">
             {variant === "group" ? data.bio : data.description}
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function InfoSidebar({
         {/* group members preview */}
         {variant === "group" && (
           <div>
-            <h3 className="text-sm font-mono mb-2">Anggota</h3>
+            <h3 className="text-sm  mb-2">Anggota</h3>
             <MemberList members={data.members ?? []} />
           </div>
         )}
@@ -136,7 +136,7 @@ export default function InfoSidebar({
                 key={t}
                 className={({ selected }) =>
                   classNames(
-                    "px-4 py-2 text-sm font-mono cursor-pointer rounded-full transition-all duration-200 w-auto text-center",
+                    "px-4 py-2 text-sm  cursor-pointer rounded-full transition-all duration-200 w-auto text-center",
                     // ini disable semua border/outline/ring
                     "focus:outline-none focus:ring-0 border-0 outline-none ring-0",
                     selected
@@ -154,7 +154,7 @@ export default function InfoSidebar({
           <Tab.Panels className="px-0 mt-3">
             {/* MEDIA */}
             <Tab.Panel>
-              <div className="grid grid-cols-3 gap-2 font-mono">
+              <div className="grid grid-cols-3 gap-2 ">
                 {(data.mediaItems ?? []).map((m: any, i: number) => (
                   <img
                     key={i}
@@ -173,7 +173,7 @@ export default function InfoSidebar({
 
             {/* FILES */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(data.files ?? []).map((f: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     {f}
@@ -187,7 +187,7 @@ export default function InfoSidebar({
 
             {/* VOICE */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(data.voice ?? []).map((v: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     🎙️ {v}
@@ -201,7 +201,7 @@ export default function InfoSidebar({
 
             {/* LINKS */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(data.links ?? []).map((l: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     <a
@@ -215,9 +215,7 @@ export default function InfoSidebar({
                   </li>
                 ))}
                 {(data.links ?? []).length === 0 && (
-                  <div className="text-xs font-mono text-gray-500">
-                    Tidak ada link
-                  </div>
+                  <div className="text-xs  text-gray-500">Tidak ada link</div>
                 )}
               </ul>
             </Tab.Panel>
@@ -225,7 +223,7 @@ export default function InfoSidebar({
         </Tab.Group>
 
         {/* Notifikasi */}
-        <div className="mt-4 space-y-2 font-mono text-sm">
+        <div className="mt-4 space-y-2  text-sm">
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2">
             <div className="flex items-center gap-3">
               <IconBisu />
@@ -286,9 +284,7 @@ export default function InfoSidebar({
             className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
           >
             <IconSubcribe />{" "}
-            <span className="text-sm font-mono text-gray-300">
-              Kirim Hadiah
-            </span>
+            <span className="text-sm  text-gray-300">Kirim Hadiah</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}

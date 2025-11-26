@@ -27,7 +27,9 @@ function InnerLauncher({ onClose }: { onClose: () => void }) {
 
   return (
     <AnimatePresence>
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${backdropCls}`}>
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center ${backdropCls}`}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 24 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -89,8 +91,12 @@ function ModalInner({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div className="flex flex-col">
-            <p className="text-white font-bold text-lg drop-shadow-md font-mono">Syarifa</p>
-            <span className="text-sm text-green-400 font-semibold animate-pulse font-mono">Calling…</span>
+            <p className="text-white font-bold text-lg drop-shadow-md ">
+              Syarifa
+            </p>
+            <span className="text-sm text-green-400 font-semibold animate-pulse ">
+              Calling…
+            </span>
           </div>
         </div>
         <div>

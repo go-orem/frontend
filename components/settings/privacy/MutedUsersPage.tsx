@@ -18,7 +18,7 @@ export default function MutedUsersPage({ onBack }: any) {
             key={u.id}
             className="flex justify-between items-center p-3 bg-white/5 rounded-md"
           >
-            <span className="font-mono">{u.name}</span>
+            <span className="">{u.name}</span>
             <button className="text-xs px-3 py-1 bg-red-500/20 rounded-md hover:bg-red-500/30">
               Unmute
             </button>
@@ -29,8 +29,8 @@ export default function MutedUsersPage({ onBack }: any) {
       <div className="mt-6 p-4 bg-white/5 rounded-lg">
         <div className="flex justify-between items-center">
           <div>
-            <div className="font-mono text-sm">Mute Calls Also</div>
-            <div className="text-xs text-gray-400 font-mono">
+            <div className=" text-sm">Mute Calls Also</div>
+            <div className="text-xs text-gray-400 ">
               Prevent muted users from calling you
             </div>
           </div>

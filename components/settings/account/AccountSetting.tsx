@@ -93,7 +93,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
           <div className="p-4 flex-1 flex flex-col items-center justify-center">
             {closeButton}
-            <h2 className="text-lg font-mono mb-2">You are not logged in</h2>
+            <h2 className="text-lg  mb-2">You are not logged in</h2>
             <p className="text-sm text-gray-400 mb-4">
               Please log in to access account settings.
             </p>
@@ -135,16 +135,14 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
             </div>
             <div className="ml-1 flex justify-center">
               <div className="flex flex-col">
-                <div className="text-lg font-black font-mono">
-                  {userData?.name}
-                </div>
+                <div className="text-lg font-black ">{userData?.name}</div>
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-gray-400 font-mono">
+                  <div className="text-xs text-gray-400 ">
                     {variant === "user"
                       ? userData?.status ?? "Online"
                       : `${(userData?.members ?? []).length} anggota`}
                   </div>
-                  <span className="text-sm text-gray-400 font-mono">
+                  <span className="text-sm text-gray-400 ">
                     <strong>#</strong>syarifa💖
                   </span>
                 </div>
@@ -164,7 +162,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
       <div className="px-4 pb-6 flex-1 overflow-y-auto space-y-4">
         {/* BIO */}
         <div>
-          <p className="text-[0.775rem] font-mono text-gray-300">
+          <p className="text-[0.775rem]  text-gray-300">
             {variant === "user" ? userData?.bio : userData?.description}
           </p>
         </div>
@@ -185,13 +183,13 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         {/* GROUP MEMBER */}
         {variant === "group" && (
           <div>
-            <h3 className="text-sm font-mono mb-2">Anggota</h3>
+            <h3 className="text-sm  mb-2">Anggota</h3>
             <MemberList members={userData?.members ?? []} />
           </div>
         )}
 
         {/* NOTIFIKASI */}
-        <div className="mt-4 space-y-2 font-mono text-sm">
+        <div className="mt-4 space-y-2  text-sm">
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2">
             <div className="flex items-center gap-3">
               <IconBisu />
@@ -276,7 +274,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
                 key={t}
                 className={({ selected }) =>
                   classNames(
-                    "px-4 py-2 text-sm font-mono cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
+                    "px-4 py-2 text-sm  cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
                     selected
                       ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
@@ -291,7 +289,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
           <Tab.Panels className="px-0 mt-3">
             {/* MEDIA */}
             <Tab.Panel>
-              <div className="grid grid-cols-3 gap-2 font-mono">
+              <div className="grid grid-cols-3 gap-2 ">
                 {(userData?.mediaItems ?? []).map((m: any, i: number) => (
                   <img
                     key={i}
@@ -310,7 +308,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
 
             {/* FILES */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(userData?.files ?? []).map((f: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     {f}
@@ -324,7 +322,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
 
             {/* VOICE */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(userData?.voice ?? []).map((v: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     🎙️ {v}
@@ -338,7 +336,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
 
             {/* LINKS */}
             <Tab.Panel>
-              <ul className="space-y-2 font-mono">
+              <ul className="space-y-2 ">
                 {(userData?.links ?? []).map((l: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     <a
@@ -352,9 +350,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
                   </li>
                 ))}
                 {(userData?.links ?? []).length === 0 && (
-                  <div className="text-xs font-mono text-gray-500">
-                    Tidak ada link
-                  </div>
+                  <div className="text-xs  text-gray-500">Tidak ada link</div>
                 )}
               </ul>
             </Tab.Panel>
@@ -367,14 +363,14 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         <div className="flex items-center gap-3">
           <button className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer">
             <IconAdd />
-            <span className="text-sm font-mono text-gray-300">Tambah akun</span>
+            <span className="text-sm  text-gray-300">Tambah akun</span>
           </button>
           <button
             onClick={() => handleLogout()}
             className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
           >
             <IconLogout />
-            <span className="text-sm font-mono text-gray-300">Log Out</span>
+            <span className="text-sm  text-gray-300">Log Out</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}

@@ -144,7 +144,7 @@ export default function LanggananSidebar({ open, onClose }: SidebarProps) {
           />
 
           <motion.aside
-            className="fixed left-0 top-0 h-full w-xl bg-custom-radial z-50 font-mono text-sm text-white flex"
+            className="fixed left-0 top-0 h-full w-xl bg-custom-radial z-50  text-sm text-white flex"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
@@ -180,7 +180,7 @@ export default function LanggananSidebar({ open, onClose }: SidebarProps) {
 
             <div className="flex-1 p-4 overflow-auto border-r border-gray-700">
               <motion.h2
-                className="text-lg font-mono font-bold mb-4"
+                className="text-lg  font-bold mb-4"
                 key={tabs[activeTab]?.name || "Tab"}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -219,7 +219,7 @@ export default function LanggananSidebar({ open, onClose }: SidebarProps) {
               </div>
               <div className="mt-14 relative">
                 {/* Button */}
-                <button className="relative z-10 w-full px-4 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
+                <button className="relative z-10 w-full px-4 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer">
                   Gas Berlangganan
                 </button>
                 <SparklesSub count={10} />
@@ -243,7 +243,7 @@ export default function LanggananSidebar({ open, onClose }: SidebarProps) {
               </div>
 
               <div className="mt-4">
-                <p className="text-sm font-light font-mono text-gray-400">
+                <p className="text-sm font-light  text-gray-400">
                   <span className="font-bold text-sm text-white">
                     Penting:{" "}
                   </span>

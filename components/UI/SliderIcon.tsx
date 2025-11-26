@@ -114,7 +114,7 @@ export default function SliderIcon() {
               className="group relative flex flex-row items-center justify-center pb-1 cursor-pointer"
             >
               <div
-                className={`flex items-center space-x-2 font-mono text-sm transition-colors duration-200 whitespace-nowrap ${
+                className={`flex items-center space-x-2  text-sm transition-colors duration-200 whitespace-nowrap ${
                   isActive
                     ? "text-(--primarycolor)"
                     : "text-gray-400 group-hover:text-(--primarycolor)"
@@ -125,7 +125,11 @@ export default function SliderIcon() {
 
               <span
                 className={`absolute -bottom-1 h-1 rounded-full bg-(--primarycolor) transition-all duration-300 ease-in-out
-                ${isActive ? "w-10 opacity-100" : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"}`}
+                ${
+                  isActive
+                    ? "w-10 opacity-100"
+                    : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
+                }`}
               />
             </div>
           );

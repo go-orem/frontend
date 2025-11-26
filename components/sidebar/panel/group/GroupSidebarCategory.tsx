@@ -114,7 +114,7 @@ export default function CategoryGroup() {
               className="group relative flex flex-row items-center justify-center pb-1 cursor-pointer"
             >
               <div
-                className={`flex items-center space-x-2 font-mono text-sm transition-colors duration-200 whitespace-nowrap ${
+                className={`flex items-center space-x-2  text-sm transition-colors duration-200 whitespace-nowrap ${
                   isActive
                     ? "text-(--primarycolor)"
                     : "text-gray-400 group-hover:text-(--primarycolor)"

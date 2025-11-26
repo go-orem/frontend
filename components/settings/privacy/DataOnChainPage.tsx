@@ -9,9 +9,7 @@ export default function DataOnChainPage({ onBack }: any) {
 
   return (
     <div className="p-4 text-gray-200">
-
       <div className="space-y-5">
-
         {/* SHOW WALLET ADDRESS */}
         <SectionToggle
           title="Show Wallet Address"
@@ -44,8 +42,8 @@ function SectionToggle({ title, subtitle, value, onChange }: any) {
   return (
     <div className="p-4 bg-white/5 rounded-lg flex justify-between items-center">
       <div>
-        <div className="font-mono text-sm">{title}</div>
-        <div className="text-xs text-gray-400 font-mono">{subtitle}</div>
+        <div className=" text-sm">{title}</div>
+        <div className="text-xs text-gray-400 ">{subtitle}</div>
       </div>
       <Toggle value={value} onChange={onChange} />
     </div>

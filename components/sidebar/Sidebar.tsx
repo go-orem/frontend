@@ -83,7 +83,7 @@ export default function Sidebar({
         >
           <Icon />
         </div>
-        <span className="absolute z-999 left-14 px-1.5 py-1.5 rounded-md bg-(--hovercolor) text-white font-mono text-sm opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-out pointer-events-none">
+        <span className="absolute z-999 left-14 px-1.5 py-1.5 rounded-md bg-(--hovercolor) text-white  text-sm opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 ease-out pointer-events-none">
           {item.label}
         </span>
       </li>

@@ -68,7 +68,7 @@ export default function SendChatAttachment({
     >
       {/* HEADER */}
       <div className="flex items-center justify-between pb-1 pt-1 pr-8 pl-8 border-b border-white/10">
-        <h3 className="text-sm font-black font-mono text-white">Media</h3>
+        <h3 className="text-sm font-black  text-white">Media</h3>
         <button
           onClick={onClose}
           className="rounded-full p-2 text-gray-300 hover:text-white cursor-pointer"
@@ -92,7 +92,7 @@ export default function SendChatAttachment({
               >
                 {item.icon}
               </div>
-              <span className="text-xs font-mono">{item.label}</span>
+              <span className="text-xs ">{item.label}</span>
             </button>
           ))}
         </div>

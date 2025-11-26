@@ -83,7 +83,7 @@ export default function UploadForm({
                    rounded-xl border-2 border-dashed border-gray-600 bg-gray-800/50 
                    hover:border-cyan-400 hover:bg-gray-700/50 transition-all duration-300"
       >
-        <span className="text-gray-300 font-mono text-sm">
+        <span className="text-gray-300  text-sm">
           {multiple ? "Select multiple files" : "Select a file"}
         </span>
         <input
@@ -126,7 +126,7 @@ export default function UploadForm({
               <div
                 key={i}
                 className="relative group flex items-center justify-center h-32 rounded-lg 
-                     border border-gray-600 bg-gray-700 text-gray-200 text-sm font-mono"
+                     border border-gray-600 bg-gray-700 text-gray-200 text-sm "
               >
                 📄 {file.name}
                 {/* Remove button */}
@@ -155,7 +155,7 @@ export default function UploadForm({
       <button
         onClick={handleUpload}
         disabled={uploading || files.length === 0}
-        className="mt-4 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold 
+        className="mt-4 w-full px-6 py-2.5 rounded-full  text-sm font-bold 
                    bg-linear-to-r from-cyan-500 to-blue-600 text-white neon-border 
                    hover:scale-105 hover:shadow-[0_0_15px_rgba(0,255,255,0.7)] 
                    transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"

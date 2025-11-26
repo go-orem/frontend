@@ -108,7 +108,7 @@ export default function WalletSetting({ data, onClose }: WalletSettingProps) {
   };
 
   return (
-    <aside className="w-full h-full bg-[--background] text-gray-100 flex flex-col p-4 pb-28 font-mono relative overflow-y-auto">
+    <aside className="w-full h-full bg-[--background] text-gray-100 flex flex-col p-4 pb-28  relative overflow-y-auto">
       {/* HEADER */}
       <div className="fixed top-0 left-0 right-0 flex justify-between items-center px-4 py-4 backdrop-blur-xl z-50">
         <h2 className="text-xl font-bold tracking-wide">OREM Wallet</h2>
@@ -220,7 +220,7 @@ export default function WalletSetting({ data, onClose }: WalletSettingProps) {
                 className="group relative flex flex-col items-center justify-center pb-1 cursor-pointer"
               >
                 <div
-                  className={`flex items-center font-mono text-sm transition-colors duration-200 ${
+                  className={`flex items-center  text-sm transition-colors duration-200 ${
                     isActive
                       ? "text-[#30d5ff]"
                       : "text-gray-400 group-hover:text-[#30d5ff]"

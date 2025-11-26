@@ -9,7 +9,14 @@ type Props = {
   height: number;
 };
 
-export default function TextareaCore({ textareaRef, value, onChange, onKeyDown, onPaste, height }: Props) {
+export default function TextareaCore({
+  textareaRef,
+  value,
+  onChange,
+  onKeyDown,
+  onPaste,
+  height,
+}: Props) {
   return (
     <textarea
       ref={textareaRef}
@@ -20,7 +27,7 @@ export default function TextareaCore({ textareaRef, value, onChange, onKeyDown, 
       onKeyDown={onKeyDown}
       onPaste={onPaste}
       className={`
-          w-full px-4 py-2.5 text-sm font-mono
+          w-full px-4 py-2.5 text-sm 
           bg-(--background) text-white outline-none resize-none
           leading-[1.45] min-h-[42px] max-h-[300px] overflow-y-auto
           border border-gray-500/40 shadow-inner transition-all duration-150

@@ -22,7 +22,7 @@ export function CallConnected({ onClose }: { onClose?: () => void }) {
   } = webrtc;
 
   return (
-    <div className="relative w-full h-full text-white font-mono overflow-hidden">
+    <div className="relative w-full h-full text-white  overflow-hidden">
       {/* remote stream */}
       <video
         ref={remoteVideo}

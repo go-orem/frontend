@@ -10,7 +10,7 @@ export default function BlockedUsersPage({ onBack, data }: any) {
     <div className="h-full">
       <div className="p-2.5 space-y-3">
         {blocked.length === 0 && (
-          <div className="text-xs font-mono p-2.5 text-gray-400">No blocked users</div>
+          <div className="text-xs  p-2.5 text-gray-400">No blocked users</div>
         )}
 
         {blocked.map((u: any, i: number) => (

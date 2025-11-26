@@ -12,7 +12,7 @@ export function CallRinging({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-black/50 backdrop-blur-2xl font-mono text-white">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-black/50 backdrop-blur-2xl  text-white">
       <p className="text-2xl mb-4 animate-pulse">Incoming call…</p>
       <div className="flex gap-6 mt-4">
         <button

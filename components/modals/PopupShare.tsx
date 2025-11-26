@@ -61,8 +61,8 @@ export default function SidebarSharePanel({
         <DialogPanel
           className={`w-screen max-w-sm bg-white dark:bg-(--background) p-6 shadow-xl transform transition ease-out`}
         >
-          <div className="flex items-center justify-between font-mono">
-            <h2 className="text-lg font-semibold font-mono">Bagikan</h2>
+          <div className="flex items-center justify-between ">
+            <h2 className="text-lg font-semibold ">Bagikan</h2>
             <button
               onClick={() => setOpen(false)}
               className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white cursor-pointer"
@@ -72,7 +72,7 @@ export default function SidebarSharePanel({
           </div>
 
           {description && (
-            <p className="mt-2 text-xs font-mono text-gray-500 dark:text-gray-400">
+            <p className="mt-2 text-xs  text-gray-500 dark:text-gray-400">
               {description}
             </p>
           )}

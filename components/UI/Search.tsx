@@ -21,7 +21,7 @@ const Search: FC<SearchProps> = () => {
           pr-4
           py-2
           text-sm
-          font-mono
+          
           text-gray-300
           placeholder-gray-500
           focus:outline-none

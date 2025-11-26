@@ -41,7 +41,7 @@ export default function PrivacySetting({ data, onClose }: any) {
     <aside className="relative h-full bg-[--background] text-gray-200 flex flex-col">
       {/* HEADER */}
       <div className="p-4 pt-2.5 flex items-center justify-between">
-        <h2 className="text-md font-semibold font-mono">{pageTitle}</h2>
+        <h2 className="text-md font-semibold ">{pageTitle}</h2>
 
         {activePage ? (
           <button
@@ -140,8 +140,8 @@ function MenuItem({ label, sub, onClick }: any) {
       className="flex justify-between items-center p-4 cursor-pointer hover:bg-white/5"
     >
       <div>
-        <div className="text-sm font-medium font-mono">{label}</div>
-        {sub && <div className="text-xs font-mono text-gray-400">{sub}</div>}
+        <div className="text-sm font-medium ">{label}</div>
+        {sub && <div className="text-xs  text-gray-400">{sub}</div>}
       </div>
       <ChevronRight size={18} className="text-gray-400" />
     </div>
@@ -156,7 +156,7 @@ function ToggleItem({ label }: any) {
 
   return (
     <div className="flex justify-between items-center p-4 hover:bg-white/5">
-      <span className="text-sm font-mono">{label}</span>
+      <span className="text-sm ">{label}</span>
 
       <button
         onClick={() => setActive(!active)}

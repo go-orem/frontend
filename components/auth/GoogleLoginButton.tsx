@@ -53,7 +53,7 @@ export default function GoogleLoginButton({
     <button
       onClick={() => login()}
       disabled={loading}
-      className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer"
+      className="relative z-10 w-full px-6 py-2.5 rounded-full  text-sm font-bold bg-(--background) text-white neon-border cursor-pointer"
       type="button"
     >
       <div className="flex items-center gap-3">

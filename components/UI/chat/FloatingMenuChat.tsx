@@ -66,7 +66,7 @@ export default function FloatingMenuChat() {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: origin.startsWith("top") ? -8 : 8 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="fixed w-[250px] bg-[#0F0F10]/25 backdrop-blur-xl rounded-2xl p-4 shadow-2xl space-y-4 z-9999 font-mono text-sm border border-white/15"
+      className="fixed w-[250px] bg-[#0F0F10]/25 backdrop-blur-xl rounded-2xl p-4 shadow-2xl space-y-4 z-9999  text-sm border border-white/15"
       style={{
         top: menuPos.top,
         left: menuPos.left,

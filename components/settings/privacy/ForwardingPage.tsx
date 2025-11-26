@@ -11,7 +11,7 @@ export default function ForwardingPage({ onBack }: any) {
         <Option label="My Contacts" />
         <Option label="Nobody" />
 
-        <p className="text-xs p-2.5 font-mono text-gray-400 pt-3">
+        <p className="text-xs p-2.5  text-gray-400 pt-3">
           People won’t be able to link forwarded messages to your account.
         </p>
       </div>

@@ -57,11 +57,11 @@ function NotificationSidebarContent({ name, img, borderColor }: ChatItem) {
             />
           </div>
           <div>
-            <div className="name font-mono font-semibold">{name}</div>
+            <div className="name font-semibold">{name}</div>
           </div>
         </div>
         <div>
-          <div className="flex gap-3 font-mono text-xs">
+          <div className="flex gap-3 text-xs">
             <button className="p-2 bg-(--hovercolor) rounded-full cursor-pointer">
               Terima
             </button>

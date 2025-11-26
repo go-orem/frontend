@@ -38,18 +38,16 @@ function ChatCard({ name_group, member, online_user, img }: ChatItem) {
             />
           </div>
           <div>
-            <div className="name font-mono font-semibold">{name_group}</div>
-            <p className="font-mono text-sm text-gray-400">
-              {member}K subcribers
-            </p>
+            <div className="name  font-semibold">{name_group}</div>
+            <p className=" text-sm text-gray-400">{member}K subcribers</p>
           </div>
         </div>
         <div>
-          <span className="flex flex-col gap-y-1 items-center font-semibold text-xs font-mono text-gray-700">
+          <span className="flex flex-col gap-y-1 items-center font-semibold text-xs  text-gray-700">
             <button className="p-2 bg-(--primarycolor) text-xs rounded-full cursor-pointer">
               Subcribe
             </button>
-            <div className="flex font-mono text-xs text-gray-400 items-center gap-1.5">
+            <div className="flex  text-xs text-gray-400 items-center gap-1.5">
               <p>{online_user} online</p>
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>{" "}
             </div>
