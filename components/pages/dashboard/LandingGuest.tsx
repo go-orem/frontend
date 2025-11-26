@@ -1,9 +1,29 @@
 "use client";
 
 import { GoogleLoginButton, Web3LoginButton } from "@/components/auth";
+import { IconGroup } from "@/components/icons";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function LandingGuest() {
+  const router = useRouter();
+
+  const ChannelPublicButton = () => {
+    return (
+      <>
+        <button
+          onClick={() => router.push("channel-public")}
+          className="relative z-10 w-full px-6 py-2.5 rounded-full font-mono text-sm font-bold bg-(--background) text-white neon-border cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <IconGroup />
+            <span className="flex flex-row flex-wrap">Grup Publik</span>
+          </div>
+        </button>
+      </>
+    );
+  };
+
   return (
     <motion.div
       className="flex flex-col items-center justify-center h-full bg-[--background] text-[--foreground] p-8"
@@ -34,11 +54,12 @@ export default function LandingGuest() {
 
       {/* Tombol aksi */}
       <motion.div
-        className="flex gap-4"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.6 }}
       >
+        <ChannelPublicButton />
         <Web3LoginButton />
         <GoogleLoginButton />
       </motion.div>

@@ -6,7 +6,7 @@ export function proxy(req: NextRequest) {
 
   if (req.nextUrl.pathname.startsWith("/channel")) {
     if (!token) {
-      return NextResponse.redirect(new URL("/public", req.url));
+      return NextResponse.redirect(new URL("/channel-public", req.url));
     }
   }
 

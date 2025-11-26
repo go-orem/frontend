@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import SplitView from "../../components/layout/MainContent";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function ChatPage() {
+export default function ChannelLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isLoggedIn, loading: loadingAuth } = useAuth();
   const router = useRouter();
 
@@ -19,9 +22,5 @@ export default function ChatPage() {
     return <div>Loading ...</div>;
   }
 
-  return (
-    <>
-      <SplitView />
-    </>
-  );
+  return <>{children}</>;
 }
