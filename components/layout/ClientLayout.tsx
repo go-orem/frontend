@@ -11,6 +11,7 @@ import {
   SettingSidebarPanel,
   Sidebar,
 } from "@/components/sidebar";
+import { useBreakpoint, useIsMobile } from "@/hooks/useBreakpoint";
 
 export default function ClientLayout({
   children,
@@ -19,31 +20,25 @@ export default function ClientLayout({
 }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const { isLoggedIn, loading: loadingAuth } = useAuth();
+  const isMobile = useIsMobile();
   const router = useRouter();
   const [sidebarPanelWidth, setSidebarPanelWidth] = useState<number>(400);
 
-  const [isActiveContent, setIsActiveContent] = useState<boolean>(false);
+  const [toggleSidebar, setToggleSidear] = useState<boolean>(true);
 
   useEffect(() => {
     if (!isLoggedIn && !loadingAuth) {
       setActiveIndex(3);
     }
-    setIsActiveContent(false);
+    if (isMobile) setToggleSidear(false);
+    else setToggleSidear(true);
   }, [isLoggedIn, loadingAuth]);
-
-  useEffect(() => {
-    console.log("isActiveContent", isActiveContent);
-  }, [isActiveContent]);
-  useEffect(() => {
-    console.log("sidebarPanelWidth", sidebarPanelWidth);
-  }, [sidebarPanelWidth]);
 
   useEffect(() => {
     window.addEventListener("sidebar-panel-width-updated", () => {
       const storageSidebarPanelWidth = Number(
         localStorage.getItem("sidebarWidth")
       );
-      console.log("SidebarWith berubah!", storageSidebarPanelWidth);
 
       if (storageSidebarPanelWidth >= 200 && storageSidebarPanelWidth <= 400) {
         setSidebarPanelWidth(storageSidebarPanelWidth);
@@ -52,15 +47,14 @@ export default function ClientLayout({
   }, []);
 
   const onChatSelect = (val: any) => {
-    console.log("selected", val);
-    setIsActiveContent(true);
+    if (isMobile) setToggleSidear(false);
     router.push(`/channel/${val}`);
   };
 
   const onSidebarClick = (idx: number) => {
     if (activeIndex == idx) {
-      setIsActiveContent(!isActiveContent);
-    } else setIsActiveContent(false);
+      setToggleSidear(!toggleSidebar);
+    } else setToggleSidear(true);
     setActiveIndex(idx);
   };
 
@@ -90,7 +84,7 @@ export default function ClientLayout({
       <div
         className={`
       bg-[--background] transition-all duration-300  lg:max-w-[${sidebarPanelWidth}px]
-      ${isActiveContent ? `max-w-0` : `max-w-full`}
+      ${toggleSidebar ? `max-w-[calc(100%-50px)]` : `max-w-0`}
     `}
       >
         <div className="h-full max-w-full  overflow-y-auto">
@@ -103,9 +97,7 @@ export default function ClientLayout({
         className={`
       flex-1 transition-all duration-300 min-w-[350px]
       ${
-        isActiveContent
-          ? `block w-full md:w-[calc(100%-400px)]`
-          : "w-0 md:w-full"
+        toggleSidebar ? "w-0 md:w-full" : `block w-full md:w-[calc(100%-400px)]`
       }
     `}
       >

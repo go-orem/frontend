@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     const response = NextResponse.json(data);
 
-    const token = data.token || data.data?.token;
+    const token = data.data?.token;
     if (token) {
       response.cookies.set("token", token, {
         httpOnly: true,
