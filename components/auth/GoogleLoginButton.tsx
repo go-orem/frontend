@@ -9,7 +9,7 @@ export default function GoogleLoginButton() {
     ux_mode: "redirect",
     redirect_uri:
       typeof window !== "undefined"
-        ? `${window.location.origin}/auth/callback`
+        ? `${window.location.origin}/auth/google/callback`
         : undefined,
   });
 

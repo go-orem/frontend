@@ -6,9 +6,8 @@ import { parseWeb3Error } from "@/utils";
 import { getAvailableWallets, WalletOption } from "@/utils/walletDetection";
 import { WalletSelectModal } from "../modals";
 import { IconMetamask } from "../icons";
-import bs58 from "bs58";
 
-export default function Web3LoginButton({
+export default function Web3LoginButtonNew({
   onSuccess,
 }: {
   onSuccess?: (user: any) => void;
@@ -66,14 +65,11 @@ export default function Web3LoginButton({
           "utf8"
         );
 
-        const signatureBase58 = bs58.encode(signed.signature);
-
         const data = await authService.loginWeb3(
           address,
-          signatureBase58,
+          signed.signature,
           nonce
         );
-
         await refreshUser();
         toast.success(`Welcome ${data.user.username}`);
         onSuccess?.(data);
