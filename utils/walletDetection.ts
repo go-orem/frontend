@@ -9,19 +9,65 @@ export function getAvailableWallets(): WalletOption[] {
 
   const wallets: WalletOption[] = [];
 
-  if ((window as any).ethereum?.isMetaMask) {
-    wallets.push({
-      name: "MetaMask",
-      type: "evm",
-      provider: (window as any).ethereum,
-    });
+  // --- EVM wallets ---
+  const { ethereum } = window as any;
+  if (ethereum) {
+    // MetaMask
+    if (ethereum.isMetaMask) {
+      wallets.push({
+        name: "MetaMask",
+        type: "evm",
+        provider: ethereum,
+      });
+    }
+
+    // Coinbase Wallet
+    if (ethereum.isCoinbaseWallet) {
+      wallets.push({
+        name: "Coinbase",
+        type: "evm",
+        provider: ethereum,
+      });
+    }
+
+    // Brave Wallet
+    if (ethereum.isBraveWallet) {
+      wallets.push({
+        name: "Brave",
+        type: "evm",
+        provider: ethereum,
+      });
+    }
+
+    // Generic EVM provider (jaga-jaga kalau ada wallet lain)
+    if (
+      !ethereum.isMetaMask &&
+      !ethereum.isCoinbaseWallet &&
+      !ethereum.isBraveWallet
+    ) {
+      wallets.push({
+        name: "Injected EVM Wallet",
+        type: "evm",
+        provider: ethereum,
+      });
+    }
   }
 
-  if ((window as any).phantom?.solana?.isPhantom) {
+  // --- Solana wallets ---
+  const { solana } = window as any;
+  if (solana?.isPhantom) {
     wallets.push({
       name: "Phantom",
       type: "solana",
-      provider: (window as any).phantom.solana,
+      provider: solana,
+    });
+  }
+
+  if (solana?.isSolflare) {
+    wallets.push({
+      name: "Solflare",
+      type: "solana",
+      provider: solana,
     });
   }
 
