@@ -11,6 +11,8 @@ import {
 } from "@/context";
 import { FloatingMenuChat, SplashScreen } from "@/components/UI";
 import { ClientLayout } from "@/components/layout";
+import { WebSocketProvider } from "@/context/WebsocketContext";
+import { ConversationProvider } from "@/context/ConversationContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,17 +43,21 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
           <AuthProvider>
-            <ModalProvider>
-              <ModalChatProvider>
-                <GiftProvider>
-                  <Toaster richColors closeButton />
-                  <ClientLayout>
-                    <SplashScreen>{children}</SplashScreen>
-                  </ClientLayout>
-                  <FloatingMenuChat />
-                </GiftProvider>
-              </ModalChatProvider>
-            </ModalProvider>
+            <WebSocketProvider>
+              <ModalProvider>
+                <ConversationProvider>
+                  <ModalChatProvider>
+                    <GiftProvider>
+                      <Toaster richColors closeButton />
+                      <ClientLayout>
+                        <SplashScreen>{children}</SplashScreen>
+                      </ClientLayout>
+                      <FloatingMenuChat />
+                    </GiftProvider>
+                  </ModalChatProvider>
+                </ConversationProvider>
+              </ModalProvider>
+            </WebSocketProvider>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>
