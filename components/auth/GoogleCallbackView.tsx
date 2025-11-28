@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { IconGoogle } from "../icons";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export default function GoogleCallbackView() {
   return (
