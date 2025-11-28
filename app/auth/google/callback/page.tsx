@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { GoogleCallbackView } from "@/components/auth";
 
 export default function GoogleCallbackPage() {
   const params = useSearchParams();
@@ -54,5 +55,5 @@ export default function GoogleCallbackPage() {
     handleGoogleLogin();
   }, [code, router, refreshUser]);
 
-  return <p>Logging you in...</p>;
+  return <GoogleCallbackView />;
 }
