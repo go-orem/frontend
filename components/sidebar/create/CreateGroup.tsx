@@ -158,7 +158,7 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
           <motion.div
             whileHover={{ scale: 1.03 }}
             onClick={() => fileRef.current?.click()}
-            className="cursor-pointer shrink-0 w-20 h-20 rounded-2xl overflow-hidden border border-white/10 bg-black/40 hover:border-[#30d5ff] transition flex items-center justify-center"
+            className="cursor-pointer shrink-0 w-20 h-20 rounded-full overflow-hidden border border-white/10 bg-black/40 hover:border-(--primarycolor) transition flex items-center justify-center"
           >
             {avatarPreview ? (
               <img src={avatarPreview} className="w-full h-full object-cover" />
@@ -485,15 +485,35 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
           <label className="block mb-1 text-sm text-gray-300">Members</label>
 
           {/* Chips */}
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-3 mt-3 py-1">
             {members.map((m) => (
               <div
                 key={m}
-                className="px-3 py-1 bg-[#30d5ff]/20 border border-[#30d5ff] text-[#30d5ff] rounded-full text-xs flex items-center gap-2"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl 
+                 bg-white/5 border border-white/10 backdrop-blur-xl
+                 hover:border-[#30d5ff]/40 transition whitespace-nowrap"
               >
-                @{m}
-                <button onClick={() => toggleMember(m)}>
-                  <X size={14} />
+                {/* Avatar */}
+                <img
+                  src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${m}`}
+                  className="w-6 h-6 rounded-lg border border-white/10"
+                />
+
+                {/* Username */}
+                <span className="text-sm font-medium text-white capitalize">
+                  {m}
+                </span>
+
+                <span className="text-xs text-gray-400">@{m}</span>
+
+                {/* Remove button */}
+                <button
+                  onClick={() => toggleMember(m)}
+                  className="w-6 h-6 flex items-center justify-center rounded-md 
+                  bg-white/5 border border-white/10 hover:bg-red-500/20 
+                  hover:border-red-400 transition"
+                >
+                  <X size={14} className="text-red-300" />
                 </button>
               </div>
             ))}
@@ -533,29 +553,32 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
                   <motion.div
                     key={u}
                     whileHover={{ scale: 1.02 }}
-                    onClick={() => toggleMember(u)}
                     className="relative group cursor-pointer p-3 mb-2 mt-3 rounded-xl bg-white/5 border border-white/10 hover:border-[#30d5ff]/40 flex items-center gap-4 transition backdrop-blur-xl"
                   >
-                    {/* Avatar */}
-                    <div className="relative w-10 h-10 shrink-0">
-                      <div className="absolute inset-0 rounded-xl overflow-hidden border border-white/10 group-hover:border-[#30d5ff] transition">
-                        <img
-                          src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${u}`}
-                          className="w-full h-full object-cover"
-                        />
+                    {/* Klik avatar + nama = add member */}
+                    <div
+                      className="flex items-center gap-4 flex-1"
+                      onClick={() => toggleMember(u)}
+                    >
+                      <div className="relative w-10 h-10 shrink-0">
+                        <div className="absolute inset-0 rounded-xl overflow-hidden border border-white/10 group-hover:border-[#30d5ff] transition">
+                          <img
+                            src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${u}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-black/60" />
                       </div>
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-black/60" />
+
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm capitalize">
+                          {u}
+                        </div>
+                        <div className="text-xs text-gray-400">@{u}</div>
+                      </div>
                     </div>
 
-                    {/* Name */}
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm capitalize">
-                        {u}
-                      </div>
-                      <div className="text-xs text-gray-400">@{u}</div>
-                    </div>
-
-                    {/* Dropdown button */}
+                    {/* tombol dropdown — tidak trigger toggleMember */}
                     <div
                       className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:bg-white/10 transition"
                       onClick={(e) => {
