@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check, X, Upload } from "lucide-react";
-import { IconAdd, IconSearch } from "@/components/icons";
+import { IconAdd, IconSearch, IconSendCamera } from "@/components/icons";
 import { Switch } from "@headlessui/react";
 
 type CreateGroupProps = { onClose?: () => void };
@@ -163,7 +163,7 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
             {avatarPreview ? (
               <img src={avatarPreview} className="w-full h-full object-cover" />
             ) : (
-              <Upload className="text-gray-500" size={20} />
+              <IconSendCamera />
             )}
           </motion.div>
 
