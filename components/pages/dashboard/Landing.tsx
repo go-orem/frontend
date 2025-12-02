@@ -46,10 +46,10 @@ export default function Landing() {
         transition={{ duration: 0.6 }}
       >
         <h1 className="text-4xl font-extrabold text-[--primarycolor] mb-2 tracking-tight">
-          Selamat Datang di Orem 🚀
+          Welcome to Orem 🚀
         </h1>
         <p className="text-gray-300 text-lg max-w-lg leading-relaxed">
-          Komunikasi tanpa batas dengan teman dan komunitas di seluruh dunia.
+          Seamless communication with friends and communities around the decentralized with end-to-end blockchain technology.
         </p>
       </motion.div>
 

@@ -163,3 +163,208 @@ body {
     opacity: 1;
   }
 }
+
+/* CSS create Group */
+
+:root{
+  --primarycolor: #30d5ff;
+  --primarycolor-10: rgba(48,213,255,0.10);
+  --primarycolor-20: rgba(48,213,255,0.20);
+  --glass-01: rgba(255,255,255,0.04);
+  --glass-02: rgba(255,255,255,0.06);
+  --muted: #9ca3af;
+  --bg-card: rgba(255,255,255,0.03);
+  --border-weak: rgba(255,255,255,0.06);
+  --white-10: rgba(255,255,255,0.10);
+}
+
+/* ---------- TYPO / LABEL ---------- */
+.label {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* ---------- INPUT BASE ---------- */
+.input-base{
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  color: #2a2a2a;
+  background-color: var(--hovercolor);
+  border: 1px solid var(--border-weak);
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  outline: none;
+  font-size: 0.9375rem; /* 15px */
+}
+
+.input-base::placeholder { color: var(--foreground); }
+
+.input-base:focus {
+  border-color: var(--primarycolor);
+  box-shadow: 0 8px 22px rgba(48,213,255,0.07);
+}
+
+/* ---------- INPUT SELECT (custom arrow handled in markup) ---------- */
+.input-select{
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  color: #fff;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-weak);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  font-size: 0.9375rem;
+}
+
+.input-select:focus {
+  border-color: var(--primarycolor);
+  box-shadow: 0 8px 22px rgba(48,213,255,0.07);
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-primary{
+  padding: 0.5rem 1.25rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  background-color: var(--primarycolor);
+  color: #000;
+  transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  box-shadow: 0 8px 24px rgba(48,213,255,0.12);
+  border: none;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+.btn-primary:hover{ opacity: .95; transform: translateY(-2px); }
+.btn-primary:disabled{ opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+.btn-secondary{
+  padding: 0.5rem 1.25rem;
+  border-radius: 1rem;
+  color: #d1d5db; /* gray-300 */
+  background-color: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-weak);
+  transition: background-color 120ms ease, transform 120ms ease;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+.btn-secondary:hover{
+  background-color: var(--hovercolor);
+  transform: translateY(-2px);
+}
+
+/* ---------- ITEM HOVER (suggestions) ---------- */
+.item-hover{
+  transition: background-color 120ms ease;
+}
+.item-hover:hover{
+  background-color: rgba(255,255,255,0.03);
+}
+
+/* ---------- TOGGLE CARD (group type) ---------- */
+.toggle-card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--hovercolor);
+  border: 1px solid var(--border-weak);
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.toggle-card:hover{
+  background-color: var(--hovercolor);
+}
+
+/* accent color for checkbox */
+.toggle-switch{
+  width: 1.25rem; height: 1.25rem; border-radius: 0.25rem;
+  accent-color: var(--primarycolor);
+  cursor: pointer;
+}
+.toggle-switch-yellow{
+  width: 1.25rem; height: 1.25rem; border-radius: 0.25rem;
+  accent-color: #F6C94C;
+  cursor: pointer;
+}
+
+/* ---------- TAG CHIP ---------- */
+.tag-chip {
+  padding: 0.25rem 0.75rem;         
+  border-radius: 9999px;           
+  
+  background: rgba(74, 222, 128, .2);    
+  border: 1px solid rgb(74 222 128);     
+  color: rgb(74 222 128);               
+
+  font-size: 0.75rem;                
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;                      
+  transition: 0.2s;
+}
+
+.tag-chip:hover {
+  border-color: rgb(134 239 172);    
+}
+
+/* ---------- SUGGESTION BOX ---------- */
+.suggestion-box{
+  margin-top: 0.75rem;
+  border-radius: 0.75rem;
+  max-height: 10rem;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.45);
+  border: 1px solid var(--border-weak);
+}
+
+/* ---------- SMALL HELP TEXT ---------- */
+.help {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ---------- UTILITY: compact input spacing for price dropdown arrow ---------- */
+.input-compact {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  border-radius: 1rem;
+}
+
+/* ---------- SCROLLBAR ---------- */
+.suggestion-box::-webkit-scrollbar { height: 8px; width: 8px; }
+.suggestion-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 999px; }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 640px){
+  .input-base, .input-select { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .btn-primary, .btn-secondary { padding-left: 0.75rem; padding-right: 0.75rem; }
+}
+
+/* ---------- OPTIONAL small helper for select arrow positioning ---------- */
+.select-wrapper {
+  position: relative;
+}
+.select-wrapper .select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ---------- Extra: subtle glass card (for panels) ---------- */
+.card-glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 1rem;
+  padding: 1rem;
+}

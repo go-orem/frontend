@@ -8,23 +8,25 @@ import {
   IconLogout,
   IconProfile,
   IconReply,
+  IconSendDocs,
   IconSet,
   IconSuka,
 } from "@/components/icons";
+import WalletOrem from "@/components/icons/IconWalletApp/WalletOrem";
 
 const settingsMenu = [
   { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
-  { name: "Wallet", icon: <IconSuka />, key: "wallet", variant: "user" },
+  { name: "Wallet", icon: <WalletOrem />, key: "wallet", variant: "user" },
   { name: "Edit", icon: <IconEdit />, key: "edit", variant: "user" },
   { name: "Settings", icon: <IconGear />, key: "setting", variant: "group" },
   {
-    name: "Privacy $ Security",
+    name: "Privacy & Security",
     icon: <IconReply />,
     key: "privacy",
     variant: "user",
   },
   { name: "Chat", icon: <IconSuka />, key: "chat", variant: "user" },
-  { name: "Folder", icon: <IconSuka />, key: "folder", variant: "group" },
+  { name: "Folder", icon: <IconSendDocs />, key: "folder", variant: "group" },
   { name: "Bahasa", icon: <IconSuka />, key: "language", variant: "user" },
   { name: "Penyimpanan", icon: <IconSuka />, key: "storage", variant: "group" },
   {

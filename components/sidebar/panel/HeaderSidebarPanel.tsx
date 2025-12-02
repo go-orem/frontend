@@ -1,11 +1,13 @@
 import { IconNewChat, IconSet } from "@/components/icons";
 import { useModal } from "../../../context/ModalContext";
+import React from "react";
 
 interface HeaderSidebarPanelProps {
   activeTab: "chats" | "channel" | "notification" | "group" | "settings";
+  onCreateGroupClick?: () => void;
 }
 
-function HeaderSidebarPanel({ activeTab }: HeaderSidebarPanelProps) {
+function HeaderSidebarPanel({ activeTab, onCreateGroupClick }: HeaderSidebarPanelProps) {
   const { openModal } = useModal();
 
   // mapping judul berdasarkan tab
@@ -15,6 +17,11 @@ function HeaderSidebarPanel({ activeTab }: HeaderSidebarPanelProps) {
     notification: "Notification",
     group: "Group",
     settings: "Settings",
+  };
+
+  const onNewChatClick = () => {
+    if (onCreateGroupClick) return onCreateGroupClick();
+    return null;
   };
 
   return (
@@ -27,7 +34,11 @@ function HeaderSidebarPanel({ activeTab }: HeaderSidebarPanelProps) {
           </div>
         </div>
         <div className="flex space-x-3">
-          <button className="cursor-pointer hover:bg-(--hovercolor) p-2 rounded-full">
+          <button
+            onClick={onNewChatClick}
+            aria-label="Create group"
+            className="cursor-pointer hover:bg-(--hovercolor) p-2 rounded-full"
+          >
             <IconNewChat />
           </button>
           <button
@@ -38,6 +49,8 @@ function HeaderSidebarPanel({ activeTab }: HeaderSidebarPanelProps) {
           </button>
         </div>
       </div>
+
+      {/* CreateGroup is rendered as a sidebar sub-tab by the parent panel */}
     </>
   );
 }

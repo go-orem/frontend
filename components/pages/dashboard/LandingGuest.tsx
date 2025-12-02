@@ -39,7 +39,7 @@ export default function LandingGuest() {
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        Selamat Datang di Orem 🌐
+        Decentralized chatting 💬
       </motion.h1>
 
       <motion.p
@@ -48,8 +48,7 @@ export default function LandingGuest() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.6 }}
       >
-        Bergabunglah dengan komunitas global untuk chat, channel, dan grup. Buat
-        akun atau login untuk mulai berkomunikasi dengan teman di seluruh dunia.
+        Communicate with a global community for decentralized chats, channels, and groups.
       </motion.p>
 
       {/* Tombol aksi */}

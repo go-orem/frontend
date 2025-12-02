@@ -2,12 +2,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import HeaderChat from "../HeaderSidebarPanel";
+import CreateGroup from "../../create/CreateGroup";
 import ListGroup from "./GroupSidebarList";
 import CategoryGroup from "./GroupSidebarCategory";
-import { MobileMenu, Search } from "@/components/UI";
+import { MobileMenu } from "@/components/UI";
+
+type GroupFilter = "all" | "private" | "public" | "paid";
 
 export default function GroupSidebarPanel() {
-  const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
+  const [subTab, setSubTab] = useState<"list" | "create">("list");
+  const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
+  const [sidebarWidth, setSidebarWidth] = useState<number>(430);
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -59,10 +64,69 @@ export default function GroupSidebarPanel() {
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="group" />
-        <Search/>
-        <CategoryGroup />
-        <ListGroup />
+        <HeaderChat activeTab="group" onCreateGroupClick={() => setSubTab("create")} />
+        
+        {subTab === "list" && (
+          <>
+            {/* Group Filter Tabs */}
+            <div className="w-full overflow-x-auto shrink-0 pb-3 pl-2 pr-2">
+              <div className="flex space-x-6 px-4 py-2">
+                {[
+                  { label: "All", value: "all" },
+                  { label: "Private", value: "private" },
+                  { label: "Public", value: "public" },
+                  { label: "Paid", value: "paid" },
+                ].map((tab) => (
+                  <div
+                    key={tab.value}
+                    onClick={() => setGroupFilter(tab.value as GroupFilter)}
+                    className="group relative flex flex-col items-center justify-center pb-1 cursor-pointer"
+                  >
+                    <div
+                      className={`flex items-center space-x-2 text-sm transition-colors ease-in-out ${
+                        groupFilter === tab.value
+                          ? "text-(--primarycolor)"
+                          : "text-gray-400 group-hover:text-[--primarycolor]"
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                    </div>
+                    <span
+                      className={`absolute -bottom-1 h-1 rounded-full bg-(--primarycolor) transition-all duration-300 ease-in-out
+                        ${
+                          groupFilter === tab.value
+                            ? "w-10 opacity-100"
+                            : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
+                        }`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <CategoryGroup />
+            <ListGroup />
+          </>
+        )}
+
+        {subTab === "create" && (
+          <div className="flex-1 overflow-hidden">
+            <div className="h-full flex flex-col">
+              <div className="mb-2 px-6 py-3">
+                <button
+                  onClick={() => setSubTab("list")}
+                  className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  ← Back to Groups
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden px-2">
+                <CreateGroup onClose={() => setSubTab("list")} />
+              </div>
+            </div>
+          </div>
+        )}
+
         <MobileMenu />
       </motion.div>
 

@@ -10,7 +10,7 @@ const Search: FC<SearchProps> = () => {
         type="search"
         name="search"
         aria-label="Cari atau chat"
-        placeholder="Cari atau chat..."
+        placeholder="Search or chat..."
         className="
           w-full
           rounded-full
