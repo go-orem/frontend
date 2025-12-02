@@ -2,12 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronDown,
-  Check,
-  X,
-  Upload,
-} from "lucide-react";
+import { ChevronDown, Check, X, Upload } from "lucide-react";
 import { IconAdd, IconSearch } from "@/components/icons";
 import { Switch } from "@headlessui/react";
 
@@ -158,7 +153,6 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
   return (
     <div className="w-full h-full flex flex-col bg-[--background] text-white">
       <div className="flex-1 overflow-y-auto p-3 space-y-5 relative">
-
         {/* ==================== AVATAR ==================== */}
         <div className="flex items-start gap-6">
           <motion.div
@@ -182,7 +176,9 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
           />
 
           <div className="flex-1">
-            <label className="block mb-1 text-sm text-gray-300">Group Name</label>
+            <label className="block mb-1 text-sm text-gray-300">
+              Group Name
+            </label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -194,7 +190,9 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
 
         {/* ==================== DESCRIPTION ==================== */}
         <div>
-          <label className="block mb-1 text-sm text-gray-300">Description</label>
+          <label className="block mb-1 text-sm text-gray-300">
+            Description
+          </label>
           <textarea
             rows={3}
             value={description}
@@ -379,7 +377,9 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
 
         {/* ==================== TOKEN GATING ==================== */}
         <div>
-          <label className="block mb-1 text-sm text-gray-300">Token Gating</label>
+          <label className="block mb-1 text-sm text-gray-300">
+            Token Gating
+          </label>
 
           <div className="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 rounded-xl mt-2">
             <div>
@@ -569,28 +569,6 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
                         <ChevronDown size={16} className="text-gray-400" />
                       )}
                     </div>
-
-                    {/* Dropdown */}
-                    <AnimatePresence>
-                      {openDropdown === u && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 10 }}
-                          className="absolute right-0 top-full mt-2 w-36 p-2 rounded-xl bg-black/50 border border-white/10 backdrop-blur-xl z-50"
-                        >
-                          <div
-                            onClick={() => toggleMember(u)}
-                            className="px-3 py-2 text-sm text-gray-300 hover:bg-white/10 rounded-lg cursor-pointer"
-                          >
-                            Remove
-                          </div>
-                          <div className="px-3 py-2 text-sm text-gray-400 hover:bg-white/10 rounded-lg cursor-pointer">
-                            View Profile
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </motion.div>
                 ))}
 
@@ -605,17 +583,6 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
             )}
           </AnimatePresence>
         </div>
-      </div>
-
-      {/* ==================== SAVE BUTTON ==================== */}
-      <div className="p-3 border-t border-white/10 bg-[--background]">
-        <button
-          disabled={isSubmitting}
-          onClick={handleCreate}
-          className="w-full bg-[#30d5ff] hover:bg-[#23c4ef] text-black font-semibold py-3 rounded-xl transition disabled:opacity-50"
-        >
-          {isSubmitting ? "Creating..." : "Create Group"}
-        </button>
       </div>
     </div>
   );
