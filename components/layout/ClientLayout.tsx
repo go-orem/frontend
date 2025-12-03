@@ -9,6 +9,8 @@ import {
   GroupSidebarPanel,
   NotificationSidebarPanel,
   SettingSidebarPanel,
+  StorySidebarPanel,
+  CallsSidebarPanel,
   Sidebar,
 } from "@/components/sidebar";
 
@@ -67,15 +69,19 @@ export default function ClientLayout({
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
-        return <ChatSidebarPanel onListClick={onChatSelect} />;
+        return <ChatSidebarPanel onListClick={onChatSelect} onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
       case 1:
-        return <NotificationSidebarPanel />;
+        return <NotificationSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
       case 2:
-        return <ChannelSidebarPanel />;
+        return <ChannelSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
       case 3:
-        return <GroupSidebarPanel />;
+        return <GroupSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+      case 4:
+        return <StorySidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+      case 5:
+        return <CallsSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
       case 10:
-        return <SettingSidebarPanel />;
+        return <SettingSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
       default:
         return <></>;
     }

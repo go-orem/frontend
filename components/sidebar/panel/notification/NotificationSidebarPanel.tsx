@@ -6,7 +6,13 @@ import ViewNotifikasi from "./NotificationSidebarContent";
 import CategoryNotif from "./NotificationSidebarCategory";
 import { MobileMenu, Search } from "@/components/UI";
 
-export default function NotificationSidebarPanel() {
+export default function NotificationSidebarPanel({
+  onMenuClick,
+  activeIndex,
+}: {
+  onMenuClick?: (index: number) => void;
+  activeIndex?: number;
+} = {}) {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
@@ -64,7 +70,7 @@ export default function NotificationSidebarPanel() {
         <Search />
         <CategoryNotif />
         <ViewNotifikasi />
-        <MobileMenu />
+        <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
       </motion.div>
 
       {/* garis drag */}

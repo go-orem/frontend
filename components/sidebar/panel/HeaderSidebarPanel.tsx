@@ -3,7 +3,7 @@ import { useModal } from "../../../context/ModalContext";
 import React from "react";
 
 interface HeaderSidebarPanelProps {
-  activeTab: "chats" | "channel" | "notification" | "group" | "settings";
+  activeTab: "chats" | "channel" | "notification" | "group" | "settings" | "story" | "calls";
   onCreateGroupClick?: () => void;
 }
 
@@ -17,6 +17,8 @@ function HeaderSidebarPanel({ activeTab, onCreateGroupClick }: HeaderSidebarPane
     notification: "Notification",
     group: "Group",
     settings: "Settings",
+    story: "Story",
+    calls: "Calls"
   };
 
   const onNewChatClick = () => {

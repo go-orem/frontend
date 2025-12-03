@@ -5,7 +5,13 @@ import HeaderSettings from "./SettingSidebarHeader";
 import SettingsView from "./SettingSidebarView";
 import { MobileMenu, Search } from "@/components/UI";
 
-export default function SettingSidebarPanel() {
+export default function SettingSidebarPanel({
+  onMenuClick,
+  activeIndex,
+}: {
+  onMenuClick?: (index: number) => void;
+  activeIndex?: number;
+} = {}) {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
@@ -61,7 +67,7 @@ export default function SettingSidebarPanel() {
         <HeaderSettings activeTab="settings" />
         <Search />
         <SettingsView />
-        <MobileMenu />
+        <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
       </motion.div>
 
       {/* garis drag */}

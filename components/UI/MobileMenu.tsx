@@ -19,19 +19,24 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   activeIndex = -1,
   className = "",
 }) => {
-  const items: { icon: React.ComponentType; label: string }[] = [
-    { icon: IconCerita, label: "Cerita" },
-    { icon: IconCall, label: "Panggilan" },
-    { icon: IconChat, label: "Chat" },
-    { icon: IconSetting, label: "Pengaturan" },
+  // Menu items mapping with indices
+  // 0: Cerita (Story)
+  // 1: Panggilan (Calls)
+  // 2: Chat
+  // 10: Pengaturan (Settings)
+  const items: { icon: React.ComponentType; label: string; index: number }[] = [
+    { icon: IconCerita, label: "Cerita", index: 4 },
+    { icon: IconCall, label: "Panggilan", index: 5 },
+    { icon: IconChat, label: "Chat", index: 0 },
+    { icon: IconSetting, label: "Pengaturan", index: 10 },
   ];
 
   return (
     <div className={className}>
       <ul className="flex justify-between items-center pl-8 pr-8 p-1 pb-1 border-t-[0.5px] border-gray-700 bg-[--sidebar-bg]">
-        {items.map((item, i) => {
+        {items.map((item) => {
           const Icon = item.icon;
-          const isActive = i === activeIndex;
+          const isActive = item.index === activeIndex;
 
           return (
             <li key={item.label} className="relative group mt-1 mb-1">
@@ -39,7 +44,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 type="button"
                 aria-label={item.label}
                 aria-pressed={isActive}
-                onClick={() => onMenuClick?.(i)}
+                onClick={() => onMenuClick?.(item.index)}
                 className={`p-2 rounded-xl transition-colors duration-200 focus:outline-none
                   ${
                     isActive

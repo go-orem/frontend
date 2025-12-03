@@ -4,7 +4,13 @@ import { motion } from "framer-motion";
 import HeaderSidebarPanel from "./HeaderSidebarPanel";
 import { ListChat, MobileMenu, Search, SliderIcon } from "@/components/UI";
 
-export default function ChannelSidebarPanel() {
+export default function ChannelSidebarPanel({
+  onMenuClick,
+  activeIndex,
+}: {
+  onMenuClick?: (index: number) => void;
+  activeIndex?: number;
+} = {}) {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430); // langsung default
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [loaded, setLoaded] = useState(false);
@@ -62,7 +68,7 @@ export default function ChannelSidebarPanel() {
         <Search />
         <SliderIcon />
         <ListChat />
-        <MobileMenu />
+        <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
       </motion.div>
 
       {/* garis drag */}

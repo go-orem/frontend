@@ -9,8 +9,12 @@ import { ListChat, MobileMenu, Search, SliderIcon } from "@/components/UI";
 
 export default function ChatSidebarPanel({
   onListClick,
+  onMenuClick,
+  activeIndex,
 }: {
   onListClick?: (chat: any) => void;
+  onMenuClick?: (index: number) => void;
+  activeIndex?: number;
 }) {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430);
   const [previewWidth, setPreviewWidth] = useState<number>(430);
@@ -75,7 +79,7 @@ export default function ChatSidebarPanel({
             <Search />
             <SliderIcon />
             <ListChat onListClick={onListClick} />
-            <MobileMenu />
+            <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
           </>
         )}
       </motion.div>
