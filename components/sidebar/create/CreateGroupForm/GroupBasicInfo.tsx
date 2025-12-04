@@ -16,7 +16,7 @@ export function GroupBasicInfo({
   onAvatarChange,
 }: GroupBasicInfoProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 mt-2">
       {/* Avatar + Group Name in one row */}
       <div className="flex items-start gap-6">
         {/* Avatar uploader */}
