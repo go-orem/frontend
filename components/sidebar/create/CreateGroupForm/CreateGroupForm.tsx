@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -9,6 +9,10 @@ import { GroupBasicInfo } from "./GroupBasicInfo";
 import { CategorySelector } from "./CategorySelector";
 import { TagsInput } from "./TagsInput";
 import { MembersSelector } from "./MembersSelector/MembersSelector";
+import { useCategories } from "@/hooks/useCategories";
+import { categoryService } from "@/services/categoryService";
+import { toast } from "sonner";
+import { getErrorMessage } from "@/utils";
 
 interface CreateGroupFormProps {
   onClose?: () => void;
@@ -17,20 +21,36 @@ interface CreateGroupFormProps {
 export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const { categories: serverCategories, loading: loadingCategories } =
+    useCategories();
   const form = useForm<CreateGroupType>({
     resolver: zodResolver(CreateGroupSchema),
     defaultValues: {
       name: "",
       description: "",
       avatar: null,
-      category: "General",
-      categories: ["General", "Private", "Work"],
+      category: "",
+      categories: [],
       tags: [],
       members: [],
     },
   });
 
   const { watch, setValue, register, handleSubmit } = form;
+
+  useEffect(() => {
+    if (!loadingCategories) {
+      setValue(
+        "categories",
+        serverCategories.map((c) => c.name)
+      );
+
+      // auto pilih kategori pertama
+      if (serverCategories.length > 0) {
+        setValue("category", serverCategories[0].name);
+      }
+    }
+  }, [serverCategories, loadingCategories, setValue]);
 
   const tags = watch("tags");
   const categories = watch("categories");
@@ -80,6 +100,25 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
     onClose?.();
   });
 
+  const addCategory = async () => {
+    const nc = newCategory.trim();
+    if (!nc) return;
+
+    try {
+      const created = await categoryService.create(nc);
+
+      // update React Hook Form
+      setValue("categories", [...categories, created.name]);
+      setValue("category", created.name);
+
+      // reset
+      setNewCategory("");
+    } catch (err) {
+      console.log("Failed to create category", err);
+      toast.error(getErrorMessage(err));
+    }
+  };
+
   return (
     <form id="create-group-form" onSubmit={onSubmit} className="space-y-6">
       {/* NAME & DESCRIPTION */}
@@ -96,15 +135,7 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
         onSelectCategory={(v) => setValue("category", v)}
         newCategory={newCategory}
         onNewCategoryChange={setNewCategory}
-        addCategory={() => {
-          const nc = newCategory.trim();
-          if (!nc) return;
-
-          const updated = [...categories, nc];
-          setValue("categories", updated);
-          setValue("category", nc);
-          setNewCategory("");
-        }}
+        addCategory={addCategory}
       />
 
       {/* TAGS */}
