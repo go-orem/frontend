@@ -103,7 +103,7 @@ export default function Sidebar({
   }, [isLoggedIn, loadingAuth]);
 
   return (
-    <nav className="flex flex-col p-2 items-center justify-between w-[60px] max-h-screen border-r border-gray-700 overflow-y-scroll">
+    <nav className="flex flex-col p-2 items-center justify-between min-w-[50px] w-[50px] max-h-screen border-r border-gray-700 overflow-y-scroll">
       <ul className="space-y-2 w-full flex flex-col items-center">
         {chunkedMenu.map((group, gIndex) => (
           <React.Fragment key={gIndex}>

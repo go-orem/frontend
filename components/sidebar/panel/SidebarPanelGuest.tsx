@@ -28,7 +28,7 @@ export default function SidebarPanelGuest() {
 
       {/* Footer Info */}
       <div className="mt-auto pt-6 text-xs text-gray-500">
-        Akses lebih cepat dan aman dengan akun Orem.
+        Akses cepat dan aman dengan akun Orem.
       </div>
     </motion.div>
   );

@@ -26,6 +26,15 @@ class ConversationService {
     return handleResponse(res);
   }
 
+  async listWithLastMessage(): Promise<Conversation[]> {
+    const res = await fetch("/api/conversations/with-last-message", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    return handleResponse(res);
+  }
+
   async createWithMembers(memberIds: string[]): Promise<Conversation> {
     const res = await fetch("/api/conversations/with-members", {
       method: "POST",

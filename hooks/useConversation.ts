@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { conversationService } from "@/services/conversationService";
-import { Conversation } from "@/types/database.types";
+import { ConversationWithLastMessage } from "@/types/database.types";
 
-export function useConversations(type: "public" | "user" = "user") {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+type ConversationType = "public" | "user" | "with-last-message";
+
+export function useConversations(type: ConversationType = "user") {
+  const [conversations, setConversations] = useState<
+    ConversationWithLastMessage[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,10 +17,17 @@ export function useConversations(type: "public" | "user" = "user") {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const data =
-          type === "public"
-            ? await conversationService.listPublic()
-            : await conversationService.listUserConversations();
+        let data: ConversationWithLastMessage[];
+        switch (type) {
+          case "public":
+            data = await conversationService.listPublic();
+            break;
+          case "with-last-message":
+            data = await conversationService.listWithLastMessage();
+            break;
+          default:
+            data = await conversationService.listUserConversations();
+        }
         setConversations(data);
         setError(null);
       } catch (err: any) {
