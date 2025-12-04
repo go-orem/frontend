@@ -23,14 +23,16 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { categories: serverCategories, loading: loadingCategories } =
     useCategories();
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
   const form = useForm<CreateGroupType>({
     resolver: zodResolver(CreateGroupSchema),
     defaultValues: {
       name: "",
       description: "",
       avatar: null,
-      category: "",
-      categories: [],
+      category_id: "",
       tags: [],
       members: [],
     },
@@ -40,21 +42,22 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
 
   useEffect(() => {
     if (!loadingCategories) {
-      setValue(
-        "categories",
-        serverCategories.map((c) => c.name)
-      );
-
-      // auto pilih kategori pertama
+      setCategories(serverCategories);
       if (serverCategories.length > 0) {
-        setValue("category", serverCategories[0].name);
+        const generalCat = serverCategories.find(
+          (v) => v.name.toLowerCase() == "general"
+        );
+        if (generalCat) {
+          setValue("category_id", generalCat.id);
+        } else {
+          setValue("category_id", serverCategories[0].id);
+        }
       }
     }
   }, [serverCategories, loadingCategories, setValue]);
 
   const tags = watch("tags");
-  const categories = watch("categories");
-  const selectedCategory = watch("category");
+  const selectedCategory = watch("category_id");
   const members = watch("members");
   const avatar = watch("avatar");
 
@@ -106,15 +109,10 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
 
     try {
       const created = await categoryService.create(nc);
-
-      // update React Hook Form
-      setValue("categories", [...categories, created.name]);
-      setValue("category", created.name);
-
-      // reset
+      setCategories([...categories, created]);
+      setValue("category_id", created.id);
       setNewCategory("");
     } catch (err) {
-      console.log("Failed to create category", err);
       toast.error(getErrorMessage(err));
     }
   };
@@ -130,9 +128,9 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
 
       {/* CATEGORY */}
       <CategorySelector
-        selectedCategory={selectedCategory}
+        selectedCategoryId={selectedCategory}
         categories={categories}
-        onSelectCategory={(v) => setValue("category", v)}
+        onSelectCategory={(v) => setValue("category_id", v)}
         newCategory={newCategory}
         onNewCategoryChange={setNewCategory}
         addCategory={addCategory}

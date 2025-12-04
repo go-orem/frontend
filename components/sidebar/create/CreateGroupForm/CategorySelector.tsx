@@ -2,10 +2,15 @@
 
 import { ChevronDown } from "lucide-react";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 interface CategorySelectorProps {
-  selectedCategory: string;
-  categories: string[];
-  onSelectCategory: (c: string) => void;
+  selectedCategoryId: string;
+  categories: Category[];
+  onSelectCategory: (id: string) => void;
 
   newCategory: string;
   onNewCategoryChange: (v: string) => void;
@@ -13,7 +18,7 @@ interface CategorySelectorProps {
 }
 
 export function CategorySelector({
-  selectedCategory,
+  selectedCategoryId,
   categories,
   onSelectCategory,
   newCategory,
@@ -27,7 +32,7 @@ export function CategorySelector({
       {/* Dropdown */}
       <div className="relative">
         <select
-          value={selectedCategory}
+          value={selectedCategoryId}
           onChange={(e) => onSelectCategory(e.target.value)}
           className="
             w-full appearance-none rounded-xl
@@ -40,8 +45,8 @@ export function CategorySelector({
           "
         >
           {categories.map((c) => (
-            <option key={c} value={c} className="text-black">
-              {c}
+            <option key={c.id} value={c.id} className="text-black">
+              {c.name}
             </option>
           ))}
         </select>
