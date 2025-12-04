@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import SidebarPanelLoading from "./SidebarPanelLoading";
 import SidebarPanelGuest from "./SidebarPanelGuest";
 import { ListChat, MobileMenu, Search, SliderIcon } from "@/components/UI";
+import { SliderItem } from "@/components/UI/SliderIcon";
 
 export default function ChatSidebarPanel({
   onListClick,
@@ -18,6 +19,10 @@ export default function ChatSidebarPanel({
 }) {
   const [sidebarWidth, setSidebarWidth] = useState<number>(430);
   const [previewWidth, setPreviewWidth] = useState<number>(430);
+  const [sliderSelected, setSliderSelected] = useState<SliderItem>({
+    code: "chat",
+    label: "Chat",
+  });
   const [loaded, setLoaded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const { isLoggedIn, loading: loadingAuth } = useAuth();
@@ -77,8 +82,8 @@ export default function ChatSidebarPanel({
         {isLoggedIn && !loadingAuth && (
           <>
             <Search />
-            <SliderIcon />
-            <ListChat onListClick={onListClick} />
+            <SliderIcon onChangeSlider={setSliderSelected} />
+            <ListChat type={sliderSelected.code} onListClick={onListClick} />
             <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
           </>
         )}

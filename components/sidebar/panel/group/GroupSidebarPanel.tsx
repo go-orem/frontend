@@ -6,6 +6,7 @@ import CreateGroup from "../../create/CreateGroup";
 import ListGroup from "./GroupSidebarList";
 import CategoryGroup from "./GroupSidebarCategory";
 import { MobileMenu, Search } from "@/components/UI";
+import { CreateGroupForm, CreateGroupFormContainer } from "../../create";
 
 type GroupFilter = "all" | "private" | "public" | "paid";
 
@@ -94,8 +95,11 @@ export default function GroupSidebarPanel({
                   ← Back to Groups
                 </button>
               </div>
+
               <div className="flex-1 overflow-hidden">
-                <CreateGroup onClose={() => setSubTab("list")} />
+                <CreateGroupFormContainer>
+                  <CreateGroupForm onClose={() => setSubTab("list")} />
+                </CreateGroupFormContainer>
               </div>
             </div>
           </div>

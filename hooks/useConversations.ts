@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { conversationService } from "@/services/conversationService";
 import { ConversationWithLastMessage } from "@/types/database.types";
 
-type ConversationType = "public" | "user" | "with-last-message";
+export type ConversationType = "public" | "user" | "with-last-message";
 
 export function useConversations(type: ConversationType = "user") {
   const [conversations, setConversations] = useState<

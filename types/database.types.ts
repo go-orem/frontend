@@ -36,9 +36,24 @@ export interface Contact {
   updated_at: string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Conversation {
   id: string;
   conversation_type: string;
+  category_id: string | null;
   name: string | null;
   profile_url: string | null;
   cover_url: string | null;
@@ -48,6 +63,8 @@ export interface Conversation {
   owner_user_id: string;
   created_at: string;
   updated_at: string;
+  category?: Category | null;
+  tags?: Tag[] | null;
 }
 
 export interface ConversationMember {
@@ -98,6 +115,7 @@ export interface ConversationWithLastMessage {
   other_user?: Profile | null;
   id: string;
   conversation_type: string;
+  category_id: string | null;
   name: string | null;
   profile_url: string | null;
   cover_url: string | null;
@@ -107,6 +125,8 @@ export interface ConversationWithLastMessage {
   owner_user_id: string;
   created_at: string;
   updated_at: string;
+  category?: Category | null;
+  tags?: Tag[] | null;
 }
 
 export interface Friendship {
@@ -245,6 +265,12 @@ export interface Web3Nonce {
   WalletAddress: string;
   Nonce: string;
   ExpiresAt: string;
+}
+
+export interface ConversationTag {
+  conversation_id: string;
+  tag_id: string;
+  created_at: string;
 }
 
 export type CallType = "audio" | "video";

@@ -1,9 +1,9 @@
 "use client";
 
-import { useConversations } from "@/hooks/useConversation";
+import { ConversationType, useConversations } from "@/hooks/useConversations";
 import { HoverGif } from "../effects";
 import { SidebarPanelLoading } from "@/components/sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Utility: format ISO date ke "HH:mm" atau "Hari ini"
 function formatTime(iso?: string) {
@@ -36,16 +36,18 @@ function ChatCard({
       gifUrl="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3d3oxMHJqNGRteHNnYm9seXdmeGhmZjF1ODU1cTFnNWFrMGdoN3NjZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/13sI05qVwRXrVe/giphy.gif"
       onClick={() => onChatClick && onChatClick()}
     >
-      <div className="flex p-3 justify-between rounded-xl cursor-pointer transition-colors duration-300 ease-in-out min-w-[300px] hover:bg-gray-50 dark:hover:bg-gray-800">
+      <div className="flex p-3 justify-between rounded-xl cursor-pointer transition-colors duration-300 ease-in-out min-w-[300px] hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
         <div className="flex space-x-3 items-center">
           <div className="profile w-12">
             <img
-              className={`w-auto aspect-square rounded-full object-cover border-3 ${borderColor}`}
+              className={`w-auto aspect-square rounded-full object-cover border-3 ${borderColor} overflow-hidden`}
               src={img}
               alt={name}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/default-avatar.png";
-              }}
+              // onError={(e) => {
+              //   const img = e.currentTarget as HTMLImageElement;
+              //   img.onerror = null;
+              //   img.src = "/default-avatar.png";
+              // }}
             />
           </div>
           <div>
@@ -66,15 +68,29 @@ function ChatCard({
 }
 
 export default function ListChat({
+  type,
   onListClick,
 }: {
+  type: string;
   onListClick?: (chat: any) => void;
 }) {
-  const { conversations, loading } = useConversations("with-last-message");
+  const [typeConversation, setTypeConversation] =
+    useState<ConversationType>("with-last-message");
+
+  const { conversations, loading } = useConversations(typeConversation);
 
   useEffect(() => {
-    console.log("conversations", conversations);
-  }, [conversations]);
+    if (type == "chat" && typeConversation != "with-last-message") {
+      setTypeConversation("with-last-message");
+    }
+    if (type == "direct" && typeConversation != "user") {
+      setTypeConversation("public");
+    }
+    if (type == "group" && typeConversation != "public") {
+      setTypeConversation("public");
+    }
+    console.log("typeChanged", type);
+  }, [type]);
 
   if (loading) return <SidebarPanelLoading />;
 

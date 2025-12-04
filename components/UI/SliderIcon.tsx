@@ -2,19 +2,20 @@
 
 import React, { useRef, useState } from "react";
 
-type SliderItem = { label: string };
+export type SliderItem = { code: string; label: string };
 
-export default function SliderIcon() {
+export default function SliderIcon({
+  onChangeSlider,
+}: {
+  onChangeSlider?: (item: SliderItem) => void;
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const menu: SliderItem[] = [
-    { label: "Pesan" },
-    { label: "Foto" },
-    { label: "Video" },
-    { label: "Tautan" },
-    { label: "Grup" },
-    { label: "Channel" },
-    { label: "Kontak" },
+    { code: "chat", label: "Chat" },
+    { code: "direct", label: "Direct" },
+    { code: "group", label: "Group" },
+    { code: "contact", label: "Contact" },
   ];
 
   const slider = useRef<HTMLDivElement | null>(null);
@@ -81,8 +82,10 @@ export default function SliderIcon() {
     momentum();
   };
 
-  const handleClick = (idx: number) => {
+  const handleClick = (idx: number, item: SliderItem) => {
     setActiveIndex(idx);
+
+    if (item && onChangeSlider) onChangeSlider(item);
 
     // scroll clicked item into view
     const itemEl = itemRefs.current[idx];
@@ -110,7 +113,7 @@ export default function SliderIcon() {
               ref={(el) => {
                 itemRefs.current[idx] = el ?? null; // <--- perbaikan di sini
               }}
-              onClick={() => handleClick(idx)}
+              onClick={() => handleClick(idx, item)}
               className="group relative flex flex-row items-center justify-center pb-1 cursor-pointer"
             >
               <div
