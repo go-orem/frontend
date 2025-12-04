@@ -9,21 +9,22 @@ export function useTags() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const refresh = async () => {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const data = await tagService.list();
-        setTags(data ?? []);
-        setError(null);
-      } catch (err: any) {
-        setError(err.message || "Failed to load tags");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    try {
+      const data = await tagService.list();
+      setTags(data ?? []);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Failed to load tags");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refresh();
   }, []);
 
-  return { tags, loading, error };
+  return { tags, loading, error, setTags, refresh };
 }

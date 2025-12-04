@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { tagService } from "@/services/tagService";
+import { getErrorMessage } from "@/utils";
+import { toast } from "sonner";
+
+interface Tag {
+  id: string;
+  name: string;
+}
 
 interface TagsInputProps {
-  tags: string[];
-  addTag: (tag: string) => void;
-  removeTag: (tag: string) => void;
-  suggestions: string[];
+  tags: Tag[];
+  addTag: (tag: Tag) => void;
+  removeTag: (id: string) => void;
+  suggestions: Tag[];
 }
 
 export function TagsInput({
@@ -21,10 +29,10 @@ export function TagsInput({
   const [showSuggest, setShowSuggest] = useState(false);
 
   const filtered = suggestions.filter((s) =>
-    s.toLowerCase().includes(input.toLowerCase())
+    s.name.toLowerCase().includes(input.toLowerCase())
   );
 
-  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKey = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && input.trim() !== "") {
       e.preventDefault();
 
@@ -32,7 +40,13 @@ export function TagsInput({
         ? input.trim().slice(1)
         : input.trim();
 
-      addTag(formatted);
+      try {
+        const created = await tagService.create(formatted); // ✅ panggil backend
+        addTag(created); // simpan {id, name}
+      } catch (err) {
+        toast.error(getErrorMessage(err));
+      }
+
       setInput("");
       setShowSuggest(false);
     }
@@ -48,14 +62,14 @@ export function TagsInput({
           <AnimatePresence>
             {tags.map((tag) => (
               <motion.div
-                key={tag}
+                key={tag.id}
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 className="px-3 py-1 rounded-full bg-green-400/20 border border-green-400 text-green-400 text-xs flex items-center gap-2 transition"
               >
-                #{tag}
-                <button onClick={() => removeTag(tag)}>
+                #{tag.name}
+                <button onClick={() => removeTag(tag.id)}>
                   <X size={14} />
                 </button>
               </motion.div>
@@ -80,7 +94,7 @@ export function TagsInput({
           <div className="mt-3 rounded-xl bg-black/40 border border-white/10 max-h-32 overflow-auto">
             {filtered.map((t) => (
               <div
-                key={t}
+                key={t.id}
                 onClick={() => {
                   addTag(t);
                   setInput("");
@@ -88,7 +102,7 @@ export function TagsInput({
                 }}
                 className="px-4 py-2 text-sm text-gray-300 hover:bg-white/10 cursor-pointer"
               >
-                #{t}
+                #{t.name}
               </div>
             ))}
           </div>

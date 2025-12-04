@@ -13,19 +13,31 @@ import { useCategories } from "@/hooks/useCategories";
 import { categoryService } from "@/services/categoryService";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/utils";
+import { useTags } from "@/hooks/useTags";
+import { Tag } from "@/types/database.types";
 
 interface CreateGroupFormProps {
   onClose?: () => void;
 }
+
+type TagLite = Omit<Tag, "created_at" | "updated_at">;
 
 export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { categories: serverCategories, loading: loadingCategories } =
     useCategories();
+  const {
+    tags: serverTags,
+    loading: loadingTags,
+    setTags: setServerTags,
+  } = useTags();
+
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     []
   );
+  const [tags, setTags] = useState<TagLite[]>([]);
+
   const form = useForm<CreateGroupType>({
     resolver: zodResolver(CreateGroupSchema),
     defaultValues: {
@@ -56,7 +68,6 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
     }
   }, [serverCategories, loadingCategories, setValue]);
 
-  const tags = watch("tags");
   const selectedCategory = watch("category_id");
   const members = watch("members");
   const avatar = watch("avatar");
@@ -71,17 +82,36 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
     // simpan preview ke react-hook-form (string)
     setValue("avatar", preview); // ✔ benar
   };
+
   // ---------- TAGS ----------
-  const addTag = (t: string) => {
-    if (!tags.includes(t)) {
-      setValue("tags", [...tags, t]);
+  const addTag = async (t: { id: string; name: string }) => {
+    // simpan object di UI state
+    if (!tags.find((x) => x.id === t.id)) {
+      setTags([...tags, t]);
+    }
+    // simpan ID di form state
+    const currentIds = watch("tags");
+    if (!currentIds.includes(t.id)) {
+      setValue("tags", [...currentIds, t.id]);
+    }
+
+    if (!serverTags.find((x) => x.id === t.id)) {
+      setServerTags([
+        ...serverTags,
+        {
+          ...t,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ]);
     }
   };
 
-  const removeTag = (t: string) => {
+  const removeTag = (id: string) => {
+    setTags(tags.filter((x) => x.id !== id));
     setValue(
       "tags",
-      tags.filter((x) => x !== t)
+      watch("tags").filter((x) => x !== id)
     );
   };
 
@@ -141,9 +171,7 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
         tags={tags}
         addTag={addTag}
         removeTag={removeTag}
-        suggestions={["fun", "coding", "team", "private"].filter(
-          (x) => !tags.includes(x)
-        )}
+        suggestions={serverTags.filter((x) => !tags.find((t) => t.id === x.id))}
       />
 
       {/* MEMBERS */}
