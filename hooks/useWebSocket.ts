@@ -38,7 +38,7 @@ export function useWebSocket(roomId?: string) {
         const data = JSON.parse(event.data);
         setMessages((prev) => [...prev, data]);
       } catch (err) {
-        console.error("Invalid WS message", err);
+        console.log("Invalid WS message", err);
       }
     };
 
@@ -48,7 +48,7 @@ export function useWebSocket(roomId?: string) {
     };
 
     ws.onerror = (err) => {
-      console.error("WS error", err);
+      console.log("WS error", err);
     };
 
     wsRef.current = ws;
