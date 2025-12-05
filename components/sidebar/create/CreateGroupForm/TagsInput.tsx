@@ -69,7 +69,7 @@ export function TagsInput({
                 className="px-3 py-1 rounded-full bg-green-400/20 border border-green-400 text-green-400 text-xs flex items-center gap-2 transition"
               >
                 #{tag.name}
-                <button onClick={() => removeTag(tag.id)}>
+                <button type="button" onClick={() => removeTag(tag.id)}>
                   <X size={14} />
                 </button>
               </motion.div>
