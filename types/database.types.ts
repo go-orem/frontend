@@ -40,6 +40,7 @@ export interface Profile {
   bio: string | null;
   created_at: string;
   updated_at: string;
+  username?: string | null;
 }
 
 export interface Contact {

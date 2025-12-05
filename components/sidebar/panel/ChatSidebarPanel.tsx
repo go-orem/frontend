@@ -7,6 +7,7 @@ import SidebarPanelLoading from "./SidebarPanelLoading";
 import SidebarPanelGuest from "./SidebarPanelGuest";
 import { ListChat, MobileMenu, Search, SliderIcon } from "@/components/UI";
 import { SliderItem } from "@/components/UI/SliderIcon";
+import { CreateChatForm } from "../create";
 
 export default function ChatSidebarPanel({
   onListClick,
@@ -79,16 +80,30 @@ export default function ChatSidebarPanel({
       >
         <HeaderChat
           activeTab="chats"
-          onCreateGroupClick={() => setSubTab("create")}
+          onCreateGroupClick={() =>
+            setSubTab(subTab == "create" ? "list" : "create")
+          }
         />
         {loadingAuth && <SidebarPanelLoading />}
         {!isLoggedIn && <SidebarPanelGuest />}
         {isLoggedIn && !loadingAuth && (
           <>
-            <Search />
-            <SliderIcon onChangeSlider={setSliderSelected} />
-            <ListChat type={sliderSelected.code} onListClick={onListClick} />
-            <MobileMenu onMenuClick={onMenuClick} activeIndex={activeIndex} />
+            {subTab === "create" ? (
+              <CreateChatForm />
+            ) : (
+              <>
+                <Search />
+                <SliderIcon onChangeSlider={setSliderSelected} />
+                <ListChat
+                  type={sliderSelected.code}
+                  onListClick={onListClick}
+                />
+                <MobileMenu
+                  onMenuClick={onMenuClick}
+                  activeIndex={activeIndex}
+                />
+              </>
+            )}
           </>
         )}
       </motion.div>

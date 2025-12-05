@@ -61,6 +61,18 @@ class UserService {
     });
     return handleResponse(res);
   }
+
+  async searchUser(query: string): Promise<Profile[]> {
+    const res = await fetch(
+      `/api/users/search?q=${encodeURIComponent(query)}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
+    return handleResponse(res);
+  }
 }
 
 export const userService = new UserService();
