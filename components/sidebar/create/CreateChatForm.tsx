@@ -49,6 +49,37 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
   // ----- SUBMIT -----
   const onSubmit = handleSubmit(async (values) => {
     console.log("CREATE CHAT:", values);
+    if (!values.recipient_id) {
+      toast.error("Please select a user to chat with.");
+      return;
+    }
+    const recipient = searchResults.find(
+      (u) => u.user_id === values.recipient_id
+    );
+    if (!recipient) {
+      toast.error("Selected user not found.");
+      return;
+    }
+    console.log("Starting chat with:", recipient);
+
+    const conversations = {
+      conversation: {
+        conversation_type: "direct",
+        is_public: false,
+        name: recipient.show_public_name
+          ? recipient.public_name
+          : recipient.username,
+        profile_url: recipient.avatar_url,
+      },
+      members: [
+        {
+          user_id: recipient.user_id,
+          role: "admin",
+        },
+      ],
+    };
+    console.log("Conversations payload:", conversations);
+
     // TODO: call chatService.createChat(values.recipient_id)
     onClose?.();
   });
