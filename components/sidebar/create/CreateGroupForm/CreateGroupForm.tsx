@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/utils";
 import { useTags } from "@/hooks/useTags";
 import { Tag } from "@/types/database.types";
+import { useAuth } from "@/hooks/useAuth";
+import { useContacts } from "@/hooks/useContacts";
 
 interface CreateGroupFormProps {
   onClose?: () => void;
@@ -23,6 +25,12 @@ interface CreateGroupFormProps {
 type TagLite = Omit<Tag, "created_at" | "updated_at">;
 
 export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
+  const { user } = useAuth();
+
+  if (!user) return null;
+
+  const userId = user.user.id;
+
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { categories: serverCategories, loading: loadingCategories } =
@@ -32,6 +40,7 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
     loading: loadingTags,
     setTags: setServerTags,
   } = useTags();
+  const { contacts, loading: loadingContacts } = useContacts(userId);
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     []
@@ -178,7 +187,11 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
       <MembersSelector
         members={members}
         toggleMember={toggleMember}
-        allUsers={["Alice", "Bob", "Charlie", "Daisy"]}
+        allUsers={contacts.map((c) => ({
+          id: c.contact_user_id,
+          name: c.saved_name || c.contact_user_id,
+        }))}
+        loading={loadingContacts}
       />
     </form>
   );
