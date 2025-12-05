@@ -189,7 +189,9 @@ export default function CreateGroupForm({ onClose }: CreateGroupFormProps) {
         toggleMember={toggleMember}
         allUsers={contacts.map((c) => ({
           id: c.contact_user_id,
-          name: c.saved_name || c.contact_user_id,
+          name: c.saved_name || c.contact_username || "unknown",
+          username: c.contact_username || "unknown",
+          avatar_url: c.contact_profile?.avatar_url || null,
         }))}
         loading={loadingContacts}
       />

@@ -7,6 +7,7 @@ import { IconAdd, IconSearch } from "@/components/icons";
 interface MemberLite {
   id: string;
   name: string;
+  username: string;
   avatar_url?: string | null;
 }
 
@@ -47,13 +48,15 @@ export function MembersSelector({
                 hover:border-[#30d5ff]/40 transition whitespace-nowrap"
             >
               <img
-                src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${m}`}
+                src={
+                  user?.avatar_url ||
+                  `https://api.dicebear.com/7.x/thumbs/svg?seed=${user?.name}`
+                }
                 className="w-6 h-6 rounded-lg border border-white/10"
               />
               <span className="text-sm font-medium text-white capitalize">
                 {user?.name ?? m}
               </span>
-              <span className="text-xs text-gray-400">@{m}</span>
 
               <button
                 onClick={() => toggleMember(m)}
@@ -69,15 +72,17 @@ export function MembersSelector({
       </div>
 
       {/* Add Members */}
-      <button
-        type="button"
-        onClick={() => setShowAddMember(true)}
-        className="mt-3 w-full px-4 py-3 rounded-xl bg-white/5 border border-gray-600 
+      {showAddMember ? null : (
+        <button
+          type="button"
+          onClick={() => setShowAddMember(true)}
+          className="mt-3 w-full px-4 py-3 rounded-xl bg-white/5 border border-gray-600 
           text-sm hover:bg-white/10 flex items-center gap-2 cursor-pointer"
-      >
-        <IconAdd />
-        Add Members
-      </button>
+        >
+          <IconAdd />
+          Add Members
+        </button>
+      )}
 
       {/* Modal */}
       <AnimatePresence>
@@ -101,12 +106,11 @@ export function MembersSelector({
               filteredUsers.map((u) => (
                 <MemberItem
                   key={u.id}
-                  user={u.name}
+                  name={u.name}
+                  username={u.username}
+                  avatar_url={u.avatar_url}
                   isSelected={members.includes(u.id)}
                   onToggle={() => toggleMember(u.id)}
-                  onDropdown={() =>
-                    setOpenDropdown(openDropdown === u.id ? null : u.id)
-                  }
                 />
               ))
             )}

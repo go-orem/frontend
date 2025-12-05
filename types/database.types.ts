@@ -26,6 +26,22 @@ export interface CallSession {
   updated_at: string;
 }
 
+export interface Profile {
+  user_id: string;
+  public_name: string;
+  show_public_name: boolean;
+  avatar_url: string | null;
+  avatar_mime: string | null;
+  background_url: string | null;
+  background_mime: string | null;
+  badge_url: string | null;
+  badge_hover_url: string | null;
+  badge_hover_mime: string | null;
+  bio: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Contact {
   id: string;
   owner_user_id: string;
@@ -34,6 +50,8 @@ export interface Contact {
   allow_show_contacts: boolean;
   created_at: string;
   updated_at: string;
+  contact_username: string | null;
+  contact_profile: Profile | null;
 }
 
 export interface Category {
@@ -90,22 +108,6 @@ export interface Message {
   blockchain_tx_id: string | null;
   blockchain_chain: string | null;
   message_status: MessageStatus;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Profile {
-  user_id: string;
-  public_name: string;
-  show_public_name: boolean;
-  avatar_url: string | null;
-  avatar_mime: string | null;
-  background_url: string | null;
-  background_mime: string | null;
-  badge_url: string | null;
-  badge_hover_url: string | null;
-  badge_hover_mime: string | null;
-  bio: string | null;
   created_at: string;
   updated_at: string;
 }

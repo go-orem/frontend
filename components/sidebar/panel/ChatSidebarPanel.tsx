@@ -17,6 +17,7 @@ export default function ChatSidebarPanel({
   onMenuClick?: (index: number) => void;
   activeIndex?: number;
 }) {
+  const [subTab, setSubTab] = useState<"list" | "create">("list");
   const [sidebarWidth, setSidebarWidth] = useState<number>(430);
   const [previewWidth, setPreviewWidth] = useState<number>(430);
   const [sliderSelected, setSliderSelected] = useState<SliderItem>({
@@ -76,7 +77,10 @@ export default function ChatSidebarPanel({
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="chats" />
+        <HeaderChat
+          activeTab="chats"
+          onCreateGroupClick={() => setSubTab("create")}
+        />
         {loadingAuth && <SidebarPanelLoading />}
         {!isLoggedIn && <SidebarPanelGuest />}
         {isLoggedIn && !loadingAuth && (
