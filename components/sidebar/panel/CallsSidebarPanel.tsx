@@ -625,7 +625,7 @@ export default function CallsSidebarPanel({
   return (
     <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="max-w-full flex flex-col border-r border-gray-700 bg-[--sidebar-bg] overflow-hidden"
+        className="max-w-full flex flex-col pt-3 border-r border-gray-700 bg-[--sidebar-bg] overflow-hidden"
         initial={false}
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -634,11 +634,9 @@ export default function CallsSidebarPanel({
             : { duration: 0 }
         }
       >
-        <HeaderSidebarPanel activeTab="chats" />
+        <HeaderSidebarPanel activeTab="calls" />
 
-        <div className="mt-3 mb-2">
-          <Search />
-        </div>
+        <Search />
 
         <div className="flex-1 overflow-y-auto custom-scroll px-5 py-3">
           <CallsListContainer />
