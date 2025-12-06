@@ -324,7 +324,7 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
             </div>
 
             {/* Paid */}
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 rounded-xl">
+            {/* <div className="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 rounded-xl">
               <div>
                 <div className="font-medium text-sm">Paid Group</div>
                 <p className="text-xs text-gray-400">Pay to join</p>
@@ -343,12 +343,12 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
                   } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* ==================== PRICE ==================== */}
-        {isPaid && (
+        {/* {isPaid && (
           <div>
             <label className="block mb-1 text-sm text-gray-300">Price</label>
 
@@ -373,10 +373,10 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
               </select>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* ==================== TOKEN GATING ==================== */}
-        <div>
+        {/* <div>
           <label className="block mb-1 text-sm text-gray-300">
             Token Gating
           </label>
@@ -478,7 +478,7 @@ export default function CreateGroup({ onClose }: CreateGroupProps) {
               )}
             </motion.div>
           )}
-        </div>
+        </div> */}
 
         {/* ==================== MEMBERS ==================== */}
         <div>

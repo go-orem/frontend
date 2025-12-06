@@ -435,13 +435,13 @@ function CallsListContainer() {
   return (
     <>
       {/* Filter Tabs */}
-      <div className="px-5 py-3 flex items-center gap-3">
-        <div className="flex-1">
+      <div className="px-0 py-3 flex items-center gap-3">
+        <div className="flex-1 px-5">
           <div className="text-xs text-gray-400">Calls</div>
           <div className="text-lg font-bold text-white">Activity</div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/3 p-1 rounded-full">
+        <div className="flex items-center gap-2 bg-white/3 p-1 rounded-full px-5">
           <button
             className={`px-3 py-1 rounded-full text-sm ${
               filter === "all" ? "bg-white/10 text-white" : "text-gray-300"
@@ -470,7 +470,7 @@ function CallsListContainer() {
       </div>
 
       {/* List */}
-      <div className="space-y-3 px-5 pb-6">
+      <div className="space-y-3 px-0 pb-6">
         {filtered.map((call) => (
           <CallRow
             key={call.id}
@@ -625,7 +625,7 @@ export default function CallsSidebarPanel({
   return (
     <div className={`flex h-screen ${isDragging ? "select-none" : ""}`}>
       <motion.div
-        className="max-w-full flex flex-col pt-3 border-r border-gray-700 bg-[--sidebar-bg] overflow-y-auto"
+        className="max-w-full flex flex-col border-r border-gray-700 bg-[--sidebar-bg] overflow-hidden"
         initial={false}
         animate={{ width: isDragging ? previewWidth : sidebarWidth }}
         transition={
@@ -634,13 +634,13 @@ export default function CallsSidebarPanel({
             : { duration: 0 }
         }
       >
-        <HeaderSidebarPanel activeTab="calls" />
+        <HeaderSidebarPanel activeTab="chats" />
 
-        <div className="px-0 mt-2">
+        <div className="mt-3 mb-2">
           <Search />
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto custom-scroll px-5 py-3">
           <CallsListContainer />
         </div>
 
