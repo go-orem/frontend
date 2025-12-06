@@ -23,7 +23,7 @@ import SidebarSharePanel from "@/components/modals/PopupShare";
 
 // ✅ Tipe props untuk komponen
 interface AccountSettingProps {
-  variant?: "user" | "group"; // dibuat optional supaya aman
+  variant?: "user" | "group";
   data: any;
   onClose: () => void;
 }
@@ -45,24 +45,19 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
   const { refreshUser, isLoggedIn, user, logout } = useAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
-
   const { setOpenGift } = useGift();
   const { openModal } = useModal();
 
-  // handle logout
-  const handleLogout = async () => {
-    try {
-      await logout();
-      window.location.reload();
-      refreshUser();
-      toast.success("Logged out successfully");
-    } catch (err) {
-      toast.error("Logout failed");
-    }
-  };
+  // ✅ State tambahan untuk edit inline & upload avatar/cover
+  const [isEditing, setIsEditing] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(
+    userData?.avatar || "/profile.png"
+  );
+  const [coverPreview, setCoverPreview] = useState(
+    userData?.cover || "/cover-placeholder.png"
+  );
 
   useEffect(() => {
-    // merge data setelah login
     setUserData((prevData: any) => ({
       ...prevData,
       ...{
@@ -74,9 +69,10 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         members: [],
       },
     }));
+    setAvatarPreview(user?.profile?.avatar_url || "/profile.png");
+    setCoverPreview(user?.profile?.background_url || "/cover-placeholder.png");
   }, [user]);
 
-  // close button right top sidebar
   const closeButton = (
     <button
       onClick={onClose}
@@ -87,22 +83,50 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
     </button>
   );
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.reload();
+      refreshUser();
+      toast.success("Logged out successfully");
+    } catch {
+      toast.error("Logout failed");
+    }
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setAvatarPreview(url);
+      setUserData((prev: any) => ({ ...prev, avatar: url }));
+      toast.success("Avatar updated");
+    }
+  };
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setCoverPreview(url);
+      setUserData((prev: any) => ({ ...prev, cover: url }));
+      toast.success("Cover updated");
+    }
+  };
+
   if (!isLoggedIn) {
     return (
-      <>
-        <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
-          <div className="p-4 flex-1 flex flex-col items-center justify-center">
-            {closeButton}
-            <h2 className="text-lg  mb-2">You are not logged in</h2>
-            <p className="text-sm text-gray-400 mb-4">
-              Please log in to access account settings.
-            </p>
-            <Web3LoginButton />
-            <div className="py-1"></div>
-            <GoogleLoginButton />
-          </div>
-        </aside>
-      </>
+      <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
+        <div className="p-4 flex-1 flex flex-col items-center justify-center">
+          {closeButton}
+          <h2 className="text-lg mb-2">You are not logged in</h2>
+          <p className="text-sm text-gray-400 mb-4">
+            Please log in to access account settings.
+          </p>
+          <Web3LoginButton />
+          <div className="py-1"></div>
+          <GoogleLoginButton />
+        </div>
+      </aside>
     );
   }
 
@@ -110,48 +134,55 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
     <aside className="relative h-full w-auto bg-[--background] text-gray-200 flex flex-col overflow-hidden">
       {/* HEADER */}
       <div className="relative">
-        {userData?.cover ? (
+        {/* Editable cover */}
+        <div
+          className="relative w-full h-44 cursor-pointer"
+          onClick={() =>
+            isEditing && document.getElementById("coverInput")?.click()
+          }
+        >
           <img
-            src={userData.cover}
+            src={coverPreview}
             alt="cover"
             className="w-full h-44 object-cover"
           />
-        ) : (
-          <div className="w-full h-32 bg-linear-to-r from-[#0f1724] to-[#0b1220]" />
-        )}
+          <input
+            id="coverInput"
+            type="file"
+            accept="image/*"
+            onChange={handleCoverChange}
+            className="hidden"
+          />
+        </div>
 
         {closeButton}
 
         <div className="p-3 py-3 flex gap-3 justify-between">
           <div>
-            <div className="-mt-8 flex">
-              <ProfileAvatar
-                src={
-                  variant === "user"
-                    ? userData?.avatar
-                    : userData?.cover ?? "/group-placeholder.png"
+            <div className="-mt-8 flex relative">
+              <div
+                className="relative w-20 h-20 cursor-pointer"
+                onClick={() =>
+                  isEditing && document.getElementById("avatarInput")?.click()
                 }
-              />
-            </div>
-            <div className="ml-1 flex justify-center">
-              <div className="flex flex-col">
-                <div className="text-lg font-black ">{userData?.name}</div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-gray-400 ">
-                    {variant === "user"
-                      ? userData?.status ?? "Online"
-                      : `${(userData?.members ?? []).length} anggota`}
-                  </div>
-                  <span className="text-sm text-gray-400 ">
-                    <strong>#</strong>syarifa💖
-                  </span>
-                </div>
+              >
+                <ProfileAvatar src={avatarPreview} />
+                <input
+                  id="avatarInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                />
               </div>
             </div>
           </div>
 
           <div>
-            <button className="p-2 rounded-full hover:bg-[--hovercolor] cursor-pointer">
+            <button
+              className="p-2 rounded-full hover:bg-[--hovercolor] cursor-pointer"
+              onClick={() => setIsEditing(!isEditing)}
+            >
               <IconEdit />
             </button>
           </div>
@@ -160,11 +191,53 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
 
       {/* BODY */}
       <div className="px-4 pb-6 flex-1 overflow-y-auto space-y-4">
-        {/* BIO */}
+        {/* Inline edit username dengan border-bottom */}
+        {isEditing ? (
+          <div className="flex items-center gap-1">
+            <input
+              value={userData.name}
+              onChange={(e) =>
+                setUserData((prev: any) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              className="w-full text-lg pb-3 font-black bg-transparent border-b border-gray-500 focus:border-green-500 focus:outline-none text-white"
+            />
+          </div>
+        ) : (
+          <div className="text-lg font-black flex items-center gap-1">
+            {userData?.name}
+          </div>
+        )}
+        <div className="flex">
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-gray-400 ">
+                {variant === "user"
+                  ? userData?.status ?? "Online"
+                  : `${(userData?.members ?? []).length} anggota`}
+              </div>
+              <span className="text-sm text-gray-400 "> #syarifa💖</span>
+            </div>
+          </div>
+        </div>
+        {/* Editable bio dengan border-bottom */}
         <div>
-          <p className="text-[0.775rem]  text-gray-300">
-            {variant === "user" ? userData?.bio : userData?.description}
-          </p>
+          {isEditing ? (
+            <textarea
+              value={userData.bio}
+              onChange={(e) =>
+                setUserData((prev: any) => ({ ...prev, bio: e.target.value }))
+              }
+              className="w-full bg-transparent border-b border-gray-500 focus:border-green-500 text-sm text-white resize-none focus:outline-none"
+              rows={3}
+            />
+          ) : (
+            <p className="text-[0.775rem] text-gray-300">
+              {variant === "user" ? userData?.bio : userData?.description}
+            </p>
+          )}
         </div>
 
         {/* ACTION BUTTONS */}
@@ -183,13 +256,14 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         {/* GROUP MEMBER */}
         {variant === "group" && (
           <div>
-            <h3 className="text-sm  mb-2">Anggota</h3>
+            <h3 className="text-sm mb-2">Anggota</h3>
             <MemberList members={userData?.members ?? []} />
           </div>
         )}
 
         {/* NOTIFIKASI */}
-        <div className="mt-4 space-y-2  text-sm">
+        <div className="mt-4 space-y-2 text-sm">
+          {/* Switches & info */}
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2">
             <div className="flex items-center gap-3">
               <IconBisu />
@@ -274,7 +348,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
                 key={t}
                 className={({ selected }) =>
                   classNames(
-                    "px-4 py-2 text-sm  cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
+                    "px-4 py-2 text-sm cursor-pointer rounded-full transition-all duration-200 w-auto text-center focus:outline-none",
                     selected
                       ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
@@ -350,7 +424,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
                   </li>
                 ))}
                 {(userData?.links ?? []).length === 0 && (
-                  <div className="text-xs  text-gray-500">Tidak ada link</div>
+                  <div className="text-xs text-gray-500">Tidak ada link</div>
                 )}
               </ul>
             </Tab.Panel>
@@ -363,14 +437,14 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
         <div className="flex items-center gap-3">
           <button className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer">
             <IconAdd />
-            <span className="text-sm  text-gray-300">Tambah akun</span>
+            <span className="text-sm text-gray-300">Tambah akun</span>
           </button>
           <button
             onClick={() => handleLogout()}
             className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
           >
             <IconLogout />
-            <span className="text-sm  text-gray-300">Log Out</span>
+            <span className="text-sm text-gray-300">Log Out</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}
