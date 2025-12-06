@@ -157,7 +157,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
 
         {closeButton}
 
-        <div className="p-3 py-3 flex gap-3 justify-between">
+        <div className="p-3 pb-1 py-3 flex gap-3 justify-between">
           <div>
             <div className="-mt-8 flex relative">
               <div
