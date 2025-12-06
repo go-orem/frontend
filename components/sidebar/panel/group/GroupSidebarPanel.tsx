@@ -5,7 +5,7 @@ import HeaderChat from "../HeaderSidebarPanel";
 import CreateGroup from "../../create/CreateGroup";
 import ListGroup from "./GroupSidebarList";
 import CategoryGroup from "./GroupSidebarCategory";
-import { MobileMenu } from "@/components/UI";
+import { MobileMenu, Search } from "@/components/UI";
 
 type GroupFilter = "all" | "private" | "public" | "paid";
 
@@ -70,8 +70,12 @@ export default function GroupSidebarPanel({
             : { duration: 0 } // saat mount langsung set tanpa animasi
         }
       >
-        <HeaderChat activeTab="group" onCreateGroupClick={() => setSubTab("create")} />
-        
+        <HeaderChat
+          activeTab="group"
+          onCreateGroupClick={() => setSubTab("create")}
+        />
+        <Search />
+
         {subTab === "list" && (
           <>
             {/* Group Filter Tabs */}
