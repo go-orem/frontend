@@ -106,7 +106,7 @@ export default function Web3LoginButton({
       <button
         onClick={handleLogin}
         disabled={loading}
-        className="relative z-10 w-full px-6 py-2.5 rounded-full text-sm font-bold bg-(--background) text-white neon-border flex items-center gap-3"
+        className="relative z-10 w-full px-6 py-2.5 rounded-full text-sm font-bold bg-(--background) text-white neon-border flex items-center gap-3 cursor-pointer"
       >
         <IconMetamask /> {loading ? "Connecting..." : "Wallet"}
       </button>
