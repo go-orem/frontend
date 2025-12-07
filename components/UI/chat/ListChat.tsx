@@ -51,7 +51,7 @@ function ChatCard({
             />
           </div>
           <div>
-            <div className="name font-semibold truncate max-w-[160px]">
+            <div className="name font-semibold truncate max-w-40">
               {name}
             </div>
             <p className="text-sm text-gray-400 truncate max-w-[180px]">

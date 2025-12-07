@@ -18,7 +18,7 @@ function HeaderSidebarPanel({ activeTab, onCreateGroupClick }: HeaderSidebarPane
     group: "Group",
     settings: "Settings",
     story: "Story",
-    calls: "Calls"
+    calls: "Calls",
   };
 
   const onNewChatClick = () => {

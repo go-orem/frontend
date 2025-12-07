@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import StoryPreview, { StoryItem } from "./StoryPreview";
 import {
   ShieldCheck,
   Music,
@@ -125,6 +126,13 @@ export default function StoryList({
           {username.charAt(0)}
         </div>
       </div>
+      {previewOpen && (
+        <StoryPreview
+          stories={previewStories}
+          startIndex={previewIndex}
+          onClose={closePreview}
+        />
+      )}
     </div>
   );
 
@@ -134,6 +142,27 @@ export default function StoryList({
     </p>
   );
 
+  // Preview state & helpers
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number>(0);
+
+  // aggregate list for preview navigation
+  const previewStories: StoryItem[] = [
+    { id: 0, username: "Your Story", status: "you", type: "photo" },
+    ...stories.map((s) => ({ ...(s as any) })),
+  ];
+
+  const openPreview = (id: number) => {
+    const idx = previewStories.findIndex((s) => s.id === id);
+    setPreviewIndex(idx >= 0 ? idx : 0);
+    setPreviewOpen(true);
+    onStoryClick?.(id);
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* YOUR STORY */}
@@ -142,7 +171,7 @@ export default function StoryList({
 
         <motion.div
           whileHover={{ scale: 1.02 }}
-          onClick={() => onStoryClick?.(yourStory.id)}
+          onClick={() => openPreview(yourStory.id)}
           className="
             p-4 rounded-xl border border-black/10
             hover:bg-(--hovercolor) transition-all cursor-pointer
@@ -212,7 +241,7 @@ export default function StoryList({
               <motion.div
                 key={story.id}
                 whileHover={{ scale: 1.015 }}
-                onClick={() => onStoryClick?.(story.id)}
+                onClick={() => openPreview(story.id)}
                 className="
                   p-4 rounded-xl bg-white/5 border border-white/10
                   hover:bg-white/10 cursor-pointer backdrop-blur-xl
@@ -269,7 +298,7 @@ export default function StoryList({
               <motion.div
                 key={story.id}
                 whileHover={{ scale: 1.01 }}
-                onClick={() => onStoryClick?.(story.id)}
+                onClick={() => openPreview(story.id)}
                 className="
                   p-4 rounded-xl bg-white/3 border border-white/10 
                   hover:bg-white/8 cursor-pointer backdrop-blur-xl

@@ -75,10 +75,46 @@ export default function GroupSidebarPanel({
           activeTab="group"
           onCreateGroupClick={() => setSubTab("create")}
         />
+        <Search />
 
         {subTab === "list" && (
           <>
-            <Search />
+            {/* Group Filter Tabs */}
+            <div className="w-full overflow-x-auto shrink-0 pb-3 pl-2 pr-2">
+              <div className="flex space-x-6 px-4 py-2">
+                {[
+                  { label: "All", value: "all" },
+                  { label: "Private", value: "private" },
+                  { label: "Public", value: "public" },
+                  { label: "Paid", value: "paid" },
+                ].map((tab) => (
+                  <div
+                    key={tab.value}
+                    onClick={() => setGroupFilter(tab.value as GroupFilter)}
+                    className="group relative flex flex-col items-center justify-center pb-1 cursor-pointer"
+                  >
+                    <div
+                      className={`flex items-center space-x-2 text-sm transition-colors ease-in-out ${
+                        groupFilter === tab.value
+                          ? "text-(--primarycolor)"
+                          : "text-gray-400 group-hover:text-[--primarycolor]"
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                    </div>
+                    <span
+                      className={`absolute -bottom-1 h-1 rounded-full bg-(--primarycolor) transition-all duration-300 ease-in-out
+                        ${
+                          groupFilter === tab.value
+                            ? "w-10 opacity-100"
+                            : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
+                        }`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <CategoryGroup />
             <ListGroup />
           </>

@@ -19,7 +19,7 @@ function SettingSidebarHeader({ activeTab }: HeaderChatProps) {
 
   return (
     <>
-      <div className="header-atas flex justify-between pb-3 items-center pl-8 pr-8">
+      <div className="header-atas flex justify-between pb-2 items-center pl-6 pr-6">
         <div className="flex items-center space-x-2">
           {/* Judul berubah sesuai tab */}
           <div className="logo font-black  text-xl">
