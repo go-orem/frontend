@@ -237,7 +237,7 @@ export default function InfoSidebar({
           bg-gray-800/50 hover:bg-gray-700/50 transition cursor-pointer
         "
               >
-                Batal
+                Cancel
               </button>
 
               <button
@@ -247,7 +247,7 @@ export default function InfoSidebar({
           bg-(--primarycolor) hover:bg-(--hovercolor) transition cursor-pointer
         "
               >
-                Simpan
+                Save
               </button>
             </div>
           </div>
