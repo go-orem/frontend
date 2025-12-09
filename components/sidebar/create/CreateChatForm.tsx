@@ -94,28 +94,36 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
       <div className="flex flex-col gap-2">
         <motion.label
           className="text-sm text-gray-300"
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.25 }}
         >
           Search Username
         </motion.label>
 
-        <motion.input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Enter username..."
-          initial={{ opacity: 0, y: -10 }}
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="
-            flex-1 bg-white/5 border border-white/10 rounded-xl
-            px-4 py-3 outline-none text-sm
-            placeholder:text-gray-500
-            focus:border-[#30d5ff]/60
-            transition
-          "
-        />
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="relative"
+        >
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+            @
+          </span>
+
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="enter username..."
+            className="
+              w-full bg-white/5 border border-white/10 rounded-xl
+              pl-8 pr-4 py-3 outline-none text-sm
+              placeholder:text-gray-500
+              focus:border-[#30d5ff]/60
+              transition
+            "
+          />
+        </motion.div>
       </div>
 
       {/* Results */}
@@ -146,7 +154,10 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+              transition={{
+                duration: 0.3,
+              }}
+              whileHover={{ scale: 1.02 }}
               className={`
                 flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer border
                 ${
@@ -154,7 +165,6 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
                     ? "bg-blue-600/20 border-blue-400"
                     : "bg-white/5 border-white/10"
                 }
-                transition
               `}
             >
               <img
@@ -184,7 +194,7 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
         whileHover={{ scale: 1.02 }}
         className="
           w-full px-4 py-3 rounded-xl btn-primary text-white text-sm
-          disabled:opacity-50 transition
+          disabled:opacity-50
         "
       >
         Start Chat
