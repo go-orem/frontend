@@ -36,6 +36,21 @@ export default function InfoSidebar({
   const [enabled, setEnabled] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
+  // tambahan states untuk field contact lengkap (paste setelah contactDescription)
+  const [contactUsername, setContactUsername] = useState<string>(
+    data?.username ?? ""
+  );
+  const [contactWallet, setContactWallet] = useState<string>(
+    data?.wallet ?? data?.address ?? ""
+  );
+  const [contactOremID, setContactOremID] = useState<string>(
+    data?.oremId ?? data?.oremID ?? ""
+  );
+  const [contactTag, setContactTag] = useState<string>(data?.tag ?? "");
+  const [contactSocial, setContactSocial] = useState<string>(
+    data?.social ?? data?.socialLink ?? ""
+  );
+
   // Fitur edit contact
   const [isEditing, setIsEditing] = useState(false);
   const [contactName, setContactName] = useState(data.name);
@@ -47,7 +62,21 @@ export default function InfoSidebar({
   const { openModal } = useModal();
 
   const handleSaveContact = () => {
-    // Simpan ke backend / context jika perlu
+    setIsEditing(false);
+  };
+
+  const handleSaveContactEdit = () => {
+    const payload = {
+      name: contactName,
+      username: contactUsername,
+      wallet: contactWallet,
+      oremId: contactOremID,
+      tag: contactTag,
+      social: contactSocial,
+      description: contactDescription,
+    };
+    console.log("SAVE CONTACT PAYLOAD:", payload);
+    // TODO: kirim ke backend / context
     setIsEditing(false);
   };
 
@@ -65,6 +94,7 @@ export default function InfoSidebar({
           <div className="w-full h-32 bg-linear-to-r from-[#0f1724] to-[#0b1220]" />
         )}
 
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 cursor-pointer"
@@ -84,10 +114,11 @@ export default function InfoSidebar({
                 }
               />
             </div>
+
             <div className="ml-1 flex justify-center">
               <div className="flex flex-col">
-                <div className="text-lg font-black ">{contactName}</div>
-                <div className="text-xs text-gray-400 ">
+                <div className="text-lg font-black">{contactName}</div>
+                <div className="text-xs text-gray-400">
                   {variant === "user"
                     ? data.status ?? "Online"
                     : `${(data.members ?? []).length} anggota`}
@@ -95,10 +126,20 @@ export default function InfoSidebar({
               </div>
             </div>
           </div>
+
+          {/* Tombol Edit */}
           <div>
             <button
               className="p-2 rounded-full hover:bg-(--hovercolor) cursor-pointer"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                setIsEditing(true);
+                setTimeout(() => {
+                  const el = document.querySelector(
+                    "#edit-contact-name"
+                  ) as HTMLElement;
+                  el?.focus();
+                }, 60);
+              }}
             >
               <IconEdit />
             </button>
@@ -107,37 +148,104 @@ export default function InfoSidebar({
 
         {/* Form Edit Contact */}
         {isEditing && (
-          <div className="p-3 bg-[#1a1a1a] rounded-md space-y-3 mx-3 mb-3">
-            <div>
-              <label className="text-xs text-gray-400">Nama</label>
+          <div className="px-4 py-3 space-y-5 animate-fadeIn h-screen">
+            {/* FIELD: Nama Kontak */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Nama Kontak</label>
               <input
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                className="w-full mt-1 p-2 bg-gray-800 rounded-md text-white text-sm focus:outline-none"
+                autoFocus
+                className="
+          w-full bg-transparent 
+          border-b border-white/20 
+          text-white py-2 text-sm 
+          focus:outline-none 
+          focus:border-white/40 
+          placeholder:text-gray-500
+        "
+                placeholder="Add contact name ..."
               />
             </div>
-            <div>
-              <label className="text-xs text-gray-400">
-                {variant === "user" ? "Bio" : "Deskripsi"}
+
+            {/* FIELD: Orem Chat ID */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Orem ID</label>
+              <input
+                type="text"
+                value={contactOremID}
+                onChange={(e) => setContactOremID(e.target.value)}
+                className="
+          w-full bg-transparent 
+          border-b border-white/20 
+          text-white py-2 text-sm 
+          focus:outline-none 
+          focus:border-white/40
+          placeholder:text-gray-500
+        "
+                placeholder="@orem"
+              />
+            </div>
+
+            {/* FIELD: Tag */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Tag / Label</label>
+              <input
+                type="text"
+                value={contactTag}
+                onChange={(e) => setContactTag(e.target.value)}
+                className="
+          w-full bg-transparent 
+          border-b border-white/20 
+          text-white py-2 text-sm 
+          focus:outline-none 
+          focus:border-white/40
+          placeholder:text-gray-500
+        "
+                placeholder="Teman, Kerja, Client, VIP…"
+              />
+            </div>
+
+            {/* FIELD: Sosial Media */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">
+                Link Sosial Media
               </label>
-              <textarea
-                value={contactDescription}
-                onChange={(e) => setContactDescription(e.target.value)}
-                rows={3}
-                className="w-full mt-1 p-2 bg-gray-800 rounded-md text-white text-sm focus:outline-none"
+              <input
+                type="text"
+                value={contactSocial}
+                onChange={(e) => setContactSocial(e.target.value)}
+                className="
+          w-full bg-transparent 
+          border-b border-white/20 
+          text-white py-2 text-sm 
+          focus:outline-none 
+          focus:border-white/40
+          placeholder:text-gray-500
+        "
+                placeholder="https://instagram.com/..."
               />
             </div>
-            <div className="flex gap-2 justify-end">
+
+            {/* BUTTON */}
+            <div className="flex justify-end gap-2 pt-1">
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-3 py-1 bg-gray-700 rounded-md text-xs hover:bg-gray-600"
+                className="
+          px-4 py-1.5 text-xs rounded-full 
+          bg-gray-800/50 hover:bg-gray-700/50 transition cursor-pointer
+        "
               >
                 Cancel
               </button>
+
               <button
-                onClick={handleSaveContact}
-                className="px-3 py-1 bg-blue-600 rounded-md text-xs hover:bg-blue-500"
+                onClick={handleSaveContactEdit}
+                className="
+          px-4 py-1.5 text-xs rounded-full text-black hover:text-white 
+          bg-(--primarycolor) hover:bg-(--hovercolor) transition cursor-pointer
+        "
               >
                 Save
               </button>
@@ -146,11 +254,12 @@ export default function InfoSidebar({
         )}
       </div>
 
-      {/* body */}
+      {/* ===== BODY CONTENT ===== */}
+
       <div className="px-4 pb-6 flex-1 overflow-y-auto space-y-4">
-        {/* intro / bio / description */}
+        {/* intro / bio */}
         <div>
-          <p className="text-[0.775rem]  text-gray-300">{contactDescription}</p>
+          <p className="text-[0.775rem] text-gray-300">{contactDescription}</p>
         </div>
 
         {/* actions */}
@@ -166,15 +275,15 @@ export default function InfoSidebar({
           </button>
         </div>
 
-        {/* group members preview */}
+        {/* group members */}
         {variant === "group" && (
           <div>
-            <h3 className="text-sm  mb-2">Anggota</h3>
+            <h3 className="text-sm mb-2">Anggota</h3>
             <MemberList members={data.members ?? []} />
           </div>
         )}
 
-        {/* Tabs */}
+        {/* TABS */}
         <Tab.Group>
           <Tab.List className="flex justify-center space-x-2 w-full">
             {tabs.map((t) => (
@@ -182,8 +291,7 @@ export default function InfoSidebar({
                 key={t}
                 className={({ selected }) =>
                   classNames(
-                    "px-4 py-2 text-sm  cursor-pointer rounded-full transition-all duration-200 w-auto text-center",
-                    "focus:outline-none focus:ring-0 border-0 outline-none ring-0",
+                    "px-4 py-2 text-sm cursor-pointer rounded-full transition-all duration-200",
                     selected
                       ? "bg-(--hovercolor) text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
@@ -196,9 +304,9 @@ export default function InfoSidebar({
           </Tab.List>
 
           <Tab.Panels className="px-0 mt-3">
-            {/* MEDIA */}
+            {/* Tab Content */}
             <Tab.Panel>
-              <div className="grid grid-cols-3 gap-2 ">
+              <div className="grid grid-cols-3 gap-2">
                 {(data.mediaItems ?? []).map((m: any, i: number) => (
                   <img
                     key={i}
@@ -207,6 +315,7 @@ export default function InfoSidebar({
                     className="w-full h-20 object-cover rounded-md"
                   />
                 ))}
+
                 {(data.mediaItems ?? []).length === 0 && (
                   <div className="text-xs text-gray-500 col-span-3">
                     Tidak ada media
@@ -215,37 +324,36 @@ export default function InfoSidebar({
               </div>
             </Tab.Panel>
 
-            {/* FILES */}
             <Tab.Panel>
-              <ul className="space-y-2 ">
+              <ul className="space-y-2">
                 {(data.files ?? []).map((f: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     {f}
                   </li>
                 ))}
+
                 {(data.files ?? []).length === 0 && (
                   <div className="text-xs text-gray-500">Tidak ada file</div>
                 )}
               </ul>
             </Tab.Panel>
 
-            {/* VOICE */}
             <Tab.Panel>
-              <ul className="space-y-2 ">
+              <ul className="space-y-2">
                 {(data.voice ?? []).map((v: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     🎙️ {v}
                   </li>
                 ))}
+
                 {(data.voice ?? []).length === 0 && (
                   <div className="text-xs text-gray-500">Tidak ada voice</div>
                 )}
               </ul>
             </Tab.Panel>
 
-            {/* LINKS */}
             <Tab.Panel>
-              <ul className="space-y-2 ">
+              <ul className="space-y-2">
                 {(data.links ?? []).map((l: string, i: number) => (
                   <li key={i} className="p-2 bg-[#121212] rounded-md text-xs">
                     <a
@@ -258,8 +366,9 @@ export default function InfoSidebar({
                     </a>
                   </li>
                 ))}
+
                 {(data.links ?? []).length === 0 && (
-                  <div className="text-xs  text-gray-500">Tidak ada link</div>
+                  <div className="text-xs text-gray-500">Tidak ada link</div>
                 )}
               </ul>
             </Tab.Panel>
@@ -267,7 +376,7 @@ export default function InfoSidebar({
         </Tab.Group>
 
         {/* Notifikasi */}
-        <div className="mt-4 space-y-2  text-sm">
+        <div className="mt-4 space-y-2 text-sm">
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2">
             <div className="flex items-center gap-3">
               <IconBisu />
@@ -279,7 +388,7 @@ export default function InfoSidebar({
               onChange={setEnabled}
               className={`${
                 enabled ? "bg-green-500" : "bg-gray-700"
-              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none cursor-pointer`}
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 cursor-pointer`}
             >
               <span
                 className={`${
@@ -288,12 +397,14 @@ export default function InfoSidebar({
               />
             </Switch>
           </div>
+
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2 cursor-pointer">
             <div className="flex items-center gap-3">
               <IconStar />
               <span>Like chat</span>
             </div>
           </div>
+
           <div className="flex w-full items-center justify-between gap-3 text-gray-300 rounded-md py-2 cursor-pointer">
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
@@ -303,39 +414,43 @@ export default function InfoSidebar({
               <div className="pt-2">
                 <span className="text-xs text-gray-500">
                   Encrypt end to end, Orem Network
-                  <br /> pelajari selengkapnya
+                  <br />
+                  pelajari selengkapnya
                 </span>
               </div>
             </div>
           </div>
-          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2">
             Blokir {contactName}
           </button>
-          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2">
             Report {contactName}
           </button>
-          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2 hover:bg-[#1a1a1a] cursor-pointer">
+          <button className="w-full text-red-500 text-xs bg-[#111111] rounded-md py-2">
             Hapus chat
           </button>
         </div>
       </div>
 
-      {/* footer quick actions */}
+      {/* Footer */}
       <div className="px-4 py-1 border-t-[0.5px] border-gray-700">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setOpenGift(true)}
             className="flex-1 py-2 rounded-md hover:bg-[#151515] flex items-center justify-center gap-2 cursor-pointer"
           >
-            <IconSubcribe />{" "}
-            <span className="text-sm  text-gray-300">Kirim Hadiah</span>
+            <IconSubcribe />
+            <span className="text-sm text-gray-300">Kirim Hadiah</span>
           </button>
+
           <button
             onClick={() => setShareOpen(true)}
             className="p-2 cursor-pointer rounded-full hover:bg-(--hovercolor)"
           >
             <IconGear />
           </button>
+
           <PopupShare
             open={shareOpen}
             setOpen={setShareOpen}
