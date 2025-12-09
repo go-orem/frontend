@@ -38,7 +38,10 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
     if (!searchQuery.trim() || searchQuery === lastQuery) return;
 
     const timeout = setTimeout(() => {
-      search(searchQuery)
+      search(searchQuery, {
+        limit: 5,
+        page: 1,
+      })
         .then(() => setLastQuery(searchQuery))
         .catch((err) => toast.error(getErrorMessage(err)));
     }, 500);
@@ -180,6 +183,16 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
               </div>
             </motion.div>
           ))}
+
+          {!loading && searchResults.length === 0 && lastQuery && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-sm text-gray-400"
+            >
+              No users found for "{lastQuery}".
+            </motion.p>
+          )}
         </AnimatePresence>
       </div>
 

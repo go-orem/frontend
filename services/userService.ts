@@ -62,15 +62,28 @@ class UserService {
     return handleResponse(res);
   }
 
-  async searchUser(query: string): Promise<Profile[]> {
-    const res = await fetch(
-      `/api/users/search?q=${encodeURIComponent(query)}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      }
-    );
+  async searchUser(
+    q: string,
+    opts?: {
+      limit?: number;
+      page?: number;
+      offset?: number;
+    }
+  ): Promise<Profile[]> {
+    const params = new URLSearchParams();
+
+    params.set("q", q);
+
+    if (opts?.limit !== undefined) params.set("limit", String(opts.limit));
+    if (opts?.page !== undefined) params.set("page", String(opts.page));
+    if (opts?.offset !== undefined) params.set("offset", String(opts.offset));
+
+    const res = await fetch(`/api/users/search?${params.toString()}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
     return handleResponse(res);
   }
 }

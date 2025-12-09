@@ -1,7 +1,8 @@
 import { proxyRequest } from "@/lib/apiProxy";
 
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || "";
-  return proxyRequest(`/users/search?q=${q}`, req);
+  const url = new URL(req.url);
+  const params = url.searchParams.toString();
+
+  return proxyRequest(`/users/search?${params}`, req);
 }

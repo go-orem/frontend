@@ -9,11 +9,15 @@ export function useUserSearch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = async (query: string) => {
-    if (!query.trim()) return;
+  const search = async (
+    q: string,
+    opts?: { limit?: number; page?: number; offset?: number }
+  ) => {
+    if (!q.trim()) return;
+
     setLoading(true);
     try {
-      const data = await userService.searchUser(query);
+      const data = await userService.searchUser(q, opts);
       setResults(data ?? []);
       setError(null);
     } catch (err: any) {
