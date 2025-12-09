@@ -50,7 +50,9 @@ export default function ClientLayout({
 
   const onChatSelect = (val: any) => {
     if (isMobile) setToggleSidear(false);
-    router.push(`/channel/${val}`);
+    if (val && val.id) {
+      router.push(`/channel/${val.id}`);
+    }
   };
 
   const onSidebarClick = (idx: number) => {
@@ -63,19 +65,55 @@ export default function ClientLayout({
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
-        return <ChatSidebarPanel onListClick={onChatSelect} onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <ChatSidebarPanel
+            onListClick={onChatSelect}
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 1:
-        return <NotificationSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <NotificationSidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 2:
-        return <ChannelSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <ChannelSidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 3:
-        return <GroupSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <GroupSidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 4:
-        return <StorySidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <StorySidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 5:
-        return <CallsSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <CallsSidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       case 10:
-        return <SettingSidebarPanel onMenuClick={onSidebarClick} activeIndex={activeIndex} />;
+        return (
+          <SettingSidebarPanel
+            onMenuClick={onSidebarClick}
+            activeIndex={activeIndex}
+          />
+        );
       default:
         return <></>;
     }

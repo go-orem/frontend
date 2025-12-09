@@ -1,18 +1,19 @@
-// app/providers/ConversationProvider.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { Conversation, Message } from "@/types/database.types";
-import { conversationService } from "@/services/conversationService";
-import { useAuth } from "@/hooks/useAuth";
+import { createContext, useContext, useState } from "react";
+import { ConversationWithLastMessage, Message } from "@/types/database.types";
 
 interface ConversationContextType {
-  conversations: Conversation[];
+  conversations: ConversationWithLastMessage[];
+  setConversations: React.Dispatch<
+    React.SetStateAction<ConversationWithLastMessage[]>
+  >;
+
   messages: Record<string, Message[]>;
+  setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
+
   loading: boolean;
-  refreshConversations: () => Promise<void>;
-  loadMessages: (conversationId: string) => Promise<void>;
-  createConversation: (memberIds: string[]) => Promise<Conversation | null>;
+  setLoading: (val: boolean) => void;
 }
 
 const ConversationContext = createContext<ConversationContextType | null>(null);
@@ -22,61 +23,21 @@ export function ConversationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<
+    ConversationWithLastMessage[]
+  >([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [loading, setLoading] = useState(false);
-  const { isLoggedIn } = useAuth();
-
-  // initial load
-  useEffect(() => {
-    if (isLoggedIn) {
-      refreshConversations();
-    }
-  }, []);
-
-  async function refreshConversations() {
-    setLoading(true);
-    try {
-      const data = await conversationService.listUserConversations();
-      setConversations(data);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function loadMessages(conversationId: string) {
-    setLoading(true);
-    try {
-      const data = await conversationService.listMessages(conversationId);
-      setMessages((prev) => ({ ...prev, [conversationId]: data }));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function createConversation(memberIds: string[]) {
-    setLoading(true);
-    try {
-      const conv = await conversationService.createWithMembers(memberIds);
-      setConversations((prev) => [...prev, conv]);
-      return conv;
-    } catch (err) {
-      console.error(err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <ConversationContext.Provider
       value={{
         conversations,
+        setConversations,
         messages,
+        setMessages,
         loading,
-        refreshConversations,
-        loadMessages,
-        createConversation,
+        setLoading,
       }}
     >
       {children}
@@ -84,9 +45,8 @@ export function ConversationProvider({
   );
 }
 
-export const useConversation = () => {
+export const useConversationContext = () => {
   const ctx = useContext(ConversationContext);
-  if (!ctx)
-    throw new Error("useConversation must be used within ConversationProvider");
+  if (!ctx) throw new Error("ConversationProvider missing");
   return ctx;
 };

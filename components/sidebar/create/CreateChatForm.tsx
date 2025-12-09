@@ -8,6 +8,10 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/utils";
 import { useUserSearch } from "@/hooks/useUserSearch";
 import { motion, AnimatePresence } from "framer-motion";
+import { conversationService } from "@/services/conversationService";
+import { ConversationsWithMemberBody } from "@/types/conversations";
+import { useConversations } from "@/hooks/useConversations";
+import { useRouter } from "next/navigation";
 
 const CreateChatSchema = z.object({
   recipient_id: z.string().uuid("Recipient ID must be valid UUID"),
@@ -20,6 +24,7 @@ interface CreateChatFormProps {
 }
 
 export default function CreateChatForm({ onClose }: CreateChatFormProps) {
+  const router = useRouter();
   const form = useForm<CreateChatType>({
     resolver: zodResolver(CreateChatSchema),
     defaultValues: { recipient_id: "" },
@@ -30,6 +35,10 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const { results: searchResults, loading, error, search } = useUserSearch();
+
+  const { createConversation } = useConversations();
+
+  const [loadingCreate, setLoadingCreate] = useState<boolean>(false);
 
   // ----- DEBOUNCE SEARCH -----
   const [lastQuery, setLastQuery] = useState("");
@@ -51,40 +60,55 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
   // ----- SUBMIT -----
   const onSubmit = handleSubmit(async (values) => {
-    console.log("CREATE CHAT:", values);
-    if (!values.recipient_id) {
-      toast.error("Please select a user to chat with.");
-      return;
-    }
-    const recipient = searchResults.find(
-      (u) => u.user_id === values.recipient_id
-    );
-    if (!recipient) {
-      toast.error("Selected user not found.");
-      return;
-    }
-    console.log("Starting chat with:", recipient);
+    try {
+      setLoadingCreate(true);
+      console.log("CREATE CHAT:", values);
+      if (!values.recipient_id) {
+        toast.error("Please select a user to chat with.");
+        return;
+      }
+      const recipient = searchResults.find(
+        (u) => u.user_id === values.recipient_id
+      );
+      if (!recipient) {
+        toast.error("Selected user not found.");
+        return;
+      }
+      console.log("Starting chat with:", recipient);
 
-    const conversations = {
-      conversation: {
-        conversation_type: "direct",
-        is_public: false,
-        name: recipient.show_public_name
-          ? recipient.public_name
-          : recipient.username,
-        profile_url: recipient.avatar_url,
-      },
-      members: [
-        {
-          user_id: recipient.user_id,
-          role: "admin",
+      const conversationBody = {
+        conversation: {
+          conversation_type: "direct",
+          is_public: false,
+          name: recipient.show_public_name
+            ? recipient.public_name
+            : recipient.username,
+          profile_url: recipient.avatar_url,
         },
-      ],
-    };
-    console.log("Conversations payload:", conversations);
+        members: [
+          {
+            user_id: recipient.user_id,
+            role: "admin",
+          },
+        ],
+      } as ConversationsWithMemberBody;
+      console.log("Conversations payload:", conversationBody);
 
-    // TODO: call chatService.createChat(values.recipient_id)
-    onClose?.();
+      // TODO: call chatService.createChat(values.recipient_id)
+      const res = await createConversation(conversationBody);
+      console.log("Chat created:", res);
+      if (!res) {
+        toast.error("Failed to create chat.");
+        return;
+      }
+      toast.success("Chat created successfully!");
+      router.push(`/channel/${res.id}`);
+      onClose?.();
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setLoadingCreate(false);
+    }
   });
 
   return (
@@ -210,7 +234,12 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
           disabled:opacity-50
         "
       >
-        Start Chat
+        Start Chat{" "}
+        {loadingCreate ? (
+          <span className="ml-2 inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"></span>
+        ) : (
+          ""
+        )}
       </motion.button>
     </form>
   );

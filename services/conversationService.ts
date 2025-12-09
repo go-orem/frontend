@@ -4,8 +4,11 @@ import { handleResponse } from "@/utils/response";
 import {
   Conversation,
   ConversationMember,
+  ConversationType,
+  ConversationWithLastMessage,
   Message,
 } from "@/types/database.types";
+import { ConversationsWithMemberBody } from "@/types/conversations";
 
 class ConversationService {
   async listPublic(): Promise<Conversation[]> {
@@ -26,20 +29,29 @@ class ConversationService {
     return handleResponse(res);
   }
 
-  async listWithLastMessage(): Promise<Conversation[]> {
-    const res = await fetch("/api/conversations/with-last-message", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+  async listWithLastMessage(
+    type: ConversationType | null
+  ): Promise<ConversationWithLastMessage[]> {
+    const res = await fetch(
+      `/api/conversations/with-last-message?conversation_type=${
+        type ? type : ""
+      }`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
     return handleResponse(res);
   }
 
-  async createWithMembers(memberIds: string[]): Promise<Conversation> {
+  async createWithMembers(
+    body: ConversationsWithMemberBody
+  ): Promise<Conversation> {
     const res = await fetch("/api/conversations/with-members", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ member_ids: memberIds }),
+      body: JSON.stringify(body),
       credentials: "include",
     });
     return handleResponse(res);

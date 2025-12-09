@@ -1,9 +1,13 @@
 "use client";
 
-import { ConversationType, useConversations } from "@/hooks/useConversations";
 import { HoverGif } from "../effects";
 import { SidebarPanelLoading } from "@/components/sidebar";
-import { useEffect, useState } from "react";
+import { useConversationContext } from "@/context/ConversationContext";
+import { useConversations } from "@/hooks/useConversations";
+import { ConversationType } from "@/types/database.types";
+import { getErrorMessage, runEffectAsync } from "@/utils";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 // Utility: format ISO date ke "HH:mm" atau "Hari ini"
 function formatTime(iso?: string) {
@@ -51,9 +55,7 @@ function ChatCard({
             />
           </div>
           <div>
-            <div className="name font-semibold truncate max-w-40">
-              {name}
-            </div>
+            <div className="name font-semibold truncate max-w-40">{name}</div>
             <p className="text-sm text-gray-400 truncate max-w-[180px]">
               {message}
             </p>
@@ -74,22 +76,19 @@ export default function ListChat({
   type: string;
   onListClick?: (chat: any) => void;
 }) {
-  const [typeConversation, setTypeConversation] =
-    useState<ConversationType>("with-last-message");
-
-  const { conversations, loading } = useConversations(typeConversation);
+  const { conversations, loading } = useConversationContext();
+  const { refreshConversations } = useConversations();
 
   useEffect(() => {
-    if (type == "chat" && typeConversation != "with-last-message") {
-      setTypeConversation("with-last-message");
-    }
-    if (type == "direct" && typeConversation != "user") {
-      setTypeConversation("public");
-    }
-    if (type == "group" && typeConversation != "public") {
-      setTypeConversation("public");
-    }
-    console.log("typeChanged", type);
+    runEffectAsync(async () => {
+      try {
+        await refreshConversations(
+          type === "chat" ? null : (type as ConversationType)
+        );
+      } catch (err) {
+        toast.error(getErrorMessage(err));
+      }
+    });
   }, [type]);
 
   if (loading) return <SidebarPanelLoading />;
@@ -108,8 +107,14 @@ export default function ListChat({
 
         const avatar =
           conv.conversation_type === "direct"
-            ? otherUser?.avatar_url || "/default-avatar.png"
-            : conv.profile_url || "/default-group.png";
+            ? otherUser?.avatar_url ||
+              `https://api.dicebear.com/7.x/thumbs/svg?seed=${
+                otherUser?.public_name || conv.name || "unknown"
+              }`
+            : conv.profile_url ||
+              `https://api.dicebear.com/7.x/thumbs/svg?seed=${
+                conv.name || "group-chat"
+              }`;
 
         return (
           <ChatCard

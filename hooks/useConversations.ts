@@ -1,43 +1,52 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { useConversationContext } from "@/context/ConversationContext";
 import { conversationService } from "@/services/conversationService";
-import { ConversationWithLastMessage } from "@/types/database.types";
+import { ConversationsWithMemberBody } from "@/types/conversations";
+import { ConversationType } from "@/types/database.types";
 
-export type ConversationType = "public" | "user" | "with-last-message";
+export function useConversations() {
+  const { setConversations, setMessages, setLoading } =
+    useConversationContext();
 
-export function useConversations(type: ConversationType = "user") {
-  const [conversations, setConversations] = useState<
-    ConversationWithLastMessage[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
+  async function refreshConversations(type: ConversationType | null = null) {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        let data: ConversationWithLastMessage[];
-        switch (type) {
-          case "public":
-            data = await conversationService.listPublic();
-            break;
-          case "with-last-message":
-            data = await conversationService.listWithLastMessage();
-            break;
-          default:
-            data = await conversationService.listUserConversations();
-        }
-        setConversations(data);
-        setError(null);
-      } catch (err: any) {
-        setError(err.message || "Failed to load conversations");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [type]);
+    try {
+      const data = await conversationService.listWithLastMessage(type);
+      setConversations(data);
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  return { conversations, loading, error };
+  async function loadMessages(conversationId: string) {
+    setLoading(true);
+    try {
+      const msgs = await conversationService.listMessages(conversationId);
+      setMessages((prev) => ({ ...prev, [conversationId]: msgs }));
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function createConversation(body: ConversationsWithMemberBody) {
+    setLoading(true);
+    try {
+      const conv = await conversationService.createWithMembers(body);
+      await refreshConversations();
+      return conv;
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    refreshConversations,
+    loadMessages,
+    createConversation,
+  };
 }

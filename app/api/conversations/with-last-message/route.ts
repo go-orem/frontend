@@ -1,5 +1,7 @@
 import { proxyRequest } from "@/lib/apiProxy";
 
 export async function GET(req: Request) {
-  return proxyRequest("/conversations/with-last-message", req);
+  const url = new URL(req.url);
+  const params = url.searchParams.toString();
+  return proxyRequest(`/conversations/with-last-message?${params}`, req);
 }

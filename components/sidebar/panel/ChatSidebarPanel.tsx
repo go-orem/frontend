@@ -89,7 +89,7 @@ export default function ChatSidebarPanel({
         {isLoggedIn && !loadingAuth && (
           <>
             {subTab === "create" ? (
-              <CreateChatForm />
+              <CreateChatForm onClose={() => setSubTab("list")} />
             ) : (
               <>
                 <Search />
