@@ -4,16 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ChatFooter from "./ChatFooter";
 import { useModal, useModalChat } from "@/context";
 import { SendChatAttachment } from "@/components/UI";
-
-type FullChatProps = {
-  id: number;
-  name: string;
-  avatar?: string;
-  time: string;
-  message: string;
-  sender?: "me" | "other";
-  status?: "sent" | "delivered" | "read";
-};
+import { FullChatProps } from "@/types/conversations";
 
 function CheckIcon({ status }: { status?: "sent" | "delivered" | "read" }) {
   if (status === "sent") {
@@ -143,126 +134,6 @@ function ChatBubble({
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<FullChatProps[]>([
-    {
-      id: 1,
-      name: "Syarifa",
-      avatar:
-        "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3JpMzBob2Nha3A2eG9xa2pocWh1ZGs2YjczMXB0eXpzN3Vyam1nZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1zhqIaTw4q3ZeuDq8i/giphy.gif",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 2,
-      name: "Saya",
-      time: "23:01",
-      message: "Lagi coba bikin chat app 🚀",
-      sender: "me",
-      status: "sent",
-    },
-    {
-      id: 3,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 4,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 5,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "read",
-    },
-    {
-      id: 6,
-      name: "Ratna sinta 🦋",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 7,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "delivered",
-    },
-    {
-      id: 8,
-      name: "Syarifa",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 9,
-      name: "Saya",
-      time: "23:01",
-      message: "Lagi coba bikin chat app 🚀",
-      sender: "me",
-      status: "sent",
-    },
-    {
-      id: 10,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 11,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 12,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "read",
-    },
-    {
-      id: 13,
-      name: "Ratna sinta 🦋",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
     {
       id: 14,
       name: "Saya",

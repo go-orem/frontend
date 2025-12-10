@@ -25,9 +25,3 @@ export function getErrorMessage(err: unknown) {
   if (typeof err === "string") return err;
   return "Failed to create category";
 }
-
-export function runEffectAsync(fn: () => Promise<void>) {
-  fn().catch((err) => {
-    console.error(err);
-  });
-}

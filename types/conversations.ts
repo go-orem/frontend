@@ -12,3 +12,13 @@ export interface ConversationsWithMemberBody {
     role: "admin" | "member";
   }>;
 }
+
+export type FullChatProps = {
+  id: number;
+  name: string;
+  avatar?: string;
+  time: string;
+  message: string;
+  sender?: "me" | "other";
+  status?: "sent" | "delivered" | "read";
+};
