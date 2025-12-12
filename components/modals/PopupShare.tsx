@@ -337,8 +337,6 @@ export default function SidebarAccountSettings({
                           {/* Tambahkan delete kalau mau */}
                         </div>
                       )}
-
-                      
                     </div>
 
                     {/* ============= PANEL ISI FOLDER ============= */}
