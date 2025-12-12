@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { X, User, Wallet, FolderPlus, ChevronRight } from "lucide-react";
 import { IconArrowRight, IconSearch, IconStorage } from "../icons";
@@ -27,6 +27,30 @@ export default function SidebarAccountSettings({
 
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [folderItems, setFolderItems] = useState<any[]>([]);
+
+  const [contextMenu, setContextMenu] = useState<any>(null);
+  const [showRename, setShowRename] = useState(false);
+  const [renameValue, setRenameValue] = useState("");
+
+  const [editingFolder, setEditingFolder] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState("");
+
+  const renameFolder = (oldName: string, newName: string) => {
+    setFolders((prev: any) =>
+      prev.map((f: string) => (f === oldName ? newName : f))
+    );
+
+    // kalau folder yang sedang dibuka direname
+    if (selectedFolder === oldName) {
+      setSelectedFolder(newName);
+    }
+  };
+
+  useEffect(() => {
+    const close = () => setContextMenu(null);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, []);
 
   /* =============== MEDIA ITEMS (DATA DUMMY) =============== */
   const [mediaItems, setMediaItems] = useState<any[]>([
@@ -197,7 +221,7 @@ export default function SidebarAccountSettings({
                 {/* ---------------- MEDIA ---------------- */}
                 {activeTab === "media" && (
                   <div className="p-4 space-y-6 relative">
-                    {/* SEARCH */}
+                    {/* =============== SEARCH =============== */}
                     <div className="border-gray-700 rounded-2xl">
                       <div className="relative">
                         <span className="absolute left-4 top-3">
@@ -207,33 +231,73 @@ export default function SidebarAccountSettings({
                         <input
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
-                          placeholder="Search media…"
+                          placeholder="Search folders…"
                           className="w-full bg-black/20 border border-white/10 pl-10 pr-4 py-3 rounded-full outline-none focus:border-(--primarycolor) text-sm"
                         />
                       </div>
                     </div>
 
-                    {/* FOLDERS */}
-                    <div>
+                    {/* ================= FOLDERS ================= */}
+                    <div className="relative">
                       <label className="block mb-3 text-sm text-gray-300">
                         Folders
                       </label>
 
+                      {/* GRID */}
                       <div className="grid grid-cols-4 gap-2">
-                        {folders.map((f, idx) => (
-                          <div
-                            key={idx}
-                            onClick={() => openFolder(f)}
-                            className="p-2 rounded-xl cursor-pointer flex flex-col items-center"
-                          >
-                            <IconFolder />
-                            <span className="text-xs mt-1 text-gray-300 truncate text-center block w-full max-w-full">
-                              {f}
-                            </span>
-                          </div>
-                        ))}
+                        {folders
+                          .filter((f) =>
+                            f.toLowerCase().includes(search.toLowerCase())
+                          )
+                          .map((f, idx) => (
+                            <div
+                              key={idx}
+                              onClick={() => openFolder(f)}
+                              onContextMenu={(e) => {
+                                e.preventDefault();
+                                setContextMenu({
+                                  x: e.clientX,
+                                  y: e.clientY,
+                                  folder: f,
+                                });
+                              }}
+                              className="p-2 rounded-xl cursor-pointer flex flex-col items-center relative"
+                            >
+                              <IconFolder />
+
+                              {/* ========== INLINE RENAME MODE ========== */}
+                              {editingFolder === f ? (
+                                <input
+                                  value={editingValue}
+                                  onChange={(e) =>
+                                    setEditingValue(e.target.value)
+                                  }
+                                  autoFocus
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      renameFolder(f, editingValue);
+                                      setEditingFolder(null);
+                                    }
+                                    if (e.key === "Escape") {
+                                      setEditingFolder(null);
+                                    }
+                                  }}
+                                  onBlur={() => {
+                                    renameFolder(f, editingValue);
+                                    setEditingFolder(null);
+                                  }}
+                                  className="text-xs mt-1 px-1 py-0.5 text-center w-full outline-none"
+                                />
+                              ) : (
+                                <span className="text-xs mt-2 text-gray-300 truncate text-center block w-full">
+                                  {f}
+                                </span>
+                              )}
+                            </div>
+                          ))}
                       </div>
 
+                      {/* INPUT TAMBAH FOLDER */}
                       <div className="flex items-center gap-3 mt-4">
                         <input
                           value={newFolder}
@@ -249,6 +313,32 @@ export default function SidebarAccountSettings({
                           <FolderPlus size={18} />
                         </button>
                       </div>
+
+                      {/* ================= CONTEXT MENU (RIGHT CLICK) ================= */}
+                      {contextMenu && (
+                        <div
+                          className="fixed bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl py-2 w-40 z-50"
+                          style={{
+                            top: contextMenu.y,
+                            left: contextMenu.x,
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              setEditingFolder(contextMenu.folder);
+                              setEditingValue(contextMenu.folder);
+                              setContextMenu(null);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-white/10"
+                          >
+                            Rename
+                          </button>
+
+                          {/* Tambahkan delete kalau mau */}
+                        </div>
+                      )}
+
+                      
                     </div>
 
                     {/* ============= PANEL ISI FOLDER ============= */}
