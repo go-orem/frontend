@@ -137,7 +137,7 @@ export default function SidebarAccountSettings({
           {!subPage && (
             <>
               {/* TAB BUTTONS */}
-              <div className="flex border-b border-white/10">
+              <div className="flex pb-3">
                 <TabButton
                   active={activeTab === "account"}
                   onClick={() => setActiveTab("account")}
@@ -198,13 +198,9 @@ export default function SidebarAccountSettings({
                 {activeTab === "media" && (
                   <div className="p-4 space-y-6 relative">
                     {/* SEARCH */}
-                    <div className="p-4 bg-black/5 border border-gray-700 rounded-2xl">
-                      <label className="block mb-2 text-sm text-gray-300">
-                        Search Media
-                      </label>
-
+                    <div className="border-gray-700 rounded-2xl">
                       <div className="relative">
-                        <span className="absolute left-3 top-3">
+                        <span className="absolute left-4 top-3">
                           <IconSearch />
                         </span>
 
@@ -212,13 +208,13 @@ export default function SidebarAccountSettings({
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                           placeholder="Search media…"
-                          className="w-full bg-black/20 border border-white/10 pl-10 pr-4 py-3 rounded-xl outline-none text-sm"
+                          className="w-full bg-black/20 border border-white/10 pl-10 pr-4 py-3 rounded-full outline-none focus:border-(--primarycolor) text-sm"
                         />
                       </div>
                     </div>
 
                     {/* FOLDERS */}
-                    <div className="p-4 bg-black/5 border border-white/10 rounded-2xl">
+                    <div>
                       <label className="block mb-3 text-sm text-gray-300">
                         Folders
                       </label>
@@ -243,12 +239,12 @@ export default function SidebarAccountSettings({
                           value={newFolder}
                           onChange={(e) => setNewFolder(e.target.value)}
                           placeholder="Folder baru…"
-                          className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none"
+                          className="flex-1 bg-black/20 border border-white/10 rounded-full px-4 py-3 text-sm outline-none"
                         />
 
                         <button
                           onClick={addFolder}
-                          className="p-3 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20"
+                          className="p-3 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 cursor-pointer"
                         >
                           <FolderPlus size={18} />
                         </button>
@@ -324,11 +320,28 @@ function TabButton({ active, onClick, label }: any) {
   return (
     <button
       onClick={onClick}
-      className={`flex-1 text-center p-3 text-sm cursor-pointer ${
-        active ? "text-white border-b-2 border-green-400" : "text-gray-400"
-      }`}
+      className="group relative flex-1 flex items-center justify-center pb-2 pt-3 cursor-pointer select-none"
     >
-      {label}
+      <span
+        className={`text-sm transition-colors duration-200 ${
+          active
+            ? "text-(--primarycolor)"
+            : "text-gray-400 group-hover:text-(--primarycolor)"
+        }`}
+      >
+        {label}
+      </span>
+
+      {/* underline */}
+      <span
+        className={`absolute -bottom-0.5 h-1 rounded-full bg-(--primarycolor) transition-all duration-300 ease-in-out
+          ${
+            active
+              ? "w-10 opacity-100"
+              : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
+          }
+        `}
+      />
     </button>
   );
 }
