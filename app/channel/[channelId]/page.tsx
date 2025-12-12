@@ -2,7 +2,7 @@
 
 import { MainContent } from "@/components/layout";
 import { useConversationContext } from "@/context/ConversationContext";
-import { useConversations } from "@/hooks/useConversations";
+import { useConversationDetail, useConversations } from "@/hooks";
 import { getErrorMessage, runEffectAsync } from "@/utils";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
@@ -12,7 +12,8 @@ export default function ChannelDetailPage() {
   const { channelId } = useParams() as { channelId: string };
   const { messages } = useConversationContext();
   const { loadMessages } = useConversations();
-  console.log("Channel ID:", channelId);
+  const { detail, loading, error } = useConversationDetail(channelId);
+
   useEffect(() => {
     runEffectAsync(async () => {
       try {
@@ -26,6 +27,16 @@ export default function ChannelDetailPage() {
   useEffect(() => {
     console.log("Messages updated:", messages);
   }, [messages]);
+
+  if (loading) {
+    return <p>Loading ...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  console.log("Conversation Detail:", detail);
 
   return <MainContent />;
 }

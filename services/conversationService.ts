@@ -29,6 +29,19 @@ class ConversationService {
     return handleResponse(res);
   }
 
+  async getConversationDetail(id: string): Promise<{
+    conversation: Conversation;
+    members: ConversationMember[];
+    tags: { id: string; name: string }[];
+  }> {
+    const res = await fetch(`/api/conversations/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    return handleResponse(res);
+  }
+
   async listWithLastMessage(
     type: ConversationType | null
   ): Promise<ConversationWithLastMessage[]> {
