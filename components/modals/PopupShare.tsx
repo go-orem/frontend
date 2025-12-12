@@ -334,7 +334,7 @@ export default function SidebarAccountSettings({
                             Rename
                           </button>
 
-                          {/* Tambahkan delete kalau mau */}
+                          {/* Tambahkan delete */}
                         </div>
                       )}
                     </div>
