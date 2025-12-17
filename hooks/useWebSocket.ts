@@ -21,6 +21,8 @@ export function useWebSocket(
 
   // reconnect timer
   const reconnectRef = useRef<NodeJS.Timeout | null>(null);
+  // debounce timer untuk auto-subscribe
+  const subscribeTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -28,43 +30,49 @@ export function useWebSocket(
     let active = true;
 
     async function connect() {
-      const token = await getServerToken();
-      if (!token) return;
+      try {
+        const token = await getServerToken();
+        if (!token) return;
 
-      const ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
-      wsRef.current = ws;
+        const ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
+        wsRef.current = ws;
 
-      ws.onopen = () => {
-        if (!active) return;
-        setConnected(true);
-        console.log("✅ WebSocket connected");
+        ws.onopen = () => {
+          if (!active) return;
+          setConnected(true);
+          console.log("✅ WebSocket connected");
 
-        // subscribe ke semua room yang sudah ada
-        rooms.forEach((room) => {
-          ws.send(JSON.stringify({ action: "subscribe", room }));
-        });
-      };
+          // auto-subscribe dengan debounce
+          if (subscribeTimer.current) clearTimeout(subscribeTimer.current);
+          subscribeTimer.current = setTimeout(() => {
+            rooms.forEach((room) => {
+              ws.send(JSON.stringify({ action: "subscribe", room }));
+            });
+          }, 300); // 300ms debounce
+        };
 
-      ws.onmessage = (event) => {
-        try {
-          const data: WSEvent = JSON.parse(event.data);
-          if (onEvent) onEvent(data); // kirim ke provider
-        } catch (err) {
-          console.error("Invalid WS message", err);
-        }
-      };
+        ws.onmessage = (event) => {
+          try {
+            const data: WSEvent = JSON.parse(event.data);
+            if (onEvent) onEvent(data);
+          } catch (err) {
+            console.error("❌ Invalid WS message", err);
+          }
+        };
 
-      ws.onclose = () => {
-        if (!active) return;
-        setConnected(false);
-        console.log("❌ WebSocket disconnected");
-        // auto reconnect
-        reconnectRef.current = setTimeout(connect, 3000);
-      };
+        ws.onclose = () => {
+          if (!active) return;
+          setConnected(false);
+          console.warn("❌ WebSocket disconnected");
+          reconnectRef.current = setTimeout(connect, 3000); // auto reconnect
+        };
 
-      ws.onerror = (err) => {
-        console.error("WS error", err);
-      };
+        ws.onerror = (err) => {
+          console.error("❌ WS error", err);
+        };
+      } catch (err) {
+        console.error("❌ WS connection failed", err);
+      }
     }
 
     connect();
@@ -72,43 +80,37 @@ export function useWebSocket(
     return () => {
       active = false;
       if (reconnectRef.current) clearTimeout(reconnectRef.current);
+      if (subscribeTimer.current) clearTimeout(subscribeTimer.current);
       wsRef.current?.close();
     };
-  }, [isLoggedIn, rooms]);
+  }, [isLoggedIn, rooms, onEvent]);
 
   function send(payload: any) {
-    if (wsRef.current && connected) {
-      wsRef.current.send(JSON.stringify(payload));
+    try {
+      if (wsRef.current && connected) {
+        wsRef.current.send(JSON.stringify(payload));
+      }
+    } catch (err) {
+      console.error("❌ Failed to send WS payload", err);
     }
   }
 
   function subscribe(room: string) {
-    if (!rooms.includes(room)) {
-      setRooms((prev) => [...prev, room]);
+    if (rooms.includes(room)) {
+      console.log(`⚠️ Already subscribed to ${room}`);
+      return;
     }
+    setRooms((prev) => [...prev, room]);
     send({ action: "subscribe", room });
   }
 
   function unsubscribe(room: string) {
+    if (!rooms.includes(room)) {
+      console.log(`⚠️ Not subscribed to ${room}`);
+      return;
+    }
     setRooms((prev) => prev.filter((r) => r !== room));
     send({ action: "unsubscribe", room });
-  }
-
-  function handleEvent(event: WSEvent) {
-    switch (event.type) {
-      case "message_created":
-        // TODO: dispatch ke ConversationContext
-        console.log("📩 New message", event.message);
-        break;
-      case "conversation_updated":
-        console.log("🔄 Conversation updated", event.conversation);
-        break;
-      case "notification":
-        console.log("🔔 Notification", event.notification);
-        break;
-      default:
-        console.log("Unknown event", event);
-    }
   }
 
   return { connected, send, subscribe, unsubscribe };

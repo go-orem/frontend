@@ -9,10 +9,8 @@ interface ConversationContextType {
   setConversations: React.Dispatch<
     React.SetStateAction<ConversationWithLastMessage[]>
   >;
-
   messages: Record<string, Message[]>;
   setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
-
   loading: boolean;
   setLoading: (val: boolean) => void;
 }
@@ -30,41 +28,45 @@ export function ConversationProvider({
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [loading, setLoading] = useState(false);
 
-  // Integrasi WebSocket
   const ws = useWebSocket([], (event) => {
-    switch (event.type) {
-      case "message_created": {
-        const msg: Message = event.message;
-        setMessages((prev) => ({
-          ...prev,
-          [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
-        }));
-        setConversations((prev) =>
-          prev.map((c) =>
-            c.id === msg.conversation_id ? { ...c, last_message: msg } : c
-          )
-        );
-        break;
+    try {
+      switch (event.type) {
+        case "message_created": {
+          const msg: Message = event.message;
+          setMessages((prev) => ({
+            ...prev,
+            [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
+          }));
+          setConversations((prev) =>
+            prev.map((c) =>
+              c.id === msg.conversation_id ? { ...c, last_message: msg } : c
+            )
+          );
+          break;
+        }
+        case "conversation_updated": {
+          const conv: ConversationWithLastMessage = event.conversation;
+          setConversations((prev) => {
+            const exists = prev.find((c) => c.id === conv.id);
+            return exists
+              ? prev.map((c) => (c.id === conv.id ? conv : c))
+              : [...prev, conv];
+          });
+          break;
+        }
+        case "notification":
+          console.log("🔔 Notification", event.notification);
+          break;
+        default:
+          console.warn("⚠️ Unknown WS event", event);
+          break;
       }
-      case "conversation_updated": {
-        const conv: ConversationWithLastMessage = event.conversation;
-        setConversations((prev) => {
-          const exists = prev.find((c) => c.id === conv.id);
-          return exists
-            ? prev.map((c) => (c.id === conv.id ? conv : c))
-            : [...prev, conv];
-        });
-        break;
-      }
-      case "notification":
-        console.log("🔔 Notification", event.notification);
-        break;
-      default:
-        console.warn("Unknown WS event", event);
-        break;
+    } catch (err) {
+      console.error("❌ Error handling WS event", err);
     }
   });
 
+  // auto-subscribe ke semua conversation dengan debounce di hook
   useEffect(() => {
     conversations.forEach((c) => {
       ws.subscribe(`conversation:${c.id}`);
