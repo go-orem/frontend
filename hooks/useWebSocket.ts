@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getServerToken } from "@/lib/getServerToken";
 
 type WSEvent =
   | { type: "message_created"; message: any }
@@ -10,69 +9,73 @@ type WSEvent =
   | { type: "notification"; notification: any }
   | { type: string; [key: string]: any };
 
-export function useWebSocket(
-  initialRooms: string[] = [],
-  onEvent?: (event: WSEvent) => void
-) {
-  const { isLoggedIn } = useAuth();
+export function useWebSocket(onEvent?: (event: WSEvent) => void) {
+  const { isLoggedIn, loading, forceLogout } = useAuth();
+
   const wsRef = useRef<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
-  const [rooms, setRooms] = useState<string[]>(initialRooms);
 
-  // reconnect timer
+  // 🧠 state internal (TIDAK trigger re-render)
+  const roomsRef = useRef<Set<string>>(new Set());
+  const stoppedRef = useRef(false);
   const reconnectRef = useRef<NodeJS.Timeout | null>(null);
-  // debounce timer untuk auto-subscribe
-  const subscribeTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // 🔒 onEvent harus stabil
+  const onEventRef = useRef(onEvent);
+  onEventRef.current = onEvent;
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    // ⛔ tunggu auth
+    if (loading) return;
+
+    // ⛔ logout / auth invalid
+    if (!isLoggedIn) {
+      stoppedRef.current = true;
+      wsRef.current?.close();
+      wsRef.current = null;
+      setConnected(false);
+      return;
+    }
+
+    // ⛔ sudah ada WS
+    if (wsRef.current || stoppedRef.current) return;
 
     let active = true;
 
     async function connect() {
-      try {
-        const token = await getServerToken();
-        if (!token) return;
+      if (!active || wsRef.current || stoppedRef.current) return;
+      const ws = new WebSocket(`ws://localhost:8080/ws`);
+      wsRef.current = ws;
 
-        const ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
-        wsRef.current = ws;
+      ws.onopen = () => {
+        if (!active) return;
+        setConnected(true);
 
-        ws.onopen = () => {
-          if (!active) return;
-          setConnected(true);
-          console.log("✅ WebSocket connected");
+        // subscribe semua room yang sudah diregistrasi
+        roomsRef.current.forEach((room) => {
+          ws.send(JSON.stringify({ action: "subscribe", room }));
+        });
+      };
 
-          // auto-subscribe dengan debounce
-          if (subscribeTimer.current) clearTimeout(subscribeTimer.current);
-          subscribeTimer.current = setTimeout(() => {
-            rooms.forEach((room) => {
-              ws.send(JSON.stringify({ action: "subscribe", room }));
-            });
-          }, 300); // 300ms debounce
-        };
+      ws.onmessage = (e) => {
+        try {
+          onEventRef.current?.(JSON.parse(e.data));
+        } catch {}
+      };
 
-        ws.onmessage = (event) => {
-          try {
-            const data: WSEvent = JSON.parse(event.data);
-            if (onEvent) onEvent(data);
-          } catch (err) {
-            console.error("❌ Invalid WS message", err);
-          }
-        };
+      ws.onclose = (e) => {
+        setConnected(false);
+        wsRef.current = null;
 
-        ws.onclose = () => {
-          if (!active) return;
-          setConnected(false);
-          console.warn("❌ WebSocket disconnected");
-          reconnectRef.current = setTimeout(connect, 3000); // auto reconnect
-        };
+        // auth error → STOP
+        if (e.code === 1008 || e.code === 4001) {
+          stoppedRef.current = true;
+          forceLogout("WebSocket auth failed");
+          return;
+        }
 
-        ws.onerror = (err) => {
-          console.error("❌ WS error", err);
-        };
-      } catch (err) {
-        console.error("❌ WS connection failed", err);
-      }
+        reconnectRef.current = setTimeout(connect, 3000);
+      };
     }
 
     connect();
@@ -80,38 +83,38 @@ export function useWebSocket(
     return () => {
       active = false;
       if (reconnectRef.current) clearTimeout(reconnectRef.current);
-      if (subscribeTimer.current) clearTimeout(subscribeTimer.current);
       wsRef.current?.close();
+      wsRef.current = null;
     };
-  }, [isLoggedIn, rooms, onEvent]);
+  }, [isLoggedIn, loading, forceLogout]);
 
-  function send(payload: any) {
-    try {
-      if (wsRef.current && connected) {
-        wsRef.current.send(JSON.stringify(payload));
-      }
-    } catch (err) {
-      console.error("❌ Failed to send WS payload", err);
-    }
-  }
+  // =========================
+  // PUBLIC API
+  // =========================
 
   function subscribe(room: string) {
-    if (rooms.includes(room)) {
-      console.log(`⚠️ Already subscribed to ${room}`);
-      return;
+    if (roomsRef.current.has(room)) return;
+
+    roomsRef.current.add(room);
+
+    if (connected && wsRef.current) {
+      wsRef.current.send(JSON.stringify({ action: "subscribe", room }));
     }
-    setRooms((prev) => [...prev, room]);
-    send({ action: "subscribe", room });
   }
 
   function unsubscribe(room: string) {
-    if (!rooms.includes(room)) {
-      console.log(`⚠️ Not subscribed to ${room}`);
-      return;
+    if (!roomsRef.current.has(room)) return;
+
+    roomsRef.current.delete(room);
+
+    if (connected && wsRef.current) {
+      wsRef.current.send(JSON.stringify({ action: "unsubscribe", room }));
     }
-    setRooms((prev) => prev.filter((r) => r !== room));
-    send({ action: "unsubscribe", room });
   }
 
-  return { connected, send, subscribe, unsubscribe };
+  return {
+    connected,
+    subscribe,
+    unsubscribe,
+  };
 }

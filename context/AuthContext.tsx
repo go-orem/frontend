@@ -42,6 +42,7 @@ type AuthContextType = {
   error: string | null;
   isLoggedIn: boolean;
   refreshUser: () => Promise<void>;
+  forceLogout: (reason?: string) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -66,6 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setRefreshing(false);
     }
+  }
+
+  async function forceLogout(reason?: string) {
+    setUser(null);
+    setError(reason || "Unauthorized");
   }
 
   useEffect(() => {
@@ -93,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
         isLoggedIn: !!user,
         refreshUser,
+        forceLogout,
       }}
     >
       {children}

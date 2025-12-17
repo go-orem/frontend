@@ -1,10 +1,12 @@
 import { useConversationContext } from "@/context/ConversationContext";
 import { conversationService } from "@/services/conversationService";
 import { ConversationsWithMemberBody } from "@/types/conversations";
-import { ConversationType } from "@/types/database.types";
+import { ConversationType, Message } from "@/types/database.types";
+import { useAuth } from "./useAuth";
 
 export function useConversations() {
-  const { setConversations, setMessages, setLoading } =
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { setConversations, setMessages, setLoading, messages } =
     useConversationContext();
 
   async function refreshConversations(type: ConversationType | null = null) {
@@ -12,20 +14,28 @@ export function useConversations() {
     try {
       const data = await conversationService.listWithLastMessage(type);
       setConversations(data);
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }
   }
 
-  async function loadMessages(conversationId: string) {
+  async function loadMessages(
+    conversationId: string,
+    opts?: { skipIfCached?: boolean }
+  ) {
+    if (authLoading || !isAuthenticated) return;
+
+    if (opts?.skipIfCached && messages[conversationId]) {
+      console.log("⚠️ Messages already cached, skip fetch");
+      return;
+    }
+
     setLoading(true);
     try {
-      const msgs = await conversationService.listMessages(conversationId);
+      const msgs: Message[] = await conversationService.listMessages(
+        conversationId
+      );
       setMessages((prev) => ({ ...prev, [conversationId]: msgs }));
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }
@@ -37,8 +47,6 @@ export function useConversations() {
       const conv = await conversationService.createWithMembers(body);
       await refreshConversations();
       return conv;
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }

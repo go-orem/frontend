@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { ConversationWithLastMessage, Message } from "@/types/database.types";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { useAuth } from "@/hooks";
 
 interface ConversationContextType {
   conversations: ConversationWithLastMessage[];
@@ -22,21 +23,25 @@ export function ConversationProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthenticated } = useAuth();
   const [conversations, setConversations] = useState<
     ConversationWithLastMessage[]
   >([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [loading, setLoading] = useState(false);
+  const subscribedRef = useRef<Set<string>>(new Set());
 
-  const ws = useWebSocket([], (event) => {
+  const ws = useWebSocket((event) => {
     try {
       switch (event.type) {
         case "message_created": {
           const msg: Message = event.message;
+
           setMessages((prev) => ({
             ...prev,
             [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
           }));
+
           setConversations((prev) =>
             prev.map((c) =>
               c.id === msg.conversation_id ? { ...c, last_message: msg } : c
@@ -44,34 +49,49 @@ export function ConversationProvider({
           );
           break;
         }
+
         case "conversation_updated": {
           const conv: ConversationWithLastMessage = event.conversation;
           setConversations((prev) => {
-            const exists = prev.find((c) => c.id === conv.id);
+            const exists = prev.some((c) => c.id === conv.id);
             return exists
               ? prev.map((c) => (c.id === conv.id ? conv : c))
               : [...prev, conv];
           });
           break;
         }
+
         case "notification":
           console.log("🔔 Notification", event.notification);
           break;
+
         default:
           console.warn("⚠️ Unknown WS event", event);
-          break;
       }
     } catch (err) {
       console.error("❌ Error handling WS event", err);
     }
   });
 
-  // auto-subscribe ke semua conversation dengan debounce di hook
+  // subscribe hanya saat WS sudah CONNECTED
   useEffect(() => {
+    if (!isAuthenticated || !ws.connected) return;
+
     conversations.forEach((c) => {
-      ws.subscribe(`conversation:${c.id}`);
+      const room = `conversation:${c.id}`;
+      if (!subscribedRef.current.has(room)) {
+        ws.subscribe(room);
+        subscribedRef.current.add(room);
+      }
     });
-  }, [conversations]);
+  }, [conversations, ws.connected, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setConversations([]);
+      setMessages({});
+    }
+  }, [isAuthenticated]);
 
   return (
     <ConversationContext.Provider
