@@ -94,6 +94,9 @@ export interface ConversationMember {
   last_read_message: string | null;
   created_at: string;
   updated_at: string;
+  username?: string;
+  public_name?: string;
+  avatar_url?: string;
 }
 
 export interface Message {

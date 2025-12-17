@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { conversationService } from "@/services/conversationService";
 import { Conversation, ConversationMember } from "@/types/database.types";
 
-interface ConversationDetail {
+export interface ConversationDetail {
   conversation: Conversation;
   members: ConversationMember[];
   tags: { id: string; name: string }[];

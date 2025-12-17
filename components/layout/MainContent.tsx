@@ -2,9 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { ChatWindow, HeaderSplit } from "../UI";
 import { InfoSidebar } from "../pages/chat";
+import { useAuth, useConversationDetail } from "@/hooks";
 
-export default function MainContent() {
+export default function MainContent({ channelId }: { channelId: string }) {
   const [openSidebar, setOpenSidebar] = useState(false);
+  const { detail: detailConv } = useConversationDetail(channelId);
+  const { user } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebarOpen");
@@ -17,7 +20,9 @@ export default function MainContent() {
     localStorage.setItem("sidebarOpen", openSidebar.toString());
   }, [openSidebar]);
 
-  // contoh data user
+  if (!user || !detailConv) return null;
+  const currentUserId = user.user.id;
+
   const userData = {
     avatar:
       "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3JpMzBob2Nha3A2eG9xa2pocWh1ZGs2YjczMXB0eXpzN3Vyam1nZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1zhqIaTw4q3ZeuDq8i/giphy.gif",
@@ -36,16 +41,6 @@ export default function MainContent() {
         name: "Syarifa",
         avatar:
           "https://i.pinimg.com/474x/8a/ce/d3/8aced384f4491bfcc0e68d0ff1a9fb77.jpg",
-      },
-      {
-        name: "Febri Riyan",
-        avatar:
-          "https://i.pinimg.com/474x/e9/5a/b6/e95ab6c5292a756e0198d3ab8da2a8e1.jpg",
-      },
-      {
-        name: "Syarifa",
-        avatar:
-          "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=600",
       },
     ],
     mediaItems: [
@@ -88,7 +83,11 @@ export default function MainContent() {
             : "w-full opacity-100"
         }`}
       >
-        <HeaderSplit onProfileClick={() => setOpenSidebar(!openSidebar)} />
+        <HeaderSplit
+          currentUserId={currentUserId}
+          detail={detailConv}
+          onProfileClick={() => setOpenSidebar(!openSidebar)}
+        />
         <ChatWindow />
       </div>
 

@@ -6,10 +6,14 @@ export interface ConversationsWithMemberBody {
     is_public: boolean;
     name: string;
     profile_url?: string | null;
+    cover_url?: string | null;
   };
   members: Array<{
     user_id: string;
     role: "admin" | "member";
+    username?: string;
+    public_name?: string;
+    avatar_url?: string;
   }>;
 }
 
