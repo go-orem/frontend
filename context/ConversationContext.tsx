@@ -31,47 +31,45 @@ export function ConversationProvider({
   const [loading, setLoading] = useState(false);
 
   // Integrasi WebSocket
-  const ws = useWebSocket();
+  const ws = useWebSocket([], (event) => {
+    switch (event.type) {
+      case "message_created": {
+        const msg: Message = event.message;
+        setMessages((prev) => ({
+          ...prev,
+          [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
+        }));
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === msg.conversation_id ? { ...c, last_message: msg } : c
+          )
+        );
+        break;
+      }
+      case "conversation_updated": {
+        const conv: ConversationWithLastMessage = event.conversation;
+        setConversations((prev) => {
+          const exists = prev.find((c) => c.id === conv.id);
+          return exists
+            ? prev.map((c) => (c.id === conv.id ? conv : c))
+            : [...prev, conv];
+        });
+        break;
+      }
+      case "notification":
+        console.log("🔔 Notification", event.notification);
+        break;
+      default:
+        console.warn("Unknown WS event", event);
+        break;
+    }
+  });
 
   useEffect(() => {
-    if (!ws) return;
-
-    function handleEvent(event: any) {
-      switch (event.type) {
-        case "message_created": {
-          const msg: Message = event.message;
-          setMessages((prev) => ({
-            ...prev,
-            [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
-          }));
-          setConversations((prev) =>
-            prev.map((c) =>
-              c.id === msg.conversation_id ? { ...c, last_message: msg } : c
-            )
-          );
-          break;
-        }
-        case "conversation_updated": {
-          const conv: ConversationWithLastMessage = event.conversation;
-          setConversations((prev) => {
-            const exists = prev.find((c) => c.id === conv.id);
-            return exists
-              ? prev.map((c) => (c.id === conv.id ? conv : c))
-              : [...prev, conv];
-          });
-          break;
-        }
-        case "notification": {
-          console.log("🔔 Notification", event.notification);
-          break;
-        }
-        default:
-          console.log("Unknown WS event", event);
-      }
-    }
-
-    ws.send({ action: "subscribe", room: "user:global" });
-  }, [ws]);
+    conversations.forEach((c) => {
+      ws.subscribe(`conversation:${c.id}`);
+    });
+  }, [conversations]);
 
   return (
     <ConversationContext.Provider
