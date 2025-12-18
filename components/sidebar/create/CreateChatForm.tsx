@@ -96,17 +96,17 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
       );
       const encryptedForRecipient = await encryptConversationKey(
         rawKey,
-        recipientPublicKey // TODO: replace with actual recipient public key
+        recipientPublicKey
       );
 
-      // 3. encrypt for self (WAJIB)
+      // 3. encrypt for self
       if (!user.active_key?.public_key) {
         throw new Error("User active public key not found.");
       }
       const userPublicKey = await importPublicKey(user.active_key.public_key);
       const encryptedForSelf = await encryptConversationKey(
         rawKey,
-        userPublicKey // TODO: replace with actual self public key
+        userPublicKey
       );
 
       const conversationBody: ConversationsWithMemberBody = {
