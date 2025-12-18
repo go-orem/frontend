@@ -2,7 +2,7 @@
 
 import { HoverGif } from "../effects";
 import { SidebarPanelLoading } from "@/components/sidebar";
-import { useConversationContext } from "@/context/ConversationContext";
+import { useConversationContext } from "@/context/ConversationProvider";
 import { useConversations } from "@/hooks/useConversations";
 import { ConversationType } from "@/types/database.types";
 import { getErrorMessage, runEffectAsync } from "@/utils";

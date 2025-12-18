@@ -104,8 +104,8 @@ export interface Message {
   conversation_id: string;
   sender_user_id: string;
   cipher_text: string | null;
-  nonce: number[] | null;
-  tag: number[] | null;
+  nonce: string | null;
+  tag: string | null;
   encryption_algo: string;
   reply_to_message_id: string | null;
   blockchain_hash: string | null;

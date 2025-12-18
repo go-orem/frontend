@@ -3,12 +3,12 @@
 import { createContext, useContext, useState, useRef } from "react";
 
 type ModalData = {
-  id: number;
+  id: number | string;
   anchor: HTMLElement | null;
 };
 
 type ModalContextType = {
-  openModal: (id: number, anchor: HTMLElement | null) => void;
+  openModal: (id: number | string, anchor: HTMLElement | null) => void;
   closeModal: () => void;
   modalData: ModalData | null;
 };
@@ -18,7 +18,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [modalData, setModalData] = useState<ModalData | null>(null);
 
-  function openModal(id: number, anchor: HTMLElement | null) {
+  function openModal(id: number | string, anchor: HTMLElement | null) {
     setModalData({ id, anchor });
   }
 

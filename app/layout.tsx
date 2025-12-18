@@ -5,14 +5,14 @@ import { Toaster } from "sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
   AuthProvider,
+  ConversationProvider,
   GiftProvider,
   ModalChatProvider,
   ModalProvider,
+  WebSocketProvider,
 } from "@/context";
 import { FloatingMenuChat, SplashScreen } from "@/components/UI";
 import { ClientLayout } from "@/components/layout";
-import { WebSocketProvider } from "@/context/WebsocketContext";
-import { ConversationProvider } from "@/context/ConversationContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

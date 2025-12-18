@@ -1,3 +1,4 @@
+export * from "./crypto";
 export * from "./mimeMapper";
 export * from "./parseWeb3Error";
 export * from "./response";

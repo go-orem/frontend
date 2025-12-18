@@ -8,6 +8,12 @@ import {
   ReactNode,
 } from "react";
 import { authService } from "@/services/authService";
+import {
+  getPrivateKey,
+  generateUserKeyPair,
+  savePrivateKey,
+  exportPublicKey,
+} from "@/utils";
 
 type User = {
   user: {
@@ -55,10 +61,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * 🔐 Ensure user has keypair
+   * - private key: IndexedDB
+   * - public key: backend
+   */
+  async function ensureUserKey(me: User) {
+    if (typeof window === "undefined") return; // safety check
+
+    const userId = me.user.id;
+    const existingPrivateKey = await getPrivateKey(userId);
+    if (existingPrivateKey) return;
+
+    const keyPair = await generateUserKeyPair();
+    await savePrivateKey(userId, keyPair.privateKey);
+
+    const publicKey = await exportPublicKey(keyPair.publicKey);
+
+    await authService.registerPublicKey({
+      publicKey,
+      algo: "ECDH-P256",
+      version: 1,
+    });
+  }
+
   async function refreshUser() {
     setRefreshing(true);
     try {
       const me = await authService.getMe();
+      await ensureUserKey(me);
       setUser(me);
       setError(null);
     } catch (err: any) {
@@ -79,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (async () => {
       try {
         const me = await authService.getMe();
+        await ensureUserKey(me);
         setUser(me);
         setError(null);
       } catch (err: any) {

@@ -1,6 +1,6 @@
-import { useConversationContext } from "@/context/ConversationContext";
+import { useConversationContext } from "@/context/ConversationProvider";
 import { conversationService } from "@/services/conversationService";
-import { ConversationsWithMemberBody } from "@/types/conversations";
+import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { ConversationType, Message } from "@/types/database.types";
 import { useAuth } from "./useAuth";
 

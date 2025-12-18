@@ -8,7 +8,7 @@ import {
   ConversationWithLastMessage,
   Message,
 } from "@/types/database.types";
-import { ConversationsWithMemberBody } from "@/types/conversations";
+import { ConversationsWithMemberBody } from "@/types/conversations.types";
 
 class ConversationService {
   async listPublic(): Promise<Conversation[]> {
@@ -102,6 +102,28 @@ class ConversationService {
       credentials: "include",
     });
     return handleResponse(res);
+  }
+
+  async sendMessage(payload: {
+    conversation_id: string;
+    sender_user_id: string;
+    target_user_id?: string;
+    cipher_text: string;
+    nonce: string;
+    tag: string | null;
+    encryption_algo: string;
+    reply_to_message_id?: string | null;
+    attachments?: any[];
+    client_id: string; // ⬅️ penting untuk optimistic
+  }): Promise<void> {
+    const res = await fetch("/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    await handleResponse(res);
   }
 }
 

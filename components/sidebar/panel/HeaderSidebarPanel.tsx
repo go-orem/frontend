@@ -1,13 +1,23 @@
 import { IconNewChat, IconSet } from "@/components/icons";
-import { useModal } from "../../../context/ModalContext";
+import { useModal } from "../../../context/ModalProvider";
 import React from "react";
 
 interface HeaderSidebarPanelProps {
-  activeTab: "chats" | "channel" | "notification" | "group" | "settings" | "story" | "calls";
+  activeTab:
+    | "chats"
+    | "channel"
+    | "notification"
+    | "group"
+    | "settings"
+    | "story"
+    | "calls";
   onCreateGroupClick?: () => void;
 }
 
-function HeaderSidebarPanel({ activeTab, onCreateGroupClick }: HeaderSidebarPanelProps) {
+function HeaderSidebarPanel({
+  activeTab,
+  onCreateGroupClick,
+}: HeaderSidebarPanelProps) {
   const { openModal } = useModal();
 
   // mapping judul berdasarkan tab

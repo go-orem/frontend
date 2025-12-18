@@ -69,6 +69,25 @@ class AuthService {
     });
     return handleResponse(res);
   }
+
+  async registerPublicKey(key: {
+    publicKey: string;
+    algo: string;
+    version: number;
+  }) {
+    const res = await fetch("/api/users/keys", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        public_key: key.publicKey,
+        key_algo: key.algo,
+        key_version: key.version,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Failed to register public key");
+  }
 }
 
 export const authService = new AuthService();

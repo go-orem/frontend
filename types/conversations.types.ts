@@ -11,6 +11,9 @@ export interface ConversationsWithMemberBody {
   members: Array<{
     user_id: string;
     role: "admin" | "member";
+    encrypted_conversation_key: string;
+    key_algo: string;
+    key_version: number;
     username?: string;
     public_name?: string;
     avatar_url?: string;

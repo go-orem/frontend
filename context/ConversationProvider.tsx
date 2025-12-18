@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { ConversationWithLastMessage, Message } from "@/types/database.types";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useAuth } from "@/hooks";
+import { UIMessage } from "@/types/chat.types";
 
 interface ConversationContextType {
   conversations: ConversationWithLastMessage[];
@@ -11,7 +12,9 @@ interface ConversationContextType {
     React.SetStateAction<ConversationWithLastMessage[]>
   >;
   messages: Record<string, Message[]>;
-  setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
+  setMessages: React.Dispatch<
+    React.SetStateAction<Record<string, UIMessage[]>>
+  >;
   loading: boolean;
   setLoading: (val: boolean) => void;
 }
@@ -27,29 +30,13 @@ export function ConversationProvider({
   const [conversations, setConversations] = useState<
     ConversationWithLastMessage[]
   >([]);
-  const [messages, setMessages] = useState<Record<string, Message[]>>({});
+  const [messages, setMessages] = useState<Record<string, UIMessage[]>>({});
   const [loading, setLoading] = useState(false);
   const subscribedRef = useRef<Set<string>>(new Set());
 
   const ws = useWebSocket((event) => {
     try {
       switch (event.type) {
-        case "message_created": {
-          const msg: Message = event.message;
-
-          setMessages((prev) => ({
-            ...prev,
-            [msg.conversation_id]: [...(prev[msg.conversation_id] || []), msg],
-          }));
-
-          setConversations((prev) =>
-            prev.map((c) =>
-              c.id === msg.conversation_id ? { ...c, last_message: msg } : c
-            )
-          );
-          break;
-        }
-
         case "conversation_updated": {
           const conv: ConversationWithLastMessage = event.conversation;
           setConversations((prev) => {
@@ -64,6 +51,36 @@ export function ConversationProvider({
         case "notification":
           console.log("🔔 Notification", event.notification);
           break;
+
+        case "message_created": {
+          const msg: UIMessage = event.message;
+
+          setMessages((prev) => {
+            const list = prev[msg.conversation_id] || [];
+
+            // 🔁 replace optimistic
+            const replaced = list.some((m) => m.client_id === msg.client_id)
+              ? list.map((m) => (m.client_id === msg.client_id ? msg : m))
+              : [...list, msg];
+
+            return {
+              ...prev,
+              [msg.conversation_id]: replaced,
+            };
+          });
+
+          break;
+        }
+
+        case "message_read": {
+          setMessages((prev) => ({
+            ...prev,
+            [event.conversation_id]: prev[event.conversation_id].map((m) =>
+              m.id === event.message_id ? { ...m, status: "read" } : m
+            ),
+          }));
+          break;
+        }
 
         default:
           console.warn("⚠️ Unknown WS event", event);

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import ChatFooter from "./ChatFooter";
 import { useModal, useModalChat } from "@/context";
 import { SendChatAttachment } from "@/components/UI";
-import { FullChatProps } from "@/types/conversations";
+import { FullChatProps } from "@/types/conversations.types";
 
 function CheckIcon({ status }: { status?: "sent" | "delivered" | "read" }) {
   if (status === "sent") {

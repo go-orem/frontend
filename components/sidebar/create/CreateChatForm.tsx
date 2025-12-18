@@ -8,10 +8,15 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/utils";
 import { useUserSearch } from "@/hooks/useUserSearch";
 import { motion, AnimatePresence } from "framer-motion";
-import { conversationService } from "@/services/conversationService";
-import { ConversationsWithMemberBody } from "@/types/conversations";
+import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { useConversations } from "@/hooks/useConversations";
 import { useRouter } from "next/navigation";
+import {
+  encryptConversationKey,
+  exportRawKey,
+  generateConversationKey,
+} from "@/utils/crypto/conversationKey";
+import { useAuth } from "@/hooks";
 
 const CreateChatSchema = z.object({
   recipient_id: z.string().uuid("Recipient ID must be valid UUID"),
@@ -25,6 +30,7 @@ interface CreateChatFormProps {
 
 export default function CreateChatForm({ onClose }: CreateChatFormProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const form = useForm<CreateChatType>({
     resolver: zodResolver(CreateChatSchema),
     defaultValues: { recipient_id: "" },
@@ -60,6 +66,7 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
   // ----- SUBMIT -----
   const onSubmit = handleSubmit(async (values) => {
+    if (!user) return;
     try {
       setLoadingCreate(true);
       console.log("CREATE CHAT:", values);
@@ -76,22 +83,51 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
       }
       console.log("Starting chat with:", recipient);
 
-      const conversationBody = {
+      // 1. generate conversation key
+      const conversationKey = await generateConversationKey();
+      const rawKey = await exportRawKey(conversationKey);
+
+      // 2. encrypt for recipient
+      // const encryptedForRecipient = await encryptConversationKey(
+      //   rawKey,
+      //   "dummy-recipient-public-key" // TODO: replace with actual recipient public key
+      // );
+      const encryptedForRecipient = "dummy-encrypted-key";
+
+      // 3. encrypt for self (WAJIB)
+      // const encryptedForSelf = await encryptConversationKey(
+      //   rawKey,
+      //   "dummy-self-public-key" // TODO: replace with actual self public key
+      // );
+      const encryptedForSelf = "dummy-encrypted-key-self";
+
+      const conversationBody: ConversationsWithMemberBody = {
         conversation: {
           conversation_type: "direct",
           is_public: false,
           name: recipient.show_public_name
             ? recipient.public_name
-            : recipient.username,
+            : recipient.username || "Unnamed",
           profile_url: recipient.avatar_url,
         },
         members: [
           {
             user_id: recipient.user_id,
             role: "admin",
+            encrypted_conversation_key: JSON.stringify(encryptedForRecipient),
+            key_algo: "X25519+AES-GCM",
+            key_version: 1,
+          },
+          {
+            user_id: user.user.id,
+            role: "admin",
+            encrypted_conversation_key: JSON.stringify(encryptedForSelf),
+            key_algo: "X25519+AES-GCM",
+            key_version: 1,
           },
         ],
-      } as ConversationsWithMemberBody;
+      };
+
       console.log("Conversations payload:", conversationBody);
 
       // TODO: call chatService.createChat(values.recipient_id)

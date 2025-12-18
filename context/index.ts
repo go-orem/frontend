@@ -1,4 +1,9 @@
-export { AuthProvider, AuthContext } from "./AuthContext";
-export { ModalProvider, useModal } from "./ModalContext";
-export { ModalChatProvider, useModalChat } from "./ModalChatContext";
-export { GiftProvider, useGift } from "./GiftContext";
+export { AuthProvider, AuthContext, useAuthContext } from "./AuthProvider";
+export {
+  ConversationProvider,
+  useConversationContext,
+} from "./ConversationProvider";
+export { ModalProvider, useModal } from "./ModalProvider";
+export { ModalChatProvider, useModalChat } from "./ModalChatProvider";
+export { GiftProvider, useGift } from "./GiftProvider";
+export { WebSocketProvider, useWS } from "./WebsocketProvider";
