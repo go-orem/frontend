@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/utils";
+import { getErrorMessage, importPublicKey } from "@/utils";
 import { useUserSearch } from "@/hooks/useUserSearch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConversationsWithMemberBody } from "@/types/conversations.types";
@@ -66,7 +66,7 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
   // ----- SUBMIT -----
   const onSubmit = handleSubmit(async (values) => {
-    if (!user) return;
+    if (!user || !user.user) return;
     try {
       setLoadingCreate(true);
       console.log("CREATE CHAT:", values);
@@ -88,18 +88,26 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
       const rawKey = await exportRawKey(conversationKey);
 
       // 2. encrypt for recipient
-      // const encryptedForRecipient = await encryptConversationKey(
-      //   rawKey,
-      //   "dummy-recipient-public-key" // TODO: replace with actual recipient public key
-      // );
-      const encryptedForRecipient = "dummy-encrypted-key";
+      if (!recipient.active_key?.public_key) {
+        throw new Error("Recipient active public key not found.");
+      }
+      const recipientPublicKey = await importPublicKey(
+        recipient.active_key?.public_key
+      );
+      const encryptedForRecipient = await encryptConversationKey(
+        rawKey,
+        recipientPublicKey // TODO: replace with actual recipient public key
+      );
 
       // 3. encrypt for self (WAJIB)
-      // const encryptedForSelf = await encryptConversationKey(
-      //   rawKey,
-      //   "dummy-self-public-key" // TODO: replace with actual self public key
-      // );
-      const encryptedForSelf = "dummy-encrypted-key-self";
+      if (!user.active_key?.public_key) {
+        throw new Error("User active public key not found.");
+      }
+      const userPublicKey = await importPublicKey(user.active_key.public_key);
+      const encryptedForSelf = await encryptConversationKey(
+        rawKey,
+        userPublicKey // TODO: replace with actual self public key
+      );
 
       const conversationBody: ConversationsWithMemberBody = {
         conversation: {

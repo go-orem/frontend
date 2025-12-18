@@ -17,7 +17,7 @@ export async function encryptConversationKey(
 ) {
   // 1. ephemeral key
   const ephKey = await crypto.subtle.generateKey(
-    { name: "ECDH", namedCurve: "X25519" },
+    { name: "ECDH", namedCurve: "P-256" },
     true,
     ["deriveKey"]
   );
