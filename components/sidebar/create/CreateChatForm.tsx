@@ -30,7 +30,7 @@ interface CreateChatFormProps {
 
 export default function CreateChatForm({ onClose }: CreateChatFormProps) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const form = useForm<CreateChatType>({
     resolver: zodResolver(CreateChatSchema),
     defaultValues: { recipient_id: "" },
@@ -66,6 +66,7 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
   // ----- SUBMIT -----
   const onSubmit = handleSubmit(async (values) => {
+    await refreshUser();
     if (!user || !user.user) return;
     try {
       setLoadingCreate(true);
@@ -138,7 +139,6 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
 
       console.log("Conversations payload:", conversationBody);
 
-      // TODO: call chatService.createChat(values.recipient_id)
       const res = await createConversation(conversationBody);
       console.log("Chat created:", res);
       if (!res) {
