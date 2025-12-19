@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ChatFooter from "./ChatFooter";
 import { useModalChat } from "@/context";
-import { SendChatAttachment } from "@/components/UI";
+import { SendChatAttachment, PollComposer } from "@/components/UI";
 import { UIMessage } from "@/types/chat.types";
 import { MessageStatus } from "@/types/database.types";
 import { MessageList } from "./MessageList";
@@ -33,6 +33,7 @@ export default function ChatWindow({
 }: ChatWindowProps) {
   const [input, setInput] = useState("");
   const { openModalChat, setOpenModalChat } = useModalChat();
+  const [openPollComposer, setOpenPollComposer] = useState(false);
 
   const handleSendMessage = async () => {
     if (!input.trim() || !conversationId) return;
@@ -45,8 +46,28 @@ export default function ChatWindow({
     }
   };
 
-  const handleDeleteMessage = async (messageId: string) => {
+  const handleSendPoll = async (pollData: {
+    question: string;
+    options: string[];
+  }) => {
     if (!conversationId) return;
+
+    try {
+      // Encrypt poll as JSON message
+      const pollJson = JSON.stringify({
+        type: "poll",
+        question: pollData.question,
+        options: pollData.options.map((opt) => ({ text: opt, votes: 0 })),
+      });
+
+      await onSendMessage?.(conversationId, pollJson);
+      setOpenPollComposer(false);
+    } catch (err) {
+      console.error("Failed to send poll:", err);
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
     try {
       await onDeleteMessage?.(messageId);
     } catch (err) {
@@ -89,6 +110,17 @@ export default function ChatWindow({
       <SendChatAttachment
         open={openModalChat}
         onClose={() => setOpenModalChat(false)}
+        onOpenPoll={() => {
+          setOpenModalChat(false);
+          setOpenPollComposer(true);
+        }}
+      />
+
+      {/* Poll Composer Modal */}
+      <PollComposer
+        open={openPollComposer}
+        onClose={() => setOpenPollComposer(false)}
+        onSend={handleSendPoll}
       />
     </div>
   );

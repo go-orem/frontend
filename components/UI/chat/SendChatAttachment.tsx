@@ -14,12 +14,14 @@ import React, { useEffect, useState } from "react";
 type SendChatAttachmentProps = {
   open: boolean;
   onClose: () => void;
+  onOpenPoll?: () => void;
   width?: string;
 };
 
 export default function SendChatAttachment({
   open,
   onClose,
+  onOpenPoll,
   width = "100%",
 }: SendChatAttachmentProps) {
   const [isClient, setIsClient] = useState(false);
@@ -84,7 +86,15 @@ export default function SendChatAttachment({
             <button
               key={idx}
               className="flex flex-col items-center gap-2 p-1 rounded-lg transition cursor-pointer"
-              onClick={() => console.log("Kirim:", item.label)}
+              onClick={() => {
+                if (item.label === "Poll") {
+                  onOpenPoll?.();
+                  onClose();
+                  return;
+                }
+
+                console.log("Kirim:", item.label);
+              }}
             >
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center 
