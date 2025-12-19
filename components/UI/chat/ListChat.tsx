@@ -70,7 +70,6 @@ function ChatCard({
   );
 }
 
-// ✅ NEW: Extract ChatCardWithDecryption component
 function ChatCardWithDecryption({
   conv,
   conversationKeys,
@@ -140,7 +139,7 @@ function ChatCardWithDecryption({
     <ChatCard
       id={conv.id}
       name={displayName}
-      message={lastMessageText || "Loading..."}
+      message={lastMessageText}
       time={lastMsg?.created_at ? formatTime(lastMsg.created_at) : ""}
       img={avatar}
       borderColor="border-green-500"
