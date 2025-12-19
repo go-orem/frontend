@@ -91,6 +91,31 @@ export default function ListChat({
     });
   }, [type]);
 
+  // ✅ FIX: Add undefined to parameter type
+  const decodeCipherText = (
+    cipherText: string | number[] | null | undefined
+  ): string => {
+    if (!cipherText) return "";
+
+    try {
+      // If it's already a string (base64), decode it
+      if (typeof cipherText === "string") {
+        return atob(cipherText);
+      }
+
+      // If it's a number array (Uint8Array), convert first
+      if (Array.isArray(cipherText)) {
+        const base64 = btoa(String.fromCharCode(...cipherText));
+        return atob(base64);
+      }
+    } catch (err) {
+      console.error("Failed to decode cipher_text:", err);
+      return "[Encrypted message]";
+    }
+
+    return "";
+  };
+
   if (loading) return <SidebarPanelLoading />;
 
   return (
@@ -99,7 +124,6 @@ export default function ListChat({
         const lastMsg = conv.last_message;
         const otherUser = conv.other_user;
 
-        // Tentukan nama & avatar
         const displayName =
           conv.conversation_type === "direct"
             ? otherUser?.public_name || "Unknown"
@@ -121,7 +145,7 @@ export default function ListChat({
             key={conv.id}
             id={conv.id}
             name={displayName}
-            message={lastMsg?.cipher_text ? atob(lastMsg.cipher_text) : ""}
+            message={decodeCipherText(lastMsg?.cipher_text)}
             time={lastMsg?.created_at ? formatTime(lastMsg.created_at) : ""}
             img={avatar}
             borderColor="border-green-500"

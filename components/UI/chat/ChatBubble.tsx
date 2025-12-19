@@ -51,18 +51,15 @@ export function ChatBubble({
       {/* Avatar */}
       {!isMe && (
         <div className="shrink-0 mr-3">
-          {sender_avatar ? (
-            <img
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10"
-              src={sender_avatar}
-              alt={sender_name}
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white/10">
-              {sender_name.charAt(0).toUpperCase()}
-            </div>
-          )}
+          <img
+            className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10"
+            src={
+              sender_avatar ||
+              `https://api.dicebear.com/7.x/thumbs/svg?seed=${sender_name}`
+            }
+            alt={sender_name}
+            loading="lazy"
+          />
         </div>
       )}
 
