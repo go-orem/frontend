@@ -1,11 +1,13 @@
 // ChatBubble.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UIMessage } from "@/types/chat.types";
 import { CheckIcon } from "./CheckIcon";
 import { MessageActions } from "./MessageActions";
 import { useAuthContext } from "@/context/AuthProvider";
+import { useConversationContext } from "@/context/ConversationProvider"; // ✅ NEW
+import { decryptUIMessage } from "@/utils/crypto"; // ✅ NEW
 
 interface ChatBubbleProps extends UIMessage {
   sender?: "me" | "other";
@@ -15,12 +17,15 @@ interface ChatBubbleProps extends UIMessage {
 
 export function ChatBubble({
   id,
+  conversation_id,
   sender_user_id,
   sender_name = "Unknown",
   sender_username,
   sender_avatar,
   created_at,
   cipher_text,
+  nonce, // ✅ ADD: Get from props
+  tag, // ✅ ADD: Get from props
   status,
   message_status,
   sender,
@@ -28,7 +33,9 @@ export function ChatBubble({
   onReact,
 }: ChatBubbleProps) {
   const [hovered, setHovered] = useState(false);
+  const [decryptedText, setDecryptedText] = useState<string>("");
   const { user } = useAuthContext();
+  const { conversationKeys } = useConversationContext();
   const displayStatus = status || message_status;
 
   const override =
@@ -40,11 +47,54 @@ export function ChatBubble({
     minute: "2-digit",
   });
 
+  // ✅ FIX: Pass actual nonce & tag
+  useEffect(() => {
+    const decrypt = async () => {
+      const conversationKey = conversationKeys[conversation_id];
+      if (!conversationKey) {
+        setDecryptedText("[No encryption key]");
+        return;
+      }
+
+      // ✅ DEBUG: Log raw data
+      console.log("🔐 Attempting decrypt:", {
+        msgId: id.substring(0, 8),
+        hasCipher: !!cipher_text,
+        hasNonce: !!nonce,
+        hasTag: !!tag,
+        hasKey: !!conversationKey,
+      });
+
+      try {
+        const plaintext = await decryptUIMessage(
+          {
+            id,
+            conversation_id,
+            cipher_text,
+            nonce,
+            tag,
+          } as UIMessage,
+          conversationKey
+        );
+        console.log("✅ Decrypt success:", id.substring(0, 8));
+        setDecryptedText(plaintext);
+      } catch (err: any) {
+        console.log("❌ Decrypt error:", {
+          msgId: id.substring(0, 8),
+          error: err.message,
+        });
+        setDecryptedText(`[${err.message}]`);
+      }
+    };
+
+    decrypt();
+  }, [id, conversation_id, cipher_text, nonce, tag, conversationKeys]); // ✅ ADD: nonce & tag deps
+
   return (
     <div
       className={`flex w-full mb-4 px-4 ${
         isMe ? "justify-end" : "justify-start"
-      } group relative`} // ✅ ADD: relative for positioning context
+      } group relative`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -85,12 +135,15 @@ export function ChatBubble({
         <div
           className={`relative px-4 py-3 rounded-2xl transition-all ${
             isMe
-              ? "bg-linear-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
+              ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
               : "bg-gray-800/90 backdrop-blur-sm text-gray-100 rounded-bl-md shadow-md border border-white/5"
-          } ${hovered ? "shadow-xl scale-[1.01]" : ""}`} // ✅ REDUCED: scale from 1.02 to 1.01
+          } ${hovered ? "shadow-xl scale-[1.01]" : ""}`}
         >
-          <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
-            {cipher_text}
+          {/* ✅ UPDATED: Show decrypted text */}
+          <div className="whitespace-pre-wrap break-words leading-relaxed text-[15px]">
+            {decryptedText || (
+              <span className="text-gray-400 italic">Decrypting...</span>
+            )}
           </div>
 
           {/* Time + Status */}
@@ -115,7 +168,7 @@ export function ChatBubble({
         </div>
       </div>
 
-      {/* ✅ FIXED: Actions positioning with proper z-index */}
+      {/* Actions */}
       {hovered && (
         <div
           className={`absolute z-20 ${
@@ -123,7 +176,7 @@ export function ChatBubble({
               ? "right-4 top-1/2 -translate-y-1/2"
               : "left-16 top-1/2 -translate-y-1/2"
           }`}
-          onMouseEnter={() => setHovered(true)} // ✅ Keep hover when on actions
+          onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
           <MessageActions

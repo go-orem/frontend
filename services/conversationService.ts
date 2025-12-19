@@ -125,6 +125,23 @@ class ConversationService {
 
     await handleResponse(res);
   }
+
+  async getConversationKey(conversationId: string): Promise<{
+    encrypted_key: string;
+    key_algo: string;
+    key_version: number;
+    // allow backend variations
+    cipher?: string;
+    iv?: string;
+    eph_public_key?: string;
+  }> {
+    const res = await fetch(`/api/conversations/${conversationId}/key`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    return handleResponse(res);
+  }
 }
 
 export const conversationService = new ConversationService();

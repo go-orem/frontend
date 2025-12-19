@@ -7,11 +7,13 @@ import { toUIMessages } from "@/types/chat.types";
 import {
   generateConversationKey,
   exportRawKey,
+  decryptConversationKey,
 } from "@/utils/crypto/conversationKey";
+import { getPrivateKey } from "@/utils/crypto/userKeys"; // ✅ get user's ECDH private key
 import { useAuth } from "./useAuth";
 
 export function useConversations() {
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuth(); // ✅ also get user
   const {
     setConversations,
     setMessages,
@@ -39,35 +41,29 @@ export function useConversations() {
 
     if (opts?.skipIfCached && messages[conversationId]) {
       console.log("⚠️ Messages already cached, skip fetch");
+      // Try ensure key exists even on cached messages
+      if (!conversationKeys[conversationId]) {
+        await ensureConversationKey(conversationId);
+      }
       return;
     }
 
     setLoading(true);
     try {
-      // ✅ Initialize conversation key if not exists
+      // ✅ Ensure conversation key exists before decrypting on UI
       if (!conversationKeys[conversationId]) {
-        const key = await generateConversationKey();
-        const rawKey = await exportRawKey(key);
-        const base64Key = btoa(String.fromCharCode(...rawKey));
-
-        setConversationKeys((prev) => ({
-          ...prev,
-          [conversationId]: base64Key,
-        }));
+        await ensureConversationKey(conversationId);
       }
 
-      // ✅ Fetch dari backend returns Message[]
       const dbMessages: Message[] = await conversationService.listMessages(
         conversationId
       );
 
-      // ✅ FIX: Sort messages by created_at (oldest first)
       const sortedMessages = dbMessages.sort(
         (a, b) =>
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
 
-      // ✅ Convert ke UIMessage[] sebelum set state
       const uiMessages = toUIMessages(sortedMessages);
 
       setMessages((prev) => ({
@@ -79,12 +75,81 @@ export function useConversations() {
     }
   }
 
+  // ✅ NEW: Fetch + decrypt conversation key if missing
+  async function ensureConversationKey(conversationId: string) {
+    try {
+      if (!user?.user?.id) return;
+
+      const keyDTO: any = await conversationService.getConversationKey(
+        conversationId
+      );
+      if (!keyDTO) return;
+
+      console.log("🔑 Fetched conversation key DTO:", keyDTO);
+
+      // Normalize from DTO
+      let cipher: string | null = null;
+      let iv: string | null = null;
+      let eph: string | null = null;
+
+      // Case A: backend packs JSON string in `encrypted_key`
+      if (typeof keyDTO.encrypted_key === "string") {
+        try {
+          const packed = JSON.parse(keyDTO.encrypted_key);
+          cipher = packed?.cipher ?? null;
+          iv = packed?.iv ?? packed?.nonce ?? null;
+          eph = packed?.eph_public_key ?? packed?.ephemeral_public_key ?? null;
+        } catch {
+          // Not JSON, ignore
+        }
+      }
+
+      // Case B: flattened fields or different keys
+      if (!cipher) cipher = keyDTO.cipher || keyDTO.cipher_text || null;
+      if (!iv) iv = keyDTO.iv || keyDTO.nonce || null;
+      if (!eph)
+        eph = keyDTO.eph_public_key || keyDTO.ephemeral_public_key || null;
+
+      // Optional: log algo/version for debugging
+      if (keyDTO.key_algo || keyDTO.key_version) {
+        console.log("🔐 Key meta:", {
+          algo: keyDTO.key_algo,
+          version: keyDTO.key_version,
+        });
+      }
+
+      if (!cipher || !iv || !eph) {
+        console.warn("Conversation key DTO incomplete");
+        return;
+      }
+
+      const priv = await getPrivateKey(user.user.id);
+      if (!priv) {
+        console.warn("No private key found for user; cannot decrypt conv key");
+        return;
+      }
+
+      const base64Key = await decryptConversationKey({
+        cipher,
+        iv,
+        eph_public_key: eph,
+        recipientPrivateKey: priv,
+      });
+
+      setConversationKeys((prev) => ({
+        ...prev,
+        [conversationId]: base64Key,
+      }));
+    } catch (e) {
+      console.warn("Failed to ensure conversation key:", e);
+    }
+  }
+
   async function createConversation(body: ConversationsWithMemberBody) {
     setLoading(true);
     try {
       const conv = await conversationService.createWithMembers(body);
 
-      // ✅ Generate key untuk conversation baru
       const key = await generateConversationKey();
       const rawKey = await exportRawKey(key);
       const base64Key = btoa(String.fromCharCode(...rawKey));

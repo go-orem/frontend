@@ -59,3 +59,59 @@ export async function encryptConversationKey(
     ),
   };
 }
+
+// Decrypt conversation key encrypted with encryptConversationKey()
+export async function decryptConversationKey(params: {
+  cipher: string; // base64
+  iv: string; // base64 (12 bytes)
+  eph_public_key: string; // base64 (raw uncompressed P-256)
+  recipientPrivateKey: CryptoKey; // ECDH private key
+}): Promise<string> {
+  const { cipher, iv, eph_public_key, recipientPrivateKey } = params;
+
+  // Decode base64 helpers
+  const b64ToBytes = (b64: string) =>
+    Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+
+  const ephPubRaw = b64ToBytes(eph_public_key);
+  const ephPubBuf = new ArrayBuffer(ephPubRaw.length);
+  new Uint8Array(ephPubBuf).set(ephPubRaw);
+
+  // Import ephemeral public key
+  const ephPubKey = await crypto.subtle.importKey(
+    "raw",
+    ephPubBuf,
+    { name: "ECDH", namedCurve: "P-256" },
+    false,
+    []
+  );
+
+  // Derive same shared AES key as encryptor
+  const aesKey = await crypto.subtle.deriveKey(
+    { name: "ECDH", public: ephPubKey },
+    recipientPrivateKey,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+
+  const ivBytes = b64ToBytes(iv);
+  const cipherBytes = b64ToBytes(cipher);
+
+  const ivBuf = new ArrayBuffer(ivBytes.length);
+  new Uint8Array(ivBuf).set(ivBytes);
+
+  const cipherBuf = new ArrayBuffer(cipherBytes.length);
+  new Uint8Array(cipherBuf).set(cipherBytes);
+
+  // Decrypt to raw conversation key bytes
+  const plain = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: ivBuf },
+    aesKey,
+    cipherBuf
+  );
+
+  const raw = new Uint8Array(plain);
+  // Return base64 conversation key for reuse with encrypt/decryptMessage()
+  return btoa(String.fromCharCode(...raw));
+}

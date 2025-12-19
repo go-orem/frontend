@@ -1,11 +1,11 @@
+import { UIMessage } from "@/types/chat.types";
+
 export async function encryptMessage(plaintext: string, base64Key: string) {
-  // ✅ Validation
   if (!plaintext) throw new Error("Plaintext cannot be empty");
   if (!base64Key) throw new Error("Base64 key is required");
 
   const enc = new TextEncoder();
 
-  // ✅ Safe decode with error handling
   let keyBytes: Uint8Array;
   try {
     keyBytes = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
@@ -13,7 +13,6 @@ export async function encryptMessage(plaintext: string, base64Key: string) {
     throw new Error("Invalid base64 key format");
   }
 
-  // ✅ FIX: Convert Uint8Array to proper ArrayBuffer
   const keyBuffer = new ArrayBuffer(keyBytes.length);
   new Uint8Array(keyBuffer).set(keyBytes);
 
@@ -36,7 +35,6 @@ export async function encryptMessage(plaintext: string, base64Key: string) {
     enc.encode(plaintext)
   );
 
-  // ✅ FIX: Extract GCM tag (last 16 bytes)
   const encryptedBytes = new Uint8Array(encrypted);
   const cipherBytes = encryptedBytes.slice(0, encryptedBytes.length - 16);
   const tagBytes = encryptedBytes.slice(encryptedBytes.length - 16);
@@ -44,7 +42,7 @@ export async function encryptMessage(plaintext: string, base64Key: string) {
   return {
     cipher_text: btoa(String.fromCharCode(...cipherBytes)),
     nonce: btoa(String.fromCharCode(...nonce)),
-    tag: btoa(String.fromCharCode(...tagBytes)), // ✅ Extract & encode tag
+    tag: btoa(String.fromCharCode(...tagBytes)),
     encryption_algo: "AES-256-GCM",
   };
 }
@@ -53,9 +51,8 @@ export async function decryptMessage(
   cipherText: string,
   nonce: string,
   base64Key: string,
-  tag: string // ✅ Accept tag parameter
+  tag: string
 ) {
-  // ✅ Validation
   if (!cipherText || !nonce || !base64Key || !tag) {
     throw new Error(
       "All parameters (cipherText, nonce, base64Key, tag) are required"
@@ -71,25 +68,31 @@ export async function decryptMessage(
     keyBytes = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
     cipherBytes = Uint8Array.from(atob(cipherText), (c) => c.charCodeAt(0));
     nonceBytes = Uint8Array.from(atob(nonce), (c) => c.charCodeAt(0));
-    tagBytes = Uint8Array.from(atob(tag), (c) => c.charCodeAt(0)); // ✅ Decode tag
+    tagBytes = Uint8Array.from(atob(tag), (c) => c.charCodeAt(0));
   } catch (err) {
-    throw new Error("Invalid base64 format in cipherText, nonce, key, or tag");
+    console.log("Base64 decode error:", err);
+    throw new Error("Invalid base64 format");
   }
 
-  // ✅ FIX: Convert all Uint8Array to proper ArrayBuffer
+  console.log("🔍 Decrypt sizes:", {
+    keySize: keyBytes.length,
+    cipherSize: cipherBytes.length,
+    nonceSize: nonceBytes.length,
+    tagSize: tagBytes.length,
+  });
+
   const keyBuffer = new ArrayBuffer(keyBytes.length);
   new Uint8Array(keyBuffer).set(keyBytes);
 
   const nonceBuffer = new ArrayBuffer(nonceBytes.length);
   new Uint8Array(nonceBuffer).set(nonceBytes);
 
-  // ✅ Combine cipherBytes + tagBytes untuk decrypt
-  const combinedBuffer = new ArrayBuffer(cipherBytes.length + tagBytes.length);
+  const combinedSize = cipherBytes.length + tagBytes.length;
+  const combinedBuffer = new ArrayBuffer(combinedSize);
   const combined = new Uint8Array(combinedBuffer);
   combined.set(cipherBytes, 0);
   combined.set(tagBytes, cipherBytes.length);
 
-  // ✅ FIX: Import key using keyBuffer (ArrayBuffer)
   const key = await crypto.subtle.importKey(
     "raw",
     keyBuffer,
@@ -98,14 +101,70 @@ export async function decryptMessage(
     ["decrypt"]
   );
 
-  const decrypted = await crypto.subtle.decrypt(
-    {
-      name: "AES-GCM",
-      iv: nonceBuffer,
-    },
-    key, // ✅ Use CryptoKey
-    combinedBuffer // ✅ Cipher + tag combined
-  );
+  try {
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: nonceBuffer,
+        tagLength: 128,
+      },
+      key,
+      combinedBuffer
+    );
 
-  return new TextDecoder().decode(decrypted);
+    return new TextDecoder().decode(decrypted);
+  } catch (err) {
+    console.log("❌ Decrypt failed:", {
+      error: err,
+      cipherLen: cipherBytes.length,
+      tagLen: tagBytes.length,
+    });
+    throw new Error("Decryption failed");
+  }
+}
+
+// Helper: check if a string looks like base64 (len%4==0 and charset valid)
+function looksLikeBase64(str: string) {
+  if (!str || typeof str !== "string") return false;
+  if (str.length % 4 !== 0) return false;
+  return /^[A-Za-z0-9+/]+={0,2}$/.test(str);
+}
+
+// Helper: normalize incoming field (string | number[]) into base64 string
+function normalizeEncComponent(
+  comp: string | number[] | null | undefined
+): string | null {
+  if (!comp) return null;
+  if (typeof comp === "string") return comp;
+
+  // comp is number[]: try interpret as ASCII
+  try {
+    const ascii = String.fromCharCode(...comp);
+    // If it already looks like base64, use it directly
+    if (looksLikeBase64(ascii)) return ascii;
+    // Otherwise, treat bytes as raw and base64-encode
+    return btoa(ascii);
+  } catch {
+    return null;
+  }
+}
+
+export async function decryptUIMessage(
+  message: UIMessage,
+  conversationKey: string
+): Promise<string> {
+  try {
+    const cipherText = normalizeEncComponent(message.cipher_text);
+    const nonce = normalizeEncComponent(message.nonce);
+    const tag = normalizeEncComponent(message.tag);
+
+    if (!cipherText) return "[Missing cipher]";
+    if (!nonce) return "[Missing nonce]";
+    if (!tag) return "[Missing tag]";
+
+    return await decryptMessage(cipherText, nonce, conversationKey, tag);
+  } catch (err) {
+    console.log("Decrypt error:", err);
+    return "[Decryption failed]";
+  }
 }

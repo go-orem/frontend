@@ -4,9 +4,10 @@ import { HoverGif } from "../effects";
 import { SidebarPanelLoading } from "@/components/sidebar";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { useConversations } from "@/hooks/useConversations";
+import { UIMessage } from "@/types/chat.types";
 import { ConversationType } from "@/types/database.types";
-import { getErrorMessage, runEffectAsync } from "@/utils";
-import { useEffect } from "react";
+import { decryptUIMessage, getErrorMessage, runEffectAsync } from "@/utils";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 // Utility: format ISO date ke "HH:mm" atau "Hari ini"
@@ -69,6 +70,85 @@ function ChatCard({
   );
 }
 
+// ✅ NEW: Extract ChatCardWithDecryption component
+function ChatCardWithDecryption({
+  conv,
+  conversationKeys,
+  onListClick,
+}: {
+  conv: any;
+  conversationKeys: Record<string, string>;
+  onListClick?: (chat: any) => void;
+}) {
+  const [lastMessageText, setLastMessageText] = useState<string>("");
+
+  const lastMsg = conv.last_message;
+  const otherUser = conv.other_user;
+
+  const displayName =
+    conv.conversation_type === "direct"
+      ? otherUser?.public_name || "Unknown"
+      : conv.name || "Group Chat";
+
+  const avatar =
+    conv.conversation_type === "direct"
+      ? otherUser?.avatar_url ||
+        `https://api.dicebear.com/7.x/thumbs/svg?seed=${
+          otherUser?.public_name || conv.name || "unknown"
+        }`
+      : conv.profile_url ||
+        `https://api.dicebear.com/7.x/thumbs/svg?seed=${
+          conv.name || "group-chat"
+        }`;
+
+  // Decrypt last message
+  useEffect(() => {
+    const decrypt = async () => {
+      if (!lastMsg || !lastMsg.cipher_text) {
+        setLastMessageText("");
+        return;
+      }
+
+      const conversationKey = conversationKeys[conv.id];
+      if (!conversationKey) {
+        setLastMessageText("[No key]");
+        return;
+      }
+
+      try {
+        const plaintext = await decryptUIMessage(
+          {
+            id: lastMsg.id,
+            conversation_id: conv.id,
+            cipher_text: lastMsg.cipher_text,
+            nonce: lastMsg.nonce,
+            tag: lastMsg.tag,
+          } as UIMessage,
+          conversationKey
+        );
+        setLastMessageText(plaintext);
+      } catch (err) {
+        console.error("Failed to decrypt last message:", err);
+        setLastMessageText("[Encrypted]");
+      }
+    };
+
+    decrypt();
+  }, [lastMsg, conv.id, conversationKeys]);
+
+  return (
+    <ChatCard
+      id={conv.id}
+      name={displayName}
+      message={lastMessageText || "Loading..."}
+      time={lastMsg?.created_at ? formatTime(lastMsg.created_at) : ""}
+      img={avatar}
+      borderColor="border-green-500"
+      onChatClick={() => onListClick && onListClick(conv)}
+    />
+  );
+}
+
 export default function ListChat({
   type,
   onListClick,
@@ -76,7 +156,7 @@ export default function ListChat({
   type: string;
   onListClick?: (chat: any) => void;
 }) {
-  const { conversations, loading } = useConversationContext();
+  const { conversations, loading, conversationKeys } = useConversationContext();
   const { refreshConversations } = useConversations();
 
   useEffect(() => {
@@ -91,68 +171,18 @@ export default function ListChat({
     });
   }, [type]);
 
-  // ✅ FIX: Add undefined to parameter type
-  const decodeCipherText = (
-    cipherText: string | number[] | null | undefined
-  ): string => {
-    if (!cipherText) return "";
-
-    try {
-      // If it's already a string (base64), decode it
-      if (typeof cipherText === "string") {
-        return atob(cipherText);
-      }
-
-      // If it's a number array (Uint8Array), convert first
-      if (Array.isArray(cipherText)) {
-        const base64 = btoa(String.fromCharCode(...cipherText));
-        return atob(base64);
-      }
-    } catch (err) {
-      console.error("Failed to decode cipher_text:", err);
-      return "[Encrypted message]";
-    }
-
-    return "";
-  };
-
   if (loading) return <SidebarPanelLoading />;
 
   return (
     <div className="container h-screen overflow-y-auto pl-3 pr-3 space-y-2">
-      {conversations.map((conv) => {
-        const lastMsg = conv.last_message;
-        const otherUser = conv.other_user;
-
-        const displayName =
-          conv.conversation_type === "direct"
-            ? otherUser?.public_name || "Unknown"
-            : conv.name || "Group Chat";
-
-        const avatar =
-          conv.conversation_type === "direct"
-            ? otherUser?.avatar_url ||
-              `https://api.dicebear.com/7.x/thumbs/svg?seed=${
-                otherUser?.public_name || conv.name || "unknown"
-              }`
-            : conv.profile_url ||
-              `https://api.dicebear.com/7.x/thumbs/svg?seed=${
-                conv.name || "group-chat"
-              }`;
-
-        return (
-          <ChatCard
-            key={conv.id}
-            id={conv.id}
-            name={displayName}
-            message={decodeCipherText(lastMsg?.cipher_text)}
-            time={lastMsg?.created_at ? formatTime(lastMsg.created_at) : ""}
-            img={avatar}
-            borderColor="border-green-500"
-            onChatClick={() => onListClick && onListClick(conv)}
-          />
-        );
-      })}
+      {conversations.map((conv) => (
+        <ChatCardWithDecryption
+          key={conv.id}
+          conv={conv}
+          conversationKeys={conversationKeys}
+          onListClick={onListClick}
+        />
+      ))}
     </div>
   );
 }
