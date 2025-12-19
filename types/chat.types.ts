@@ -6,16 +6,14 @@ import {
 
 /**
  * UI-friendly message type untuk display
- * Wraps Message dan tambah frontend-specific fields
  */
 export interface UIMessage {
-  // Inherit semua dari Message
   id: string;
   conversation_id: string;
   sender_user_id: string;
-  cipher_text: string | number[] | null; // ✅ Allow null
-  nonce: string | number[] | null; // ✅ Allow null
-  tag: string | number[] | null; // ✅ Allow null
+  cipher_text: string | number[] | null;
+  nonce: string | number[] | null;
+  tag: string | number[] | null;
   encryption_algo: string;
   message_status: MessageStatus;
   reply_to_message_id: string | null;
@@ -26,11 +24,25 @@ export interface UIMessage {
   updated_at: string;
 
   // Frontend-specific fields
-  status?: MessageStatus; // alias untuk message_status
-  client_id?: string; // untuk optimistic updates
-  is_sending?: boolean; // untuk optimistic state
+  status?: MessageStatus;
+  client_id?: string;
+  is_sending?: boolean;
   sender_name?: string;
   sender_avatar?: string;
+  sender_username?: string;
+  sender_email?: string | null;
+  sender_profile?: {
+    user_id: string;
+    public_name: string;
+    avatar_url: string | null;
+    bio?: string | null;
+  };
+  sender_user?: {
+    id: string;
+    username: string;
+    email: string | null;
+    is_active: boolean;
+  };
   attachments?: MessageAttachment[];
   deleted_at?: string | null;
 }
@@ -42,6 +54,28 @@ export function toUIMessage(msg: Message): UIMessage {
   return {
     ...msg,
     status: (msg.message_status || "sent") as MessageStatus,
+    // ✅ UPDATED: Extract from sender_user first, fallback to profile
+    sender_username: msg.sender_user?.username || undefined,
+    sender_email: msg.sender_user?.email || undefined,
+    sender_name:
+      msg.sender_profile?.public_name || msg.sender_user?.username || "Unknown",
+    sender_avatar: msg.sender_profile?.avatar_url || undefined,
+    sender_profile: msg.sender_profile
+      ? {
+          user_id: msg.sender_profile.user_id,
+          public_name: msg.sender_profile.public_name,
+          avatar_url: msg.sender_profile.avatar_url,
+          bio: msg.sender_profile.bio,
+        }
+      : undefined,
+    sender_user: msg.sender_user
+      ? {
+          id: msg.sender_user.id,
+          username: msg.sender_user.username,
+          email: msg.sender_user.email,
+          is_active: msg.sender_user.is_active,
+        }
+      : undefined,
   };
 }
 
@@ -61,7 +95,7 @@ export function createOptimisticMessage(params: {
   sender_user_id: string;
   cipher_text: string;
   nonce: string;
-  tag: string; // ✅ Now required (not null)
+  tag: string;
   content?: string;
 }): UIMessage {
   const now = new Date().toISOString();
@@ -72,7 +106,7 @@ export function createOptimisticMessage(params: {
     sender_user_id: params.sender_user_id,
     cipher_text: params.cipher_text,
     nonce: params.nonce,
-    tag: params.tag, // ✅ Use actual tag
+    tag: params.tag,
     encryption_algo: "AES-256-GCM",
     message_status: "sent",
     status: "sent",

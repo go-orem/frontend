@@ -36,13 +36,16 @@ export function MessageActions({
   };
 
   return (
-    <div className="absolute flex space-x-1 px-2 py-1 top-1/2 -translate-y-1/2 bg-gray-800 rounded-lg shadow-lg z-10">
+    <div
+      className="flex space-x-1 px-2 py-1.5 bg-gray-900/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/10 z-20" // ✅ ADD: z-20, better styling
+      onClick={(e) => e.stopPropagation()} // ✅ Prevent event bubbling
+    >
       {/* Reactions */}
       {REACTION_EMOJIS.map((emoji) => (
         <button
           key={emoji}
           onClick={() => handleReact(emoji)}
-          className="text-white transition text-lg cursor-pointer hover:scale-110 active:scale-95"
+          className="text-white transition text-lg cursor-pointer hover:scale-125 active:scale-95 p-1 rounded hover:bg-white/10" // ✅ ADD: padding & bg
           title={`React with ${emoji}`}
           type="button"
         >
@@ -50,11 +53,11 @@ export function MessageActions({
         </button>
       ))}
 
-      {/* Delete (only for own messages) */}
+      {/* Delete (own messages only) */}
       {isMe && (
         <button
           onClick={handleDelete}
-          className="text-white transition text-lg cursor-pointer hover:scale-110 active:scale-95 ml-1 pl-1 border-l border-gray-600"
+          className="text-red-400 transition text-lg cursor-pointer hover:scale-125 active:scale-95 ml-1 pl-1.5 border-l border-gray-600 p-1 rounded hover:bg-red-950/30" // ✅ Better styling
           title="Delete message"
           type="button"
         >
@@ -65,7 +68,7 @@ export function MessageActions({
       {/* Settings / More Options */}
       <button
         onClick={handleSettings}
-        className="text-white transition text-lg cursor-pointer hover:scale-110 active:scale-95"
+        className="text-white transition text-lg cursor-pointer hover:scale-125 active:scale-95 p-1 rounded hover:bg-white/10" // ✅ Better styling
         title="Message options"
         type="button"
       >
