@@ -4,15 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import ChatFooter from "./ChatFooter";
 import { useModal, useModalChat } from "@/context";
 import { SendChatAttachment } from "@/components/UI";
+import { FullChatProps } from "@/types/conversations.type";
 
-type FullChatProps = {
-  id: number;
-  name: string;
-  avatar?: string;
-  time: string;
-  message: string;
-  sender?: "me" | "other";
-  status?: "sent" | "delivered" | "read";
+type PollMessage = {
+  type: "poll";
+  question: "string";
+  options: { text: string; votes: number }[];
 };
 
 function CheckIcon({ status }: { status?: "sent" | "delivered" | "read" }) {
@@ -110,7 +107,11 @@ function ChatBubble({
             }`}
         >
           <div className="whitespace-pre-wrap wrap-break-word leading-relaxed">
-            {message}
+            {typeof message === "object" && (message as any).type === "poll" ? (
+              <PollBubble poll={message as PollMessage} isMe={isMe} />
+            ) : (
+              message
+            )}
           </div>
 
           {isMe && (
@@ -141,128 +142,102 @@ function ChatBubble({
   );
 }
 
+// === Polling ===
+function PollBubble({ poll, isMe }: { poll: PollMessage; isMe: boolean }) {
+  const [votedIndex, setVotedIndex] = useState<number | null>(null);
+
+  const totalVotes = poll.options.reduce((a, b) => a + b.votes, 0);
+
+  return (
+    <div
+      className={`
+        relative w-full rounded-2xl px-3 py-2.5 backdrop-blur-xl
+        ${
+          isMe
+            ? "bg-white/8 border border-white/10"
+            : "bg-black/45 border border-white/5"
+        }
+      `}
+    >
+      {/* Header */}
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-[13.5px] font-semibold leading-snug">
+          {poll.question}
+        </p>
+
+        <span className="text-[10px] uppercase tracking-wider text-gray-400">
+          poll
+        </span>
+      </div>
+
+      {/* Options */}
+      <div className="space-y-2">
+        {poll.options.map((opt, i) => {
+          const percent =
+            totalVotes === 0 ? 0 : Math.round((opt.votes / totalVotes) * 100);
+
+          const selected = votedIndex === i;
+
+          return (
+            <button
+              key={i}
+              disabled={votedIndex !== null}
+              onClick={() => setVotedIndex(i)}
+              className={`
+                relative w-full overflow-hidden rounded-xl px-3 py-2
+                text-left transition-all duration-200
+                ${
+                  selected
+                    ? "ring-1 ring-(--primarycolor) bg-(--primarycolor)/15"
+                    : "hover:bg-white/10"
+                }
+                ${isMe ? "bg-white/6" : "bg-black/5"}
+              `}
+            >
+              {/* Progress bar */}
+              {votedIndex !== null && (
+                <div className="pointer-events-none absolute inset-0">
+                  <div
+                    className="h-full bg-(--primarycolor)/50 transition-all"
+                    style={{ width: `${percent}%` }}
+                  />
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="relative z-10 flex items-center justify-between gap-3">
+                <span className="text-[13px] font-medium leading-snug">
+                  {opt.text}
+                </span>
+
+                {votedIndex !== null && (
+                  <span className="text-[12px] font-semibold opacity-80">
+                    {percent}%
+                  </span>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      {votedIndex !== null && (
+        <div className="mt-2 flex items-center justify-between text-[11px] text-gray-400">
+          <span className="flex items-center gap-1.5 text-green-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+            Vote recorded
+          </span>
+
+          <span className="opacity-60">hash-ready</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ChatWindow() {
   const [messages, setMessages] = useState<FullChatProps[]>([
-    {
-      id: 1,
-      name: "Syarifa",
-      avatar:
-        "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3JpMzBob2Nha3A2eG9xa2pocWh1ZGs2YjczMXB0eXpzN3Vyam1nZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1zhqIaTw4q3ZeuDq8i/giphy.gif",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 2,
-      name: "Saya",
-      time: "23:01",
-      message: "Lagi coba bikin chat app 🚀",
-      sender: "me",
-      status: "sent",
-    },
-    {
-      id: 3,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 4,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 5,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "read",
-    },
-    {
-      id: 6,
-      name: "Ratna sinta 🦋",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 7,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "delivered",
-    },
-    {
-      id: 8,
-      name: "Syarifa",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 9,
-      name: "Saya",
-      time: "23:01",
-      message: "Lagi coba bikin chat app 🚀",
-      sender: "me",
-      status: "sent",
-    },
-    {
-      id: 10,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 11,
-      name: "Salima",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
-    {
-      id: 12,
-      name: "Saya",
-      time: "23:01",
-      message: "Kamu sedang melukis ya 🥰 🚀",
-      sender: "me",
-      status: "read",
-    },
-    {
-      id: 13,
-      name: "Ratna sinta 🦋",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600",
-      time: "23:00",
-      message:
-        "Halo, lagi apa? Menu hari ini apa ya apakah kamu sudah makan malem ini?",
-      sender: "other",
-    },
     {
       id: 14,
       name: "Saya",
@@ -272,6 +247,31 @@ export default function ChatWindow() {
       status: "delivered",
     },
   ]);
+
+  {
+    /* SEND POLL */
+  }
+  const sendPoll = () => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        name: "Saya",
+        time: new Date().toLocaleTimeString().slice(0, 5),
+        sender: "me",
+        status: "sent",
+        message: {
+          type: "poll",
+          question: "Makan apa malam ini?",
+          options: [
+            { text: "Nasi goreng", votes: 0 },
+            { text: "Mie ayam", votes: 0 },
+            { text: "Bakso", votes: 0 },
+          ],
+        },
+      },
+    ]);
+  };
 
   const { openModalChat, setOpenModalChat } = useModalChat();
 
@@ -323,6 +323,10 @@ export default function ChatWindow() {
       <SendChatAttachment
         open={openModalChat}
         onClose={() => setOpenModalChat(false)}
+        onOpenPoll={() => {
+          setOpenModalChat(false);
+          sendPoll();
+        }}
       />
     </div>
   );
