@@ -61,8 +61,14 @@ export function useConversations() {
         conversationId
       );
 
+      // ✅ FIX: Sort messages by created_at (oldest first)
+      const sortedMessages = dbMessages.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+
       // ✅ Convert ke UIMessage[] sebelum set state
-      const uiMessages = toUIMessages(dbMessages);
+      const uiMessages = toUIMessages(sortedMessages);
 
       setMessages((prev) => ({
         ...prev,

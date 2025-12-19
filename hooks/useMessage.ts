@@ -13,7 +13,7 @@ import {
 
 export function useMessage(userId: string) {
   const { setMessages, messages, conversationKeys, setConversationKeys } =
-    useConversationContext(); // ✅ Get keys + setter
+    useConversationContext();
 
   /**
    * Send message with optimistic update
@@ -52,6 +52,7 @@ export function useMessage(userId: string) {
 
     setMessages((prev) => {
       const list = prev[conversationId] ?? [];
+      // ✅ FIX: Append to end (newest at bottom)
       return {
         ...prev,
         [conversationId]: [...list, optimisticMsg],
@@ -109,7 +110,6 @@ export function useMessage(userId: string) {
 
   /**
    * Delete a message
-   * ✅ FIX: Only accept messageId, find conversationId from messages state
    */
   async function deleteMessage(messageId: string) {
     try {
@@ -141,7 +141,6 @@ export function useMessage(userId: string) {
 
   /**
    * Update message status
-   * ✅ Accept any MessageStatus (sent, delivered, read, queued, etc)
    */
   async function updateStatus(messageId: string, status: MessageStatus) {
     try {
