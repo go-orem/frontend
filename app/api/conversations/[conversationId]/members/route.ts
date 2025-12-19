@@ -1,8 +1,10 @@
 import { proxyRequest } from "@/lib/apiProxy";
+import { NextRequest } from "next/server";
 
 export async function POST(
-  req: Request,
-  { params }: { params: { conversationId: string } }
+  req: NextRequest,
+  context: { params: Promise<{ conversationId: string }> }
 ) {
-  return proxyRequest(`/conversations/${params.conversationId}/members`, req);
+  const { conversationId } = await context.params;
+  return proxyRequest(`/conversations/${conversationId}/members`, req);
 }

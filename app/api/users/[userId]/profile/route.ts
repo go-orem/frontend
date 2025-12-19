@@ -1,7 +1,8 @@
 import { proxyRequest } from "@/lib/apiProxy";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ userId: string }> }
 ) {
   const { userId } = await context.params;
@@ -9,7 +10,7 @@ export async function GET(
 }
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ userId: string }> }
 ) {
   const { userId } = await context.params;

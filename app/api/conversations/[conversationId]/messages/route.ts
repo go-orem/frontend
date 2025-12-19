@@ -1,9 +1,10 @@
 import { proxyRequest } from "@/lib/apiProxy";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ conversationId: string }> }
 ) {
-  const params = await context.params;
-  return proxyRequest(`/conversations/${params.conversationId}/messages`, req);
+  const { conversationId } = await context.params;
+  return proxyRequest(`/conversations/${conversationId}/messages`, req);
 }

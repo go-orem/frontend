@@ -2,12 +2,28 @@
 import React, { useEffect, useState } from "react";
 import { ChatWindow, HeaderSplit } from "../UI";
 import { InfoSidebar } from "../pages/chat";
-import { useAuth, useConversationDetail } from "@/hooks";
+import {
+  useAuth,
+  useConversationDetail,
+  useConversations,
+  useMessage,
+} from "@/hooks";
+import { useConversationContext } from "@/context/ConversationProvider";
 
 export default function MainContent({ channelId }: { channelId: string }) {
   const [openSidebar, setOpenSidebar] = useState(false);
   const { detail: detailConv } = useConversationDetail(channelId);
   const { user } = useAuth();
+
+  // 🎯 Message hooks
+  const { sendMessage, addReaction, deleteMessage, updateStatus } = useMessage(
+    user?.user?.id || ""
+  );
+  const { markConversationAsRead, loadMessages } = useConversations();
+
+  // 🎯 Get messages from context
+  const { messages } = useConversationContext();
+  const currentMessages = messages[channelId] ?? [];
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebarOpen");
@@ -20,7 +36,17 @@ export default function MainContent({ channelId }: { channelId: string }) {
     localStorage.setItem("sidebarOpen", openSidebar.toString());
   }, [openSidebar]);
 
-  if (!user || !detailConv) return null;
+  // 🔔 Load messages & mark as read
+  useEffect(() => {
+    if (channelId && user) {
+      // Load messages dari backend
+      loadMessages(channelId, { skipIfCached: true }).catch(console.error);
+      // Mark all as read
+      markConversationAsRead(channelId).catch(console.error);
+    }
+  }, [channelId, user]);
+
+  if (!user || !user.user || !detailConv) return null;
   const currentUserId = user.user.id;
 
   const userData = {
@@ -88,7 +114,17 @@ export default function MainContent({ channelId }: { channelId: string }) {
           detail={detailConv}
           onProfileClick={() => setOpenSidebar(!openSidebar)}
         />
-        <ChatWindow />
+
+        {/* ✅ Updated: Pass currentUserId */}
+        <ChatWindow
+          conversationId={channelId}
+          currentUserId={currentUserId}
+          messages={currentMessages}
+          onSendMessage={sendMessage}
+          onDeleteMessage={deleteMessage}
+          onAddReaction={addReaction}
+          onUpdateStatus={updateStatus}
+        />
       </div>
 
       <div

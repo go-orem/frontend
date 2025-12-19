@@ -1,8 +1,10 @@
 import { proxyRequest } from "@/lib/apiProxy";
+import { NextRequest } from "next/server";
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  return proxyRequest(`/categories/${params.id}`, req);
+  const { id } = await context.params;
+  return proxyRequest(`/categories/${id}`, req);
 }

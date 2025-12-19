@@ -4,6 +4,8 @@ export * from "./useCategories";
 export * from "./useContacts";
 export * from "./useConversationDetail";
 export * from "./useConversations";
+export * from "./useMessage";
+export * from "./useMessageAction";
 export * from "./useTags";
 export * from "./useUserProfile";
 export * from "./useUserSearch";

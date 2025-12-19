@@ -37,10 +37,14 @@ export async function encryptConversationKey(
   // 3. encrypt
   const iv = crypto.getRandomValues(new Uint8Array(12));
 
+  // ✅ FIX: Convert Uint8Array to proper ArrayBuffer
+  const keyBuffer = new ArrayBuffer(rawConversationKey.length);
+  new Uint8Array(keyBuffer).set(rawConversationKey);
+
   const cipherBuffer = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv },
     sharedKey,
-    rawConversationKey.buffer as ArrayBuffer // 🔥 FIX DI SINI
+    keyBuffer
   );
 
   return {
