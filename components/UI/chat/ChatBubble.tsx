@@ -50,7 +50,7 @@ export function ChatBubble({
     >
       {/* Avatar */}
       {!isMe && (
-        <div className="flex-shrink-0 mr-3">
+        <div className="shrink-0 mr-3">
           {sender_avatar ? (
             <img
               className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10"
@@ -59,7 +59,7 @@ export function ChatBubble({
               loading="lazy"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white/10">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white/10">
               {sender_name.charAt(0).toUpperCase()}
             </div>
           )}
@@ -88,11 +88,11 @@ export function ChatBubble({
         <div
           className={`relative px-4 py-3 rounded-2xl transition-all ${
             isMe
-              ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
+              ? "bg-linear-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
               : "bg-gray-800/90 backdrop-blur-sm text-gray-100 rounded-bl-md shadow-md border border-white/5"
           } ${hovered ? "shadow-xl scale-[1.01]" : ""}`} // ✅ REDUCED: scale from 1.02 to 1.01
         >
-          <div className="whitespace-pre-wrap break-words leading-relaxed text-[15px]">
+          <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
             {cipher_text}
           </div>
 
