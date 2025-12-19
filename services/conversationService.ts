@@ -142,6 +142,27 @@ class ConversationService {
     });
     return handleResponse(res);
   }
+
+  async updateMemberKey(
+    conversationId: string,
+    memberId: string,
+    keyData: {
+      encrypted_conversation_key: string;
+      key_algo: string;
+      key_version: number;
+    }
+  ): Promise<void> {
+    const res = await fetch(
+      `/api/conversations/${conversationId}/members/${memberId}/key`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(keyData),
+      }
+    );
+    return handleResponse(res);
+  }
 }
 
 export const conversationService = new ConversationService();

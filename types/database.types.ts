@@ -104,15 +104,20 @@ export interface ConversationMember {
   conversation_id: string;
   user_id: string;
   role: string;
-  last_read_message: string | null;
+  last_read_message?: string | null;
+  encrypted_conversation_key?: string;
+  key_algo?: string;
+  key_version?: number;
+  public_key?: string; // ✅ ADD: member's public key if included
   created_at: string;
   updated_at: string;
-  encrypted_conversation_key: string;
-  key_algo: string;
-  key_version: number;
-  username: string;
-  public_name: string;
-  avatar_url: string | null;
+
+  // ✅ Optional nested user with public key
+  user?: {
+    id: string;
+    username: string;
+    public_key?: string;
+  };
 }
 
 export interface Message {

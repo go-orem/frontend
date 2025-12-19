@@ -131,22 +131,34 @@ function looksLikeBase64(str: string) {
 }
 
 // Helper: normalize incoming field (string | number[]) into base64 string
+// ✅ SIMPLIFIED: Backend now returns base64 strings directly
 function normalizeEncComponent(
   comp: string | number[] | null | undefined
 ): string | null {
   if (!comp) return null;
+
+  // If already string, use directly (backend now returns base64)
   if (typeof comp === "string") return comp;
 
-  // comp is number[]: try interpret as ASCII
-  try {
-    const ascii = String.fromCharCode(...comp);
-    // If it already looks like base64, use it directly
-    if (looksLikeBase64(ascii)) return ascii;
-    // Otherwise, treat bytes as raw and base64-encode
-    return btoa(ascii);
-  } catch {
-    return null;
+  // Legacy fallback: convert number[] to string
+  // Check if it looks like ASCII bytes of a base64 string
+  if (Array.isArray(comp)) {
+    try {
+      const str = String.fromCharCode(...comp);
+      // Validate it's valid base64
+      atob(str);
+      return str;
+    } catch {
+      // Not valid base64, try raw encode
+      try {
+        return btoa(String.fromCharCode(...comp));
+      } catch {
+        return null;
+      }
+    }
   }
+
+  return null;
 }
 
 export async function decryptUIMessage(

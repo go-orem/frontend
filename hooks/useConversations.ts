@@ -7,9 +7,10 @@ import { toUIMessages } from "@/types/chat.types";
 import {
   generateConversationKey,
   exportRawKey,
+  encryptConversationKey,
   decryptConversationKey,
 } from "@/utils/crypto/conversationKey";
-import { getPrivateKey } from "@/utils/crypto/userKeys"; // ✅ get user's ECDH private key
+import { getPrivateKey, importPublicKey } from "@/utils/crypto/userKeys"; // ✅ get user's ECDH private key
 import { useAuth } from "./useAuth";
 
 export function useConversations() {
@@ -148,16 +149,56 @@ export function useConversations() {
   async function createConversation(body: ConversationsWithMemberBody) {
     setLoading(true);
     try {
+      // 1. Create conversation first
       const conv = await conversationService.createWithMembers(body);
 
+      // 2. Generate conversation key
       const key = await generateConversationKey();
       const rawKey = await exportRawKey(key);
       const base64Key = btoa(String.fromCharCode(...rawKey));
 
+      // 3. Store locally
       setConversationKeys((prev) => ({
         ...prev,
         [conv.id]: base64Key,
       }));
+
+      // 4. ✅ Encrypt key for each member and upload
+      // Get member public keys from conversation detail
+      const detail = await conversationService.getConversationDetail(conv.id);
+
+      for (const member of detail.members || []) {
+        try {
+          // ✅ FIX: Use correct field - check member.public_key or fetch from user service
+          const publicKey = member.public_key || member.user?.public_key;
+
+          if (!publicKey) {
+            console.warn(`Member ${member.user_id} has no public key`);
+            continue;
+          }
+
+          // Import recipient's public key
+          const recipientPubKey = await importPublicKey(publicKey);
+
+          // Encrypt conversation key for this member
+          const encryptedKey = await encryptConversationKey(
+            rawKey,
+            recipientPubKey
+          );
+
+          // Upload to backend
+          await conversationService.updateMemberKey(conv.id, member.id, {
+            encrypted_conversation_key: JSON.stringify(encryptedKey),
+            key_algo: "X25519+AES-GCM",
+            key_version: 1,
+          });
+        } catch (err) {
+          console.error(
+            `Failed to encrypt key for member ${member.user_id}:`,
+            err
+          );
+        }
+      }
 
       await refreshConversations();
       return conv;
