@@ -1,13 +1,9 @@
 "use client";
 
 import { handleResponse } from "@/utils/response";
-import { Subscription } from "@/types/database.types";
 
 class SubscriptionService {
-  async subscribe(payload: {
-    plan: string;
-    duration: number;
-  }): Promise<Subscription> {
+  async subscribe(payload: { plan: string; duration: number }): Promise<any> {
     const res = await fetch("/api/subscriptions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -17,7 +13,7 @@ class SubscriptionService {
     return handleResponse(res);
   }
 
-  async getActive(): Promise<Subscription> {
+  async getActive(): Promise<any> {
     const res = await fetch("/api/subscriptions/active", {
       method: "GET",
       headers: { "Content-Type": "application/json" },

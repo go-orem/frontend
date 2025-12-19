@@ -31,6 +31,10 @@ export function MessageActions({
     }
   };
 
+  const handleSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
+    openModal(messageId, e.currentTarget);
+  };
+
   return (
     <div className="absolute flex space-x-1 px-2 py-1 top-1/2 -translate-y-1/2 bg-gray-800 rounded-lg shadow-lg z-10">
       {/* Reactions */}
@@ -58,9 +62,9 @@ export function MessageActions({
         </button>
       )}
 
-      {/* Settings */}
+      {/* Settings / More Options */}
       <button
-        onClick={(e) => openModal(messageId, e.currentTarget)}
+        onClick={handleSettings}
         className="text-white transition text-lg cursor-pointer hover:scale-110 active:scale-95"
         title="Message options"
         type="button"

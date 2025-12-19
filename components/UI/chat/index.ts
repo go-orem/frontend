@@ -6,7 +6,7 @@ export { default as HeaderChatSearch } from "./HeaderChatSearch";
 export { default as ListChat } from "./ListChat";
 export { default as SendChatAttachment } from "./SendChatAttachment";
 
-// ✅ NEW: Export sub-components untuk reusability
+// ✅ Export sub-components untuk reusability
 export { ChatBubble } from "./ChatBubble";
 export { CheckIcon } from "./CheckIcon";
 export { MessageActions } from "./MessageActions";

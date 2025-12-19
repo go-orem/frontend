@@ -1,13 +1,12 @@
 "use client";
 
 import { handleResponse } from "@/utils/response";
-import { Call } from "@/types/database.types";
 
 class CallService {
   async startCall(payload: {
     conversation_id: string;
     initiator_id: string;
-  }): Promise<Call> {
+  }): Promise<Response> {
     const res = await fetch("/api/calls", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

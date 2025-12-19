@@ -1,30 +1,30 @@
 "use client";
 
-import { createContext, useContext, useState, useRef } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-type ModalData = {
-  id: number | string;
-  anchor: HTMLElement | null;
-};
+export interface ModalData {
+  data?: string; // messageId
+  anchor?: HTMLElement;
+}
 
-type ModalContextType = {
-  openModal: (id: number | string, anchor: HTMLElement | null) => void;
-  closeModal: () => void;
+interface ModalContextType {
   modalData: ModalData | null;
-};
+  openModal: (data: string, anchor: HTMLElement) => void;
+  closeModal: () => void;
+}
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [modalData, setModalData] = useState<ModalData | null>(null);
 
-  function openModal(id: number | string, anchor: HTMLElement | null) {
-    setModalData({ id, anchor });
-  }
+  const openModal = (data: string, anchor: HTMLElement) => {
+    setModalData({ data, anchor });
+  };
 
-  function closeModal() {
+  const closeModal = () => {
     setModalData(null);
-  }
+  };
 
   return (
     <ModalContext.Provider value={{ modalData, openModal, closeModal }}>
@@ -34,7 +34,9 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useModal() {
-  const ctx = useContext(ModalContext);
-  if (!ctx) throw new Error("useModal harus dipakai dalam ModalProvider");
-  return ctx;
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error("useModal must be used within ModalProvider");
+  }
+  return context;
 }
