@@ -6,9 +6,14 @@ import { useConversationContext } from "@/context/ConversationProvider";
 import { createOptimisticMessage, toUIMessage } from "@/types/chat.types";
 import { MessageStatus } from "@/types/database.types";
 import { encryptMessage } from "@/utils";
+import {
+  generateConversationKey,
+  exportRawKey,
+} from "@/utils/crypto/conversationKey";
 
 export function useMessage(userId: string) {
-  const { setMessages, messages, conversationKeys } = useConversationContext(); // ✅ Get keys
+  const { setMessages, messages, conversationKeys, setConversationKeys } =
+    useConversationContext(); // ✅ Get keys + setter
 
   /**
    * Send message with optimistic update
@@ -16,8 +21,22 @@ export function useMessage(userId: string) {
   async function sendMessage(conversationId: string, plainText: string) {
     const clientId = `client-${uuid()}`;
 
-    // 🔐 Get conversation key
-    const conversationKey = conversationKeys[conversationId] || ""; // ✅ From context
+    // 🔐 Get or generate conversation key
+    let conversationKey = conversationKeys[conversationId];
+
+    // ✅ If key doesn't exist, generate it
+    if (!conversationKey) {
+      const key = await generateConversationKey();
+      const rawKey = await exportRawKey(key);
+      conversationKey = btoa(String.fromCharCode(...rawKey));
+
+      // Store in context for future use
+      setConversationKeys((prev) => ({
+        ...prev,
+        [conversationId]: conversationKey,
+      }));
+    }
+
     const encrypted = await encryptMessage(plainText, conversationKey);
 
     // 1️⃣ Optimistic insert
@@ -169,7 +188,7 @@ export function useMessage(userId: string) {
   return {
     sendMessage,
     addReaction,
-    deleteMessage, // ✅ Now only expects (messageId)
+    deleteMessage,
     updateStatus,
     addAttachment,
     deleteAttachment,

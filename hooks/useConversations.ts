@@ -4,12 +4,22 @@ import { messageService } from "@/services/messageService";
 import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { ConversationType, Message } from "@/types/database.types";
 import { toUIMessages } from "@/types/chat.types";
+import {
+  generateConversationKey,
+  exportRawKey,
+} from "@/utils/crypto/conversationKey";
 import { useAuth } from "./useAuth";
 
 export function useConversations() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { setConversations, setMessages, setLoading, messages } =
-    useConversationContext();
+  const {
+    setConversations,
+    setMessages,
+    setLoading,
+    messages,
+    setConversationKeys,
+    conversationKeys,
+  } = useConversationContext();
 
   async function refreshConversations(type: ConversationType | null = null) {
     setLoading(true);
@@ -34,6 +44,18 @@ export function useConversations() {
 
     setLoading(true);
     try {
+      // ✅ Initialize conversation key if not exists
+      if (!conversationKeys[conversationId]) {
+        const key = await generateConversationKey();
+        const rawKey = await exportRawKey(key);
+        const base64Key = btoa(String.fromCharCode(...rawKey));
+
+        setConversationKeys((prev) => ({
+          ...prev,
+          [conversationId]: base64Key,
+        }));
+      }
+
       // ✅ Fetch dari backend returns Message[]
       const dbMessages: Message[] = await conversationService.listMessages(
         conversationId
@@ -55,6 +77,17 @@ export function useConversations() {
     setLoading(true);
     try {
       const conv = await conversationService.createWithMembers(body);
+
+      // ✅ Generate key untuk conversation baru
+      const key = await generateConversationKey();
+      const rawKey = await exportRawKey(key);
+      const base64Key = btoa(String.fromCharCode(...rawKey));
+
+      setConversationKeys((prev) => ({
+        ...prev,
+        [conv.id]: base64Key,
+      }));
+
       await refreshConversations();
       return conv;
     } finally {

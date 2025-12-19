@@ -59,9 +59,9 @@ export function createOptimisticMessage(params: {
   client_id: string;
   conversation_id: string;
   sender_user_id: string;
-  cipher_text: string | number[];
-  nonce: string | number[];
-  tag: string | number[] | null; // ✅ Allow null
+  cipher_text: string;
+  nonce: string;
+  tag: string; // ✅ Now required (not null)
   content?: string;
 }): UIMessage {
   const now = new Date().toISOString();
@@ -72,7 +72,7 @@ export function createOptimisticMessage(params: {
     sender_user_id: params.sender_user_id,
     cipher_text: params.cipher_text,
     nonce: params.nonce,
-    tag: params.tag,
+    tag: params.tag, // ✅ Use actual tag
     encryption_algo: "AES-256-GCM",
     message_status: "sent",
     status: "sent",
