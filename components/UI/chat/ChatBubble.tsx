@@ -135,12 +135,12 @@ export function ChatBubble({
         <div
           className={`relative px-4 py-3 rounded-2xl transition-all ${
             isMe
-              ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
+              ? "bg-linear-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg"
               : "bg-gray-800/90 backdrop-blur-sm text-gray-100 rounded-bl-md shadow-md border border-white/5"
           } ${hovered ? "shadow-xl scale-[1.01]" : ""}`}
         >
           {/* ✅ UPDATED: Show decrypted text */}
-          <div className="whitespace-pre-wrap break-words leading-relaxed text-[15px]">
+          <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
             {decryptedText || (
               <span className="text-gray-400 italic">Decrypting...</span>
             )}
