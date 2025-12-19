@@ -27,23 +27,64 @@ export default function FloatingMenuChat() {
   useEffect(() => {
     if (modalData?.anchor) {
       const rect = modalData.anchor.getBoundingClientRect();
-      const menuHeight = 320; // Increased for more items
+      const menuHeight = 380;
+      const menuWidth = 280;
+      const padding = 16;
+      const marginBuffer = 24; // ✅ Extra buffer untuk safe spacing
+
       const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
 
       let top: number;
+      let left: number;
       let transformOrigin: string;
 
-      if (rect.bottom + menuHeight + 16 < viewportHeight) {
+      // ✅ IMPROVED: Check space BELOW with buffer
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      if (spaceBelow >= menuHeight + marginBuffer) {
+        // ✅ Plenty of space below
         top = rect.bottom + 8;
         transformOrigin = "top center";
-      } else {
+      } else if (spaceAbove >= menuHeight + marginBuffer) {
+        // ✅ Plenty of space above
         top = rect.top - menuHeight - 8;
         transformOrigin = "bottom center";
+      } else {
+        // ✅ IMPROVED: Smart fallback
+        // If roughly equal space, prefer below
+        if (spaceBelow >= spaceAbove) {
+          top = rect.bottom + 8;
+          transformOrigin = "top center";
+        } else {
+          top = rect.top - menuHeight - 8;
+          transformOrigin = "bottom center";
+        }
+      }
+
+      // ✅ Clamp top to viewport bounds
+      top = Math.max(
+        padding,
+        Math.min(top, viewportHeight - menuHeight - padding)
+      );
+
+      // ✅ Horizontal positioning with overflow prevention
+      let preferredLeft = rect.left + rect.width / 2 - menuWidth / 2;
+
+      if (preferredLeft + menuWidth + padding > viewportWidth) {
+        // ✅ Too far right, shift left
+        left = viewportWidth - menuWidth - padding;
+      } else if (preferredLeft < padding) {
+        // ✅ Too far left, shift right
+        left = padding;
+      } else {
+        left = preferredLeft;
       }
 
       setMenuPos({
         top,
-        left: rect.left + rect.width / 2 - 280 / 2,
+        left,
       });
       setOrigin(transformOrigin);
     }
@@ -63,45 +104,38 @@ export default function FloatingMenuChat() {
 
   const handleReply = () => {
     console.log("Reply to message:", messageId);
-    // TODO: Implement reply functionality
     closeModal();
   };
 
   const handleForward = () => {
     console.log("Forward message:", messageId);
-    // TODO: Implement forward functionality
     closeModal();
   };
 
   const handleMention = () => {
     console.log("Mention for message:", messageId);
-    // TODO: Implement mention functionality
     closeModal();
   };
 
   const handleWhisper = () => {
     console.log("Whisper message:", messageId);
-    // TODO: Implement whisper functionality
     closeModal();
   };
 
   const handleLike = () => {
     console.log("Like message:", messageId);
-    // TODO: Implement like functionality
     closeModal();
   };
 
   const handleDelete = () => {
     if (confirm("Delete this message?")) {
       console.log("Delete message:", messageId);
-      // TODO: Call deleteMessage(messageId)
       closeModal();
     }
   };
 
   const handleReport = () => {
     console.log("Report message:", messageId);
-    // TODO: Implement report functionality
     closeModal();
   };
 
@@ -112,15 +146,15 @@ export default function FloatingMenuChat() {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: origin.startsWith("top") ? -8 : 8 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="fixed w-[280px] bg-[#0F0F10]/95 backdrop-blur-xl rounded-2xl p-3 shadow-2xl space-y-1 z-9999 text-sm border border-white/15"
+      className="fixed w-[280px] bg-[#0F0F10]/95 backdrop-blur-xl rounded-2xl p-3 shadow-2xl space-y-1 z-9999 text-sm border border-white/15 max-h-[90vh] overflow-y-auto"
       style={{
-        top: menuPos.top,
-        left: menuPos.left,
+        top: `${menuPos.top}px`,
+        left: `${menuPos.left}px`,
         transformOrigin: origin,
       }}
     >
       {/* Emoji Quick Reactions */}
-      <div className="flex justify-center gap-2 text-lg cursor-pointer py-2 border-b border-white/10">
+      <div className="flex justify-center gap-2 text-lg cursor-pointer py-2 border-b border-white/10 flex-wrap">
         <span className="hover:scale-110 transition">😁</span>
         <span className="hover:scale-110 transition">🥰</span>
         <span className="hover:scale-110 transition">🎯</span>
@@ -148,11 +182,6 @@ export default function FloatingMenuChat() {
           icon={<AtSign size={18} />}
           label="@Mention"
           onClick={handleMention}
-        />
-        <MenuItem
-          icon={<IconWhisper />}
-          label="Whisper"
-          onClick={handleWhisper}
         />
       </div>
 
@@ -183,11 +212,6 @@ export default function FloatingMenuChat() {
           onClick={handleReport}
           danger
         />
-      </div>
-
-      {/* Message ID (Debug) */}
-      <div className="text-xs text-gray-500 px-4 py-2 border-t border-white/10 text-center">
-        ID: {messageId?.substring(0, 8)}...
       </div>
     </motion.div>
   );
