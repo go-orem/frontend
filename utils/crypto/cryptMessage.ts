@@ -1,21 +1,62 @@
 import { UIMessage } from "@/types/chat.types";
 
-export async function encryptMessage(plaintext: string, base64Key: string) {
+// ✅ ADD: Export interface
+export interface EncryptedMessage {
+  cipher_text: string;
+  nonce: string;
+  tag: string;
+  encryption_algo: string;
+}
+
+// ✅ UPDATED: Helper to convert Uint8Array to proper ArrayBuffer
+function toArrayBuffer(u8: Uint8Array): ArrayBuffer {
+  // Create new ArrayBuffer and copy data to ensure it's not SharedArrayBuffer
+  const buffer = new ArrayBuffer(u8.byteLength);
+  new Uint8Array(buffer).set(u8);
+  return buffer;
+}
+
+// ✅ UPDATED: Helper to decode base64 to proper ArrayBuffer
+function b64ToArrayBuffer(b64: string): ArrayBuffer {
+  try {
+    const binary = atob(b64);
+    const buffer = new ArrayBuffer(binary.length);
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return buffer;
+  } catch (err) {
+    throw new Error(`Invalid base64: ${err}`);
+  }
+}
+
+/* ================================
+   Encrypt plaintext message
+================================ */
+export async function encryptMessage(
+  plaintext: string,
+  base64Key: string
+): Promise<EncryptedMessage> {
   if (!plaintext) throw new Error("Plaintext cannot be empty");
   if (!base64Key) throw new Error("Base64 key is required");
 
-  const enc = new TextEncoder();
-
-  let keyBytes: Uint8Array;
+  // 1. Decode base64 key
+  let keyBuffer: ArrayBuffer;
   try {
-    keyBytes = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
+    keyBuffer = b64ToArrayBuffer(base64Key);
   } catch (err) {
-    throw new Error("Invalid base64 key format");
+    throw new Error(`Invalid base64 key format: ${err}`);
   }
 
-  const keyBuffer = new ArrayBuffer(keyBytes.length);
-  new Uint8Array(keyBuffer).set(keyBytes);
+  // ✅ Validate key size (256-bit = 32 bytes)
+  if (keyBuffer.byteLength !== 32) {
+    throw new Error(
+      `Invalid AES-256 key size: expected 32 bytes, got ${keyBuffer.byteLength}`
+    );
+  }
 
+  // 2. Import key
   const key = await crypto.subtle.importKey(
     "raw",
     keyBuffer,
@@ -24,20 +65,32 @@ export async function encryptMessage(plaintext: string, base64Key: string) {
     ["encrypt"]
   );
 
+  // 3. Generate nonce (12 bytes for GCM)
   const nonce = crypto.getRandomValues(new Uint8Array(12));
 
+  // 4. Encrypt
   const encrypted = await crypto.subtle.encrypt(
     {
       name: "AES-GCM",
-      iv: nonce,
+      iv: toArrayBuffer(nonce), // ✅ Convert to proper ArrayBuffer
+      tagLength: 128,
     },
     key,
-    enc.encode(plaintext)
+    new TextEncoder().encode(plaintext)
   );
 
+  // 5. Split cipher + tag
   const encryptedBytes = new Uint8Array(encrypted);
   const cipherBytes = encryptedBytes.slice(0, encryptedBytes.length - 16);
   const tagBytes = encryptedBytes.slice(encryptedBytes.length - 16);
+
+  // ✅ Validate sizes
+  if (nonce.length !== 12) {
+    throw new Error("Nonce generation failed: expected 12 bytes");
+  }
+  if (tagBytes.length !== 16) {
+    throw new Error("Tag generation failed: expected 16 bytes");
+  }
 
   return {
     cipher_text: btoa(String.fromCharCode(...cipherBytes)),
@@ -47,52 +100,60 @@ export async function encryptMessage(plaintext: string, base64Key: string) {
   };
 }
 
+/* ================================
+   Decrypt message components
+================================ */
 export async function decryptMessage(
   cipherText: string,
   nonce: string,
   base64Key: string,
   tag: string
-) {
-  if (!cipherText || !nonce || !base64Key || !tag) {
+): Promise<string> {
+  // ✅ Validate inputs
+  if (!cipherText) throw new Error("cipherText is required");
+  if (!nonce) throw new Error("nonce is required");
+  if (!base64Key) throw new Error("base64Key is required");
+  if (!tag) throw new Error("tag is required");
+
+  let keyBuffer: ArrayBuffer;
+  let cipherBuffer: ArrayBuffer;
+  let nonceBuffer: ArrayBuffer;
+  let tagBuffer: ArrayBuffer;
+
+  // 1. Decode all components to ArrayBuffer
+  try {
+    keyBuffer = b64ToArrayBuffer(base64Key);
+    cipherBuffer = b64ToArrayBuffer(cipherText);
+    nonceBuffer = b64ToArrayBuffer(nonce);
+    tagBuffer = b64ToArrayBuffer(tag);
+  } catch (err) {
+    throw new Error(`Base64 decode error: ${err}`);
+  }
+
+  // ✅ UPDATED: Better error messages with actual values
+  if (keyBuffer.byteLength !== 32) {
     throw new Error(
-      "All parameters (cipherText, nonce, base64Key, tag) are required"
+      `Invalid key size: expected 32 bytes, got ${keyBuffer.byteLength} (base64 len: ${base64Key.length})`
+    );
+  }
+  if (nonceBuffer.byteLength !== 12) {
+    // ✅ Show base64 nonce for debugging
+    console.error("❌ Invalid nonce:", {
+      base64: nonce,
+      decoded_length: nonceBuffer.byteLength,
+      expected: 12,
+    });
+    throw new Error(
+      `Invalid nonce size: expected 12 bytes, got ${nonceBuffer.byteLength}`
+    );
+  }
+  if (tagBuffer.byteLength !== 16) {
+    throw new Error(
+      `Invalid tag size: expected 16 bytes, got ${tagBuffer.byteLength}`
     );
   }
 
-  let keyBytes: Uint8Array;
-  let cipherBytes: Uint8Array;
-  let nonceBytes: Uint8Array;
-  let tagBytes: Uint8Array;
-
-  try {
-    keyBytes = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
-    cipherBytes = Uint8Array.from(atob(cipherText), (c) => c.charCodeAt(0));
-    nonceBytes = Uint8Array.from(atob(nonce), (c) => c.charCodeAt(0));
-    tagBytes = Uint8Array.from(atob(tag), (c) => c.charCodeAt(0));
-  } catch (err) {
-    console.log("Base64 decode error:", err);
-    throw new Error("Invalid base64 format");
-  }
-
-  console.log("🔍 Decrypt sizes:", {
-    keySize: keyBytes.length,
-    cipherSize: cipherBytes.length,
-    nonceSize: nonceBytes.length,
-    tagSize: tagBytes.length,
-  });
-
-  const keyBuffer = new ArrayBuffer(keyBytes.length);
-  new Uint8Array(keyBuffer).set(keyBytes);
-
-  const nonceBuffer = new ArrayBuffer(nonceBytes.length);
-  new Uint8Array(nonceBuffer).set(nonceBytes);
-
-  const combinedSize = cipherBytes.length + tagBytes.length;
-  const combinedBuffer = new ArrayBuffer(combinedSize);
-  const combined = new Uint8Array(combinedBuffer);
-  combined.set(cipherBytes, 0);
-  combined.set(tagBytes, cipherBytes.length);
-
+  // 2. Import key
   const key = await crypto.subtle.importKey(
     "raw",
     keyBuffer,
@@ -101,6 +162,13 @@ export async function decryptMessage(
     ["decrypt"]
   );
 
+  // 3. Combine cipher + tag
+  const combinedSize = cipherBuffer.byteLength + tagBuffer.byteLength;
+  const combined = new Uint8Array(combinedSize);
+  combined.set(new Uint8Array(cipherBuffer), 0);
+  combined.set(new Uint8Array(tagBuffer), cipherBuffer.byteLength);
+
+  // 4. Decrypt
   try {
     const decrypted = await crypto.subtle.decrypt(
       {
@@ -109,47 +177,53 @@ export async function decryptMessage(
         tagLength: 128,
       },
       key,
-      combinedBuffer
+      toArrayBuffer(combined)
     );
 
     return new TextDecoder().decode(decrypted);
-  } catch (err) {
-    console.log("❌ Decrypt failed:", {
-      error: err,
-      cipherLen: cipherBytes.length,
-      tagLen: tagBytes.length,
+  } catch (err: any) {
+    // ✅ ENHANCED: Log all components for debugging
+    console.error("❌ Decrypt failed:", {
+      error: err.message,
+      errorType: err.name,
+      cipherLen: cipherBuffer.byteLength,
+      nonceLen: nonceBuffer.byteLength,
+      tagLen: tagBuffer.byteLength,
+      keyLen: keyBuffer.byteLength,
+      // ✅ Log first few chars of base64 for debugging
+      cipher_preview: cipherText.substring(0, 20) + "...",
+      nonce_preview: nonce.substring(0, 20) + "...",
+      tag_preview: tag.substring(0, 20) + "...",
     });
-    throw new Error("Decryption failed");
+
+    // ✅ Better error message
+    if (err.name === "OperationError") {
+      throw new Error("Invalid encryption data or wrong key");
+    }
+
+    throw new Error(`Decryption failed: ${err.message}`);
   }
 }
 
-// Helper: check if a string looks like base64 (len%4==0 and charset valid)
-function looksLikeBase64(str: string) {
-  if (!str || typeof str !== "string") return false;
-  if (str.length % 4 !== 0) return false;
-  return /^[A-Za-z0-9+/]+={0,2}$/.test(str);
-}
-
-// Helper: normalize incoming field (string | number[]) into base64 string
-// ✅ SIMPLIFIED: Backend now returns base64 strings directly
+/* ================================
+   Helper: Normalize encryption components
+================================ */
 function normalizeEncComponent(
   comp: string | number[] | null | undefined
 ): string | null {
   if (!comp) return null;
 
-  // If already string, use directly (backend now returns base64)
+  // Already string (base64 from backend)
   if (typeof comp === "string") return comp;
 
-  // Legacy fallback: convert number[] to string
-  // Check if it looks like ASCII bytes of a base64 string
+  // Legacy: number[] to base64
   if (Array.isArray(comp)) {
     try {
       const str = String.fromCharCode(...comp);
-      // Validate it's valid base64
-      atob(str);
+      atob(str); // validate base64
       return str;
     } catch {
-      // Not valid base64, try raw encode
+      // Raw bytes, encode to base64
       try {
         return btoa(String.fromCharCode(...comp));
       } catch {
@@ -161,6 +235,9 @@ function normalizeEncComponent(
   return null;
 }
 
+/* ================================
+   Decrypt UIMessage helper
+================================ */
 export async function decryptUIMessage(
   message: UIMessage,
   conversationKey: string
@@ -170,13 +247,17 @@ export async function decryptUIMessage(
     const nonce = normalizeEncComponent(message.nonce);
     const tag = normalizeEncComponent(message.tag);
 
-    if (!cipherText) return "[Missing cipher]";
+    // ✅ Better error messages
+    if (!cipherText) return "[Missing cipher_text]";
     if (!nonce) return "[Missing nonce]";
     if (!tag) return "[Missing tag]";
 
     return await decryptMessage(cipherText, nonce, conversationKey, tag);
-  } catch (err) {
-    console.log("Decrypt error:", err);
-    return "[Decryption failed]";
+  } catch (err: any) {
+    console.error("❌ decryptUIMessage failed:", {
+      msgId: message.id?.substring(0, 8),
+      error: err.message,
+    });
+    return `[Decryption failed: ${err.message}]`;
   }
 }

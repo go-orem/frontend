@@ -56,14 +56,17 @@ export function ChatBubble({
         return;
       }
 
-      // ✅ DEBUG: Log raw data
-      console.log("🔐 Attempting decrypt:", {
-        msgId: id.substring(0, 8),
-        hasCipher: !!cipher_text,
-        hasNonce: !!nonce,
-        hasTag: !!tag,
-        hasKey: !!conversationKey,
-      });
+      // ✅ UPDATED: Better validation and logging
+      if (!cipher_text || !nonce || !tag) {
+        console.error("❌ Missing encryption components:", {
+          msgId: id.substring(0, 8),
+          hasCipher: !!cipher_text,
+          hasNonce: !!nonce,
+          hasTag: !!tag,
+        });
+        setDecryptedText("[Incomplete encrypted data]");
+        return;
+      }
 
       try {
         const plaintext = await decryptUIMessage(
@@ -79,9 +82,12 @@ export function ChatBubble({
         console.log("✅ Decrypt success:", id.substring(0, 8));
         setDecryptedText(plaintext);
       } catch (err: any) {
-        console.log("❌ Decrypt error:", {
+        console.error("❌ Decrypt error:", {
           msgId: id.substring(0, 8),
           error: err.message,
+          // ✅ Log actual data for debugging
+          nonce_type: typeof nonce,
+          nonce_length: typeof nonce === "string" ? nonce.length : "N/A",
         });
         setDecryptedText(`[${err.message}]`);
       }

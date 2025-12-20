@@ -25,9 +25,9 @@ export function getDB() {
 }
 
 /* ================================
-   Generate key pair (ECDH)
+   Generate ECDH key pair (P-256)
 ================================ */
-export async function generateUserKeyPair() {
+export async function generateUserKeyPair(): Promise<CryptoKeyPair> {
   return crypto.subtle.generateKey(
     {
       name: "ECDH",
@@ -39,10 +39,12 @@ export async function generateUserKeyPair() {
 }
 
 /* ================================
-   Save private key (IndexedDB)
+   Save private key to IndexedDB
 ================================ */
-export async function savePrivateKey(userID: string, privateKey: CryptoKey) {
-  // ✅ Validate
+export async function savePrivateKey(
+  userID: string,
+  privateKey: CryptoKey
+): Promise<void> {
   if (!userID) throw new Error("UserID is required");
   if (!privateKey) throw new Error("PrivateKey is required");
 
@@ -51,10 +53,9 @@ export async function savePrivateKey(userID: string, privateKey: CryptoKey) {
 }
 
 /* ================================
-   Get private key
+   Get private key from IndexedDB
 ================================ */
 export async function getPrivateKey(userID: string): Promise<CryptoKey | null> {
-  // ✅ Validate
   if (!userID) throw new Error("UserID is required");
 
   const db = await getDB();
@@ -62,10 +63,9 @@ export async function getPrivateKey(userID: string): Promise<CryptoKey | null> {
 }
 
 /* ================================
-   Export public key (Base64)
+   Export public key as base64
 ================================ */
 export async function exportPublicKey(publicKey: CryptoKey): Promise<string> {
-  // ✅ Validate
   if (!publicKey) throw new Error("PublicKey is required");
 
   const raw = await crypto.subtle.exportKey("raw", publicKey);
@@ -73,26 +73,35 @@ export async function exportPublicKey(publicKey: CryptoKey): Promise<string> {
 }
 
 /* ================================
-   Import public key
+   Import public key from base64
 ================================ */
 export async function importPublicKey(base64: string): Promise<CryptoKey> {
-  // ✅ Validate
   if (!base64) throw new Error("Base64 public key is required");
 
-  let raw: Uint8Array;
+  // ✅ Decode to proper ArrayBuffer
+  let raw: ArrayBuffer;
   try {
-    raw = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    const binary = atob(base64);
+    raw = new ArrayBuffer(binary.length);
+    const bytes = new Uint8Array(raw);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
   } catch (err) {
-    throw new Error("Invalid base64 format for public key");
+    throw new Error(`Invalid base64 public key format: ${err}`);
   }
 
-  // ✅ FIX: Convert Uint8Array to proper ArrayBuffer
-  const keyBuffer = new ArrayBuffer(raw.length);
-  new Uint8Array(keyBuffer).set(raw);
+  // ✅ Validate expected key size (P-256 uncompressed = 65 bytes)
+  if (raw.byteLength !== 65) {
+    throw new Error(
+      `Invalid P-256 public key size: expected 65 bytes, got ${raw.byteLength}`
+    );
+  }
 
+  // ✅ Direct import with proper ArrayBuffer
   return crypto.subtle.importKey(
     "raw",
-    keyBuffer,
+    raw,
     {
       name: "ECDH",
       namedCurve: "P-256",

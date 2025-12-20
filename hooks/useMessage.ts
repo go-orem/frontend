@@ -21,23 +21,32 @@ export function useMessage(userId: string) {
   async function sendMessage(conversationId: string, plainText: string) {
     const clientId = `client-${uuid()}`;
 
-    // 🔐 Get or generate conversation key
+    // 🔐 Get conversation key (should already exist from useConversations.loadMessages)
     let conversationKey = conversationKeys[conversationId];
 
-    // ✅ If key doesn't exist, generate it
+    // ✅ FIX: DO NOT generate new key if missing - this causes mismatch
     if (!conversationKey) {
-      const key = await generateConversationKey();
-      const rawKey = await exportRawKey(key);
-      conversationKey = btoa(String.fromCharCode(...rawKey));
-
-      // Store in context for future use
-      setConversationKeys((prev) => ({
-        ...prev,
-        [conversationId]: conversationKey,
-      }));
+      console.error("❌ No conversation key found for:", conversationId);
+      throw new Error(
+        "Conversation key not initialized. Please refresh and try again."
+      );
     }
 
+    // ✅ Log key for debugging
+    console.log("🔑 Using conversation key:", {
+      conversationId,
+      keyPreview: conversationKey.substring(0, 16) + "...",
+      keyLength: conversationKey.length,
+    });
+
     const encrypted = await encryptMessage(plainText, conversationKey);
+
+    // ✅ Validate encrypted components
+    console.log("🔐 Encrypted message:", {
+      cipher_len: encrypted.cipher_text.length,
+      nonce_len: encrypted.nonce.length,
+      tag_len: encrypted.tag.length,
+    });
 
     // 1️⃣ Optimistic insert
     const optimisticMsg = createOptimisticMessage({
@@ -52,7 +61,6 @@ export function useMessage(userId: string) {
 
     setMessages((prev) => {
       const list = prev[conversationId] ?? [];
-      // ✅ FIX: Append to end (newest at bottom)
       return {
         ...prev,
         [conversationId]: [...list, optimisticMsg],

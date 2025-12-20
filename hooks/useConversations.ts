@@ -42,8 +42,9 @@ export function useConversations() {
 
     if (opts?.skipIfCached && messages[conversationId]) {
       console.log("⚠️ Messages already cached, skip fetch");
-      // Try ensure key exists even on cached messages
+      // ✅ CRITICAL: Always ensure key exists even on cached messages
       if (!conversationKeys[conversationId]) {
+        console.log("🔑 Key missing for cached messages, fetching...");
         await ensureConversationKey(conversationId);
       }
       return;
@@ -51,10 +52,25 @@ export function useConversations() {
 
     setLoading(true);
     try {
-      // ✅ Ensure conversation key exists before decrypting on UI
+      // ✅ CRITICAL: Fetch conversation key FIRST before loading messages
       if (!conversationKeys[conversationId]) {
+        console.log("🔑 Fetching conversation key before messages...");
         await ensureConversationKey(conversationId);
       }
+
+      // ✅ Verify key exists before loading messages
+      const keyAfterFetch = conversationKeys[conversationId];
+      if (!keyAfterFetch) {
+        console.warn(
+          "❌ Failed to fetch conversation key, cannot decrypt messages"
+        );
+        throw new Error("Conversation key not available");
+      }
+
+      console.log("✅ Conversation key ready:", {
+        conversationId,
+        keyPreview: keyAfterFetch.substring(0, 16) + "...",
+      });
 
       const dbMessages: Message[] = await conversationService.listMessages(
         conversationId
@@ -71,22 +87,38 @@ export function useConversations() {
         ...prev,
         [conversationId]: uiMessages,
       }));
+    } catch (err) {
+      console.error("❌ Failed to load messages:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
   }
 
-  // ✅ NEW: Fetch + decrypt conversation key if missing
+  // ✅ UPDATED: Better error handling and logging
   async function ensureConversationKey(conversationId: string) {
     try {
-      if (!user?.user?.id) return;
+      if (!user?.user?.id) {
+        console.error("❌ No user ID for fetching conversation key");
+        return;
+      }
+
+      console.log("🔑 Fetching conversation key for:", conversationId);
 
       const keyDTO: any = await conversationService.getConversationKey(
         conversationId
       );
-      if (!keyDTO) return;
 
-      console.log("🔑 Fetched conversation key DTO:", keyDTO);
+      if (!keyDTO) {
+        console.error("❌ No key DTO returned from backend");
+        return;
+      }
+
+      console.log("✅ Fetched conversation key DTO:", {
+        has_encrypted_key: !!keyDTO.encrypted_key,
+        key_algo: keyDTO.key_algo,
+        key_version: keyDTO.key_version,
+      });
 
       // Normalize from DTO
       let cipher: string | null = null;
@@ -101,35 +133,32 @@ export function useConversations() {
           iv = packed?.iv ?? packed?.nonce ?? null;
           eph = packed?.eph_public_key ?? packed?.ephemeral_public_key ?? null;
         } catch {
-          // Not JSON, ignore
+          console.warn("⚠️ encrypted_key is not JSON");
         }
       }
 
-      // Case B: flattened fields or different keys
+      // Case B: flattened fields
       if (!cipher) cipher = keyDTO.cipher || keyDTO.cipher_text || null;
       if (!iv) iv = keyDTO.iv || keyDTO.nonce || null;
       if (!eph)
         eph = keyDTO.eph_public_key || keyDTO.ephemeral_public_key || null;
 
-      // Optional: log algo/version for debugging
-      if (keyDTO.key_algo || keyDTO.key_version) {
-        console.log("🔐 Key meta:", {
-          algo: keyDTO.key_algo,
-          version: keyDTO.key_version,
-        });
-      }
-
       if (!cipher || !iv || !eph) {
-        console.warn("Conversation key DTO incomplete");
+        console.error("❌ Incomplete conversation key DTO:", {
+          has_cipher: !!cipher,
+          has_iv: !!iv,
+          has_eph: !!eph,
+        });
         return;
       }
 
       const priv = await getPrivateKey(user.user.id);
       if (!priv) {
-        console.warn("No private key found for user; cannot decrypt conv key");
+        console.error("❌ No private key found for user");
         return;
       }
 
+      console.log("🔓 Decrypting conversation key...");
       const base64Key = await decryptConversationKey({
         cipher,
         iv,
@@ -137,12 +166,18 @@ export function useConversations() {
         recipientPrivateKey: priv,
       });
 
+      console.log("✅ Conversation key decrypted successfully:", {
+        keyPreview: base64Key.substring(0, 16) + "...",
+        keyLength: base64Key.length,
+      });
+
       setConversationKeys((prev) => ({
         ...prev,
         [conversationId]: base64Key,
       }));
     } catch (e) {
-      console.warn("Failed to ensure conversation key:", e);
+      console.error("❌ Failed to ensure conversation key:", e);
+      throw e; // ✅ Re-throw to prevent loading messages without key
     }
   }
 
