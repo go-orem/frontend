@@ -58,6 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       algo: "ECDH-P256",
       version: 1,
     });
+
+    refreshUser();
   }
 
   async function refreshUser() {
