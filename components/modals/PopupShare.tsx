@@ -669,7 +669,7 @@ function TabButton({ active, onClick, label }: any) {
 function MenuItem({ icon, label, sub, onClick }: any) {
   return (
     <div
-      className="flex items-center justify-between p-4 hover:bg-white/5 cursor-pointer"
+      className="flex items-center justify-between p-4 cursor-pointer"
       onClick={onClick}
     >
       <div className="flex items-center gap-3">

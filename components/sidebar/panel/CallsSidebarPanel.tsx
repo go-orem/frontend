@@ -436,31 +436,26 @@ function CallsListContainer() {
     <>
       {/* Filter Tabs */}
       <div className="px-0 py-3 flex items-center gap-3">
-        <div className="flex-1 px-5">
-          <div className="text-xs text-gray-400">Calls</div>
-          <div className="text-lg font-bold text-white">Activity</div>
-        </div>
-
-        <div className="flex items-center gap-2 bg-white/3 p-1 rounded-full px-5">
+        <div className="flex items-center gap-2 bg-white/3 p-1 rounded-full px-2">
           <button
-            className={`px-3 py-1 rounded-full text-sm ${
-              filter === "all" ? "bg-white/10 text-white" : "text-gray-300"
+            className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
+              filter === "all" ? "bg-(--primarycolor)/10 text-white" : "text-gray-300"
             }`}
             onClick={() => setFilter("all")}
           >
             All
           </button>
           <button
-            className={`px-3 py-1 rounded-full text-sm ${
-              filter === "missed" ? "bg-white/10 text-white" : "text-gray-300"
+            className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
+              filter === "missed" ? "bg-(--primarycolor)/10 text-white" : "text-gray-300"
             }`}
             onClick={() => setFilter("missed")}
           >
             Missed
           </button>
           <button
-            className={`px-3 py-1 rounded-full text-sm ${
-              filter === "video" ? "bg-white/10 text-white" : "text-gray-300"
+            className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
+              filter === "video" ? "bg-(--primarycolor)/10 text-white" : "text-gray-300"
             }`}
             onClick={() => setFilter("video")}
           >
@@ -470,7 +465,7 @@ function CallsListContainer() {
       </div>
 
       {/* List */}
-      <div className="space-y-3 px-0 pb-6">
+      <div className="space-y-3 px-0 pb-6 py-1">
         {filtered.map((call) => (
           <CallRow
             key={call.id}
@@ -638,7 +633,7 @@ export default function CallsSidebarPanel({
 
         <Search />
 
-        <div className="flex-1 overflow-y-auto custom-scroll px-5 py-3">
+        <div className="flex-1 overflow-y-auto custom-scroll px-5">
           <CallsListContainer />
         </div>
 
