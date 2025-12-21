@@ -8,7 +8,9 @@ import React, {
   ReactNode,
 } from "react";
 import { UIMessage } from "@/types/chat.types";
-import { ConversationWithLastMessage } from "@/types/database.types";
+import { ConversationWithLastMessage, Message } from "@/types/database.types";
+import { toUIMessage } from "@/types/chat.types";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 type ConversationContextType = {
   conversations: ConversationWithLastMessage[];
@@ -42,6 +44,8 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     Record<string, string>
   >({});
   const [loading, setLoading] = useState(false);
+
+  const ws = useWebSocket();
 
   // ✅ Load keys from localStorage on mount
   useEffect(() => {
@@ -81,7 +85,6 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       if (typeof window !== "undefined") {
         Object.entries(newKeys).forEach(([convId, key]) => {
           if (key && !prev[convId]) {
-            // Only save new keys
             localStorage.setItem(`${STORAGE_KEY_PREFIX}${convId}`, key);
             console.log("💾 Saved conversation key to localStorage:", convId);
           }
@@ -91,6 +94,76 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       return newKeys;
     });
   };
+
+  // ✅ Register WebSocket event listener
+  useEffect(() => {
+    const handleWSEvent = (event: any) => {
+      if (event.type === "message_created" && event.message) {
+        const newMessage = event.message as Message;
+        const conversationId = newMessage.conversation_id;
+
+        console.log("🔔 ConversationProvider: New message via WS", {
+          msgId: newMessage.id,
+          convId: conversationId,
+        });
+
+        // ✅ FIX: Check duplicate by actual ID (not client_id)
+        setMessages((prev) => {
+          const existing = prev[conversationId] || [];
+
+          // Check if message with same ID already exists
+          const isDuplicate = existing.some((m) => m.id === newMessage.id);
+
+          if (isDuplicate) {
+            console.log(
+              "⚠️ Message already exists (duplicate from backend response), skipping WS update"
+            );
+            return prev;
+          }
+
+          // Also check if this is replacing an optimistic message
+          const optimisticIndex = existing.findIndex(
+            (m) => m.client_id && m.client_id.startsWith("client-")
+          );
+
+          if (optimisticIndex !== -1) {
+            console.log(
+              "⚠️ Optimistic message will be replaced by backend response, skipping WS update"
+            );
+            return prev;
+          }
+
+          console.log("✅ Adding new message from WebSocket");
+          return {
+            ...prev,
+            [conversationId]: [...existing, toUIMessage(newMessage)],
+          };
+        });
+
+        // Update conversations list
+        setConversations((prev) => {
+          const index = prev.findIndex((c) => c.id === conversationId);
+          if (index === -1) {
+            console.log("⚠️ Conversation not in list");
+            return prev;
+          }
+
+          console.log("✅ Updating conversation list with new last_message");
+          const updated = [...prev];
+          const conv = { ...updated[index], last_message: newMessage };
+          updated.splice(index, 1);
+          updated.unshift(conv);
+          return updated;
+        });
+      }
+    };
+
+    ws.addEventListener(handleWSEvent);
+
+    return () => {
+      ws.removeEventListener(handleWSEvent);
+    };
+  }, [ws, setMessages, setConversations]);
 
   return (
     <ConversationContext.Provider

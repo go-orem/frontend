@@ -3,26 +3,44 @@ import { conversationService } from "@/services/conversationService";
 import { messageService } from "@/services/messageService";
 import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { ConversationType, Message } from "@/types/database.types";
-import { toUIMessages } from "@/types/chat.types";
+import { toUIMessages, toUIMessage } from "@/types/chat.types";
 import {
   generateConversationKey,
   exportRawKey,
   encryptConversationKey,
   decryptConversationKey,
 } from "@/utils/crypto/conversationKey";
-import { getPrivateKey, importPublicKey } from "@/utils/crypto/userKeys"; // ✅ get user's ECDH private key
+import { getPrivateKey, importPublicKey } from "@/utils/crypto/userKeys";
 import { useAuth } from "./useAuth";
+import { useEffect } from "react";
+import { useWS } from "@/context";
 
 export function useConversations() {
-  const { isAuthenticated, loading: authLoading, user } = useAuth(); // ✅ also get user
   const {
+    conversations,
     setConversations,
-    setMessages,
-    setLoading,
     messages,
-    setConversationKeys,
+    setMessages,
     conversationKeys,
+    setConversationKeys,
+    loading,
+    setLoading,
   } = useConversationContext();
+
+  const { user } = useAuth();
+  const ws = useWS();
+
+  // ✅ Handle WebSocket message_created event
+  useEffect(() => {
+    if (!ws.connected) return;
+
+    // Note: Event handler is in ConversationProvider
+    // This is just for subscribing to rooms in components
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, [ws.connected, setMessages, setConversations]);
 
   async function refreshConversations(type: ConversationType | null = null) {
     setLoading(true);
@@ -38,8 +56,6 @@ export function useConversations() {
     conversationId: string,
     opts?: { skipIfCached?: boolean }
   ) {
-    if (authLoading || !isAuthenticated) return;
-
     if (opts?.skipIfCached && messages[conversationId]) {
       console.log("⚠️ Messages already cached, skip fetch");
       // ✅ CRITICAL: Always ensure key exists even on cached messages
@@ -157,7 +173,7 @@ export function useConversations() {
           has_cipher: !!cipher,
           has_iv: !!iv,
           has_eph: !!eph,
-          raw_dto: keyDTO, // ✅ Log full DTO for debugging
+          raw_dto: keyDTO,
         });
         return;
       }

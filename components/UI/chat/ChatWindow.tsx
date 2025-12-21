@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatFooter from "./ChatFooter";
 import { useModalChat } from "@/context";
 import { SendChatAttachment, PollComposer } from "@/components/UI";
 import { UIMessage } from "@/types/chat.types";
 import { MessageStatus } from "@/types/database.types";
 import { MessageList } from "./MessageList";
+import { useWS } from "@/context";
 
 type ChatWindowProps = {
   conversationId?: string;
@@ -34,6 +35,22 @@ export default function ChatWindow({
   const [input, setInput] = useState("");
   const { openModalChat, setOpenModalChat } = useModalChat();
   const [openPollComposer, setOpenPollComposer] = useState(false);
+  const ws = useWS();
+
+  // Subscribe to conversation room for realtime updates
+  useEffect(() => {
+    if (!conversationId || !ws.connected) return;
+
+    const room = `conversation:${conversationId}`;
+    console.log("📡 ChatWindow subscribing to room:", room);
+    ws.subscribe(room);
+
+    // Cleanup: unsubscribe when conversation changes or unmount
+    return () => {
+      console.log("📡 ChatWindow unsubscribing from room:", room);
+      ws.unsubscribe(room);
+    };
+  }, [conversationId, ws.connected, ws]);
 
   const handleSendMessage = async () => {
     if (!input.trim() || !conversationId) return;

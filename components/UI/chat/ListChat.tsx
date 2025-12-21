@@ -5,10 +5,11 @@ import { SidebarPanelLoading } from "@/components/sidebar";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { useConversations } from "@/hooks/useConversations";
 import { UIMessage } from "@/types/chat.types";
-import { ConversationType } from "@/types/database.types";
+import { ConversationType, Message } from "@/types/database.types";
 import { decryptUIMessage, getErrorMessage, runEffectAsync } from "@/utils";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useWS } from "@/context"; // ✅ ADD: Import WebSocket context
 
 // Utility: format ISO date ke "HH:mm" atau "Hari ini"
 function formatTime(iso?: string) {
@@ -157,7 +158,9 @@ export default function ListChat({
 }) {
   const { conversations, loading, conversationKeys } = useConversationContext();
   const { refreshConversations } = useConversations();
+  const ws = useWS(); // ✅ ADD: Get WebSocket context
 
+  // Fetch initial conversations
   useEffect(() => {
     runEffectAsync(async () => {
       try {
@@ -169,6 +172,25 @@ export default function ListChat({
       }
     });
   }, [type]);
+
+  // ✅ ADD: Subscribe to all conversation rooms untuk realtime updates
+  useEffect(() => {
+    if (!ws.connected || conversations.length === 0) return;
+
+    console.log(`📡 Subscribing to ${conversations.length} conversation rooms`);
+
+    // Subscribe ke setiap conversation
+    conversations.forEach((conv) => {
+      ws.subscribe(`conversation:${conv.id}`);
+    });
+
+    // Cleanup: unsubscribe on unmount or when list changes
+    return () => {
+      conversations.forEach((conv) => {
+        ws.unsubscribe(`conversation:${conv.id}`);
+      });
+    };
+  }, [ws.connected, conversations.map((c) => c.id).join(",")]); // ✅ Smart dependency
 
   if (loading) return <SidebarPanelLoading />;
 

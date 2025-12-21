@@ -9,26 +9,24 @@ type WSEvent =
   | { type: "notification"; notification: any }
   | { type: string; [key: string]: any };
 
-export function useWebSocket(onEvent?: (event: WSEvent) => void) {
+type EventListener = (event: WSEvent) => void;
+
+// ✅ ADD: Global event listeners
+const eventListeners = new Set<EventListener>();
+
+export function useWebSocket() {
   const { isLoggedIn, loading, forceLogout } = useAuth();
 
   const wsRef = useRef<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
 
-  // 🧠 state internal (TIDAK trigger re-render)
   const roomsRef = useRef<Set<string>>(new Set());
   const stoppedRef = useRef(false);
   const reconnectRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 🔒 onEvent harus stabil
-  const onEventRef = useRef(onEvent);
-  onEventRef.current = onEvent;
-
   useEffect(() => {
-    // ⛔ tunggu auth
     if (loading) return;
 
-    // ⛔ logout / auth invalid
     if (!isLoggedIn) {
       stoppedRef.current = true;
       wsRef.current?.close();
@@ -37,7 +35,6 @@ export function useWebSocket(onEvent?: (event: WSEvent) => void) {
       return;
     }
 
-    // ⛔ sudah ada WS
     if (wsRef.current || stoppedRef.current) return;
 
     let active = true;
@@ -49,6 +46,7 @@ export function useWebSocket(onEvent?: (event: WSEvent) => void) {
 
       ws.onopen = () => {
         if (!active) return;
+        console.log("✅ WebSocket connected");
         setConnected(true);
 
         // subscribe semua room yang sudah diregistrasi
@@ -59,11 +57,24 @@ export function useWebSocket(onEvent?: (event: WSEvent) => void) {
 
       ws.onmessage = (e) => {
         try {
-          onEventRef.current?.(JSON.parse(e.data));
-        } catch {}
+          const event = JSON.parse(e.data);
+          console.log("📨 WS Event received:", event.type);
+
+          // ✅ Broadcast to all listeners
+          eventListeners.forEach((listener) => {
+            try {
+              listener(event);
+            } catch (err) {
+              console.error("❌ Event listener error:", err);
+            }
+          });
+        } catch (err) {
+          console.error("❌ Failed to parse WS message:", err);
+        }
       };
 
       ws.onclose = (e) => {
+        console.log("WebSocket closed:", e.code);
         setConnected(false);
         wsRef.current = null;
 
@@ -88,16 +99,13 @@ export function useWebSocket(onEvent?: (event: WSEvent) => void) {
     };
   }, [isLoggedIn, loading, forceLogout]);
 
-  // =========================
-  // PUBLIC API
-  // =========================
-
   function subscribe(room: string) {
     if (roomsRef.current.has(room)) return;
 
     roomsRef.current.add(room);
 
     if (connected && wsRef.current) {
+      console.log("📡 Subscribing to room:", room);
       wsRef.current.send(JSON.stringify({ action: "subscribe", room }));
     }
   }
@@ -108,13 +116,27 @@ export function useWebSocket(onEvent?: (event: WSEvent) => void) {
     roomsRef.current.delete(room);
 
     if (connected && wsRef.current) {
+      console.log("📡 Unsubscribing from room:", room);
       wsRef.current.send(JSON.stringify({ action: "unsubscribe", room }));
     }
+  }
+
+  // ✅ ADD: Methods to add/remove event listeners
+  function addEventListener(listener: EventListener) {
+    eventListeners.add(listener);
+    console.log("🎧 Added event listener, total:", eventListeners.size);
+  }
+
+  function removeEventListener(listener: EventListener) {
+    eventListeners.delete(listener);
+    console.log("🎧 Removed event listener, total:", eventListeners.size);
   }
 
   return {
     connected,
     subscribe,
     unsubscribe,
+    addEventListener,
+    removeEventListener,
   };
 }
