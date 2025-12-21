@@ -21,19 +21,34 @@ export function useMessage(userId: string) {
   async function sendMessage(conversationId: string, plainText: string) {
     const clientId = `client-${uuid()}`;
 
-    // 🔐 Get conversation key (should already exist from useConversations.loadMessages)
+    // 🔐 Get conversation key
     let conversationKey = conversationKeys[conversationId];
 
-    // ✅ FIX: DO NOT generate new key if missing - this causes mismatch
+    // ✅ FIX: Better error message
     if (!conversationKey) {
-      console.error("❌ No conversation key found for:", conversationId);
+      console.error("❌ No conversation key found:", {
+        conversationId,
+        availableKeys: Object.keys(conversationKeys),
+      });
+
       throw new Error(
-        "Conversation key not initialized. Please refresh and try again."
+        "Encryption key not found. Please refresh the page and try again."
       );
     }
 
-    // ✅ Log key for debugging
-    console.log("🔑 Using conversation key:", {
+    // ✅ Validate key format
+    try {
+      atob(conversationKey); // Test if valid base64
+    } catch (err) {
+      console.error("❌ Invalid conversation key format:", {
+        conversationId,
+        keyPreview: conversationKey.substring(0, 16) + "...",
+      });
+      throw new Error("Invalid encryption key format.");
+    }
+
+    // ✅ Log key being used
+    console.log("🔑 Encrypting message with key:", {
       conversationId,
       keyPreview: conversationKey.substring(0, 16) + "...",
       keyLength: conversationKey.length,

@@ -95,15 +95,24 @@ export function useConversations() {
     }
   }
 
-  // ✅ UPDATED: Better error handling and logging
+  // ✅ UPDATED: Check localStorage first
   async function ensureConversationKey(conversationId: string) {
     try {
+      // ✅ Check if key already in context (from localStorage)
+      if (conversationKeys[conversationId]) {
+        console.log("✅ Conversation key already in context:", {
+          conversationId,
+          keyPreview: conversationKeys[conversationId].substring(0, 16) + "...",
+        });
+        return;
+      }
+
       if (!user?.user?.id) {
         console.error("❌ No user ID for fetching conversation key");
         return;
       }
 
-      console.log("🔑 Fetching conversation key for:", conversationId);
+      console.log("🔑 Fetching conversation key from backend:", conversationId);
 
       const keyDTO: any = await conversationService.getConversationKey(
         conversationId
@@ -148,6 +157,7 @@ export function useConversations() {
           has_cipher: !!cipher,
           has_iv: !!iv,
           has_eph: !!eph,
+          raw_dto: keyDTO, // ✅ Log full DTO for debugging
         });
         return;
       }
@@ -171,13 +181,17 @@ export function useConversations() {
         keyLength: base64Key.length,
       });
 
+      // ✅ Save to context (will auto-save to localStorage via wrapper)
       setConversationKeys((prev) => ({
         ...prev,
         [conversationId]: base64Key,
       }));
-    } catch (e) {
-      console.error("❌ Failed to ensure conversation key:", e);
-      throw e; // ✅ Re-throw to prevent loading messages without key
+    } catch (e: any) {
+      console.error("❌ Failed to ensure conversation key:", {
+        error: e.message,
+        stack: e.stack,
+      });
+      throw e;
     }
   }
 

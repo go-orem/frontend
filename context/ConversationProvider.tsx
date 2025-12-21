@@ -1,61 +1,110 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
-import { ConversationWithLastMessage } from "@/types/database.types";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { UIMessage } from "@/types/chat.types";
+import { ConversationWithLastMessage } from "@/types/database.types";
 
-interface ConversationContextType {
+type ConversationContextType = {
   conversations: ConversationWithLastMessage[];
+  messages: Record<string, UIMessage[]>;
+  conversationKeys: Record<string, string>;
+  loading: boolean;
   setConversations: React.Dispatch<
     React.SetStateAction<ConversationWithLastMessage[]>
   >;
-
-  // ✅ PENTING: State untuk UIMessage[], bukan UIMessage
-  messages: Record<string, UIMessage[]>;
   setMessages: React.Dispatch<
     React.SetStateAction<Record<string, UIMessage[]>>
   >;
-
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-
-  conversationKeys: Record<string, string>; // ✅ NEW
   setConversationKeys: React.Dispatch<
     React.SetStateAction<Record<string, string>>
   >;
-}
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const ConversationContext = createContext<ConversationContextType | undefined>(
   undefined
 );
 
-export function ConversationProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const STORAGE_KEY_PREFIX = "orem_conv_key_";
+
+export function ConversationProvider({ children }: { children: ReactNode }) {
   const [conversations, setConversations] = useState<
     ConversationWithLastMessage[]
   >([]);
-  const [messages, setMessages] = useState<Record<string, UIMessage[]>>({}); // ✅ FIX: Add []
-  const [loading, setLoading] = useState(false);
-  const [conversationKeys, setConversationKeys] = useState<
+  const [messages, setMessages] = useState<Record<string, UIMessage[]>>({});
+  const [conversationKeys, setConversationKeysState] = useState<
     Record<string, string>
   >({});
+  const [loading, setLoading] = useState(false);
 
-  const value: ConversationContextType = {
-    conversations,
-    setConversations,
-    messages,
-    setMessages,
-    loading,
-    setLoading,
-    conversationKeys,
-    setConversationKeys,
+  // ✅ Load keys from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadedKeys: Record<string, string> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(STORAGE_KEY_PREFIX)) {
+        const convId = key.replace(STORAGE_KEY_PREFIX, "");
+        const storedKey = localStorage.getItem(key);
+        if (storedKey) {
+          loadedKeys[convId] = storedKey;
+        }
+      }
+    }
+
+    if (Object.keys(loadedKeys).length > 0) {
+      console.log(
+        "🔑 Loaded conversation keys from localStorage:",
+        Object.keys(loadedKeys)
+      );
+      setConversationKeysState(loadedKeys);
+    }
+  }, []);
+
+  // ✅ Wrapper to persist keys to localStorage
+  const setConversationKeys = (
+    updater:
+      | Record<string, string>
+      | ((prev: Record<string, string>) => Record<string, string>)
+  ) => {
+    setConversationKeysState((prev) => {
+      const newKeys = typeof updater === "function" ? updater(prev) : updater;
+
+      // Persist to localStorage
+      if (typeof window !== "undefined") {
+        Object.entries(newKeys).forEach(([convId, key]) => {
+          if (key && !prev[convId]) {
+            // Only save new keys
+            localStorage.setItem(`${STORAGE_KEY_PREFIX}${convId}`, key);
+            console.log("💾 Saved conversation key to localStorage:", convId);
+          }
+        });
+      }
+
+      return newKeys;
+    });
   };
 
   return (
-    <ConversationContext.Provider value={value}>
+    <ConversationContext.Provider
+      value={{
+        conversations,
+        messages,
+        conversationKeys,
+        loading,
+        setConversations,
+        setMessages,
+        setConversationKeys,
+        setLoading,
+      }}
+    >
       {children}
     </ConversationContext.Provider>
   );

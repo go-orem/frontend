@@ -1,3 +1,5 @@
+import { openDB } from "idb";
+
 export async function debugConversationKey(
   conversationId: string,
   conversationKeys: Record<string, string>
