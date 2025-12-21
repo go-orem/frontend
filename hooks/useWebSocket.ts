@@ -24,6 +24,9 @@ export function useWebSocket() {
   const stoppedRef = useRef(false);
   const reconnectRef = useRef<NodeJS.Timeout | null>(null);
 
+  const WS_URL =
+    process.env.NEXT_PUBLIC_WEBSOCKET_BASE || "ws://localhost:8080/ws";
+
   useEffect(() => {
     if (loading) return;
 
@@ -41,7 +44,7 @@ export function useWebSocket() {
 
     async function connect() {
       if (!active || wsRef.current || stoppedRef.current) return;
-      const ws = new WebSocket(`ws://localhost:8080/ws`);
+      const ws = new WebSocket(WS_URL);
       wsRef.current = ws;
 
       ws.onopen = () => {
