@@ -115,16 +115,17 @@ export default function MainContent({ channelId }: { channelId: string }) {
           onProfileClick={() => setOpenSidebar(!openSidebar)}
         />
 
-        {/* ✅ Updated: Pass currentUserId */}
-        <ChatWindow
-          conversationId={channelId}
-          currentUserId={currentUserId}
-          messages={currentMessages}
-          onSendMessage={sendMessage}
-          onDeleteMessage={deleteMessage}
-          onAddReaction={addReaction}
-          onUpdateStatus={updateStatus}
-        />
+        <div className="flex-1 overflow-auto">
+          <ChatWindow
+            conversationId={channelId}
+            currentUserId={currentUserId}
+            messages={currentMessages}
+            onSendMessage={sendMessage}
+            onDeleteMessage={deleteMessage}
+            onAddReaction={addReaction}
+            onUpdateStatus={updateStatus}
+          />
+        </div>
       </div>
 
       <div
