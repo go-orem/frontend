@@ -6,7 +6,6 @@ import PiPFloating from "../webrtc/PiP";
 import { CallControls } from "./CallControls";
 
 export function CallConnected({ onClose }: { onClose?: () => void }) {
-  // 🔥 Panggil sekali saja!!!
   const webrtc = React.useContext(WebRTCContext) as any;
 
   const {
@@ -22,7 +21,7 @@ export function CallConnected({ onClose }: { onClose?: () => void }) {
   } = webrtc;
 
   return (
-    <div className="relative w-full h-full text-white  overflow-hidden">
+    <div className="relative w-full h-full text-white overflow-hidden">
       {/* remote stream */}
       <video
         ref={remoteVideo}

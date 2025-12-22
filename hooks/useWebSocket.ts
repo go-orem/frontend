@@ -7,11 +7,36 @@ type WSEvent =
   | { type: "message_created"; message: any }
   | { type: "conversation_updated"; conversation: any }
   | { type: "notification"; notification: any }
+  | {
+      type: "call_offer";
+      from: string;
+      data: any;
+      room: string;
+      target?: string;
+    }
+  | {
+      type: "call_answer";
+      from: string;
+      data: any;
+      room: string;
+      target?: string;
+    }
+  | {
+      type: "call_ice_candidate";
+      from: string;
+      data: any;
+      room: string;
+      target?: string;
+    }
+  | { type: "call_ringing"; from: string; room: string; target?: string }
+  | { type: "call_joined"; from: string; room: string }
+  | { type: "call_left"; from: string; room: string }
+  | { type: "call_end"; from: string; room: string }
   | { type: string; [key: string]: any };
 
 type EventListener = (event: WSEvent) => void;
 
-// ✅ ADD: Global event listeners
+// ✅ Global event listeners
 const eventListeners = new Set<EventListener>();
 
 export function useWebSocket() {
@@ -100,7 +125,7 @@ export function useWebSocket() {
       wsRef.current?.close();
       wsRef.current = null;
     };
-  }, [isLoggedIn, loading, forceLogout]);
+  }, [isLoggedIn, loading, forceLogout, WS_URL]);
 
   function subscribe(room: string) {
     if (roomsRef.current.has(room)) return;
@@ -124,7 +149,7 @@ export function useWebSocket() {
     }
   }
 
-  // ✅ ADD: Methods to add/remove event listeners
+  // ✅ Methods to add/remove event listeners
   function addEventListener(listener: EventListener) {
     eventListeners.add(listener);
     console.log("🎧 Added event listener, total:", eventListeners.size);
@@ -135,11 +160,28 @@ export function useWebSocket() {
     console.log("🎧 Removed event listener, total:", eventListeners.size);
   }
 
+  // ✅ NEW: Send raw message to WebSocket (for WebRTC signaling)
+  function sendMessage(message: any) {
+    if (!connected || !wsRef.current) {
+      console.warn("⚠️ WebSocket not connected, cannot send message");
+      return false;
+    }
+
+    try {
+      wsRef.current.send(JSON.stringify(message));
+      return true;
+    } catch (err) {
+      console.error("❌ Failed to send WebSocket message:", err);
+      return false;
+    }
+  }
+
   return {
     connected,
     subscribe,
     unsubscribe,
     addEventListener,
     removeEventListener,
+    sendMessage,
   };
 }

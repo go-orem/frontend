@@ -113,6 +113,8 @@ export interface ConversationMember {
   updated_at: string;
 
   // ✅ Optional nested user with public key
+  username?: string;
+  avatar_url?: string | null;
   user?: {
     id: string;
     username: string;

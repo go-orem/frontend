@@ -39,7 +39,11 @@ const HeaderSplit: React.FC<HeaderSplitProps> = ({
   return (
     <div className="header-atas w-auto h-15 p-2 pl-5.5 pr-5.5 flex justify-between border-b-[0.5px] border-gray-700 items-center bg-(--background)">
       {videoOpen && (
-        <CallLauncher open={videoOpen} onClose={() => setVideoOpen(false)} />
+        <CallLauncher
+          conversationId={detail.conversation.id}
+          open={videoOpen}
+          onClose={() => setVideoOpen(false)}
+        />
       )}
 
       {searchOpen ? (
