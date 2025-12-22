@@ -48,6 +48,7 @@ export function CallConnected({ onClose }: { onClose?: () => void }) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="absolute bottom-0 right-6 w-48 h-32 rounded-xl shadow-xl object-cover z-20 pointer-events-none"
+        style={{ transform: "scaleX(-1)" }}
       />
 
       <CallControls />
