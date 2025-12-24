@@ -2,8 +2,7 @@
 
 import { WalletOption } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { IconMetamask, IconPhantom } from "../icons";
+import { IconArrowRight, IconMetamask, IconPhantom } from "../icons";
 import { JSX } from "react";
 
 type Props = {
@@ -32,7 +31,7 @@ export default function WalletSelectModal({
         onClick={onClose} // Klik area luar untuk close
       >
         <motion.div
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 w-full max-w-sm
+          className="bg-white dark:bg-(--background) rounded-2xl shadow-xl p-6 w-full max-w-sm
                      border border-gray-200 dark:border-gray-800 relative"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -41,12 +40,17 @@ export default function WalletSelectModal({
         >
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Connect Wallet</h3>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold">Connect Wallet</h3>
+              <span className="text-xs text-gray-500">
+                Connected secure login 🔐
+              </span>
+            </div>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full cursor-pointer"
             >
-              <X size={18} />
+              <IconArrowRight />
             </button>
           </div>
 
@@ -60,7 +64,7 @@ export default function WalletSelectModal({
                            rounded-xl border border-gray-200 dark:border-gray-700 
                            hover:bg-gray-50 dark:hover:bg-gray-800 
                            transition-all duration-200 hover:shadow-sm 
-                           active:scale-[0.98] group"
+                           active:scale-[0.98] group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   {walletIcons[wallet.name] ?? null}
@@ -77,7 +81,7 @@ export default function WalletSelectModal({
           {/* Footer */}
           <button
             onClick={onClose}
-            className="mt-4 w-full text-sm text-gray-500 hover:underline"
+            className="mt-4 w-full text-sm text-gray-500 hover:underline cursor-pointer"
           >
             Cancel
           </button>

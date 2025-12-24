@@ -368,3 +368,35 @@ body {
   border-radius: 1rem;
   padding: 1rem;
 }
+
+/* ---------- Modals wallet login ---------- */
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animated-border {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(180, 255, 100, 0.8),
+      rgba(0, 200, 255, 0.8),
+      transparent
+    );
+  background-size: 200% 100%;
+  animation: borderMove 3s linear infinite;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  padding: 1px;
+  border-radius: 1rem;
+}
+
