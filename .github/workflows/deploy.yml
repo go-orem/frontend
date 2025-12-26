@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "frontend/*"
-          target: "~/webchat/frontend"
+          target: "/srv/app/frontend"
 
       - name: Deploy with SSH (docker-compose up)
         uses: appleboy/ssh-action@v1.0.3
@@ -43,5 +43,5 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ~/webchat
+            cd /srv/app
             docker-compose up -d --build frontend

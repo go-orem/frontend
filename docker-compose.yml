@@ -1,7 +1,7 @@
 services:
   frontend:
     build:
-      context: ./frontend
+      context: /srv/app/frontend
     container_name: frontend
     restart: always
     environment:
