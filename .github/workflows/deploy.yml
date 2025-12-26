@@ -46,5 +46,5 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /srv/app
+            cd /srv/app/frontend
             docker compose up -d --build frontend
