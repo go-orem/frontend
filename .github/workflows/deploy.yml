@@ -39,7 +39,7 @@ jobs:
           source: "*"
           target: "/srv/app/frontend"
 
-      - name: Deploy with SSH (docker-compose up)
+      - name: Deploy with SSH (docker compose up)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -47,4 +47,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /srv/app
-            docker-compose up -d --build frontend
+            docker compose up -d --build frontend
