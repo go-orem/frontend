@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 import { conversationService } from "@/services/conversationService";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { createOptimisticMessage } from "@/types/chat.types";
-import { encryptMessage } from "@/utils";
 
 export function useMessageActions(userId: string) {
   const { setMessages } = useConversationContext();
@@ -13,11 +12,7 @@ export function useMessageActions(userId: string) {
   async function sendMessage(conversationId: string, plainText: string) {
     const clientId = `client-${uuid()}`;
 
-    // 🔐 encrypt
-    const key = conversationKey;
-    const encrypted = await encryptMessage(plainText, key);
-
-    // 1️⃣ optimistic insert
+    // 1️⃣ optimistic insert with plain text
     setMessages((prev) => {
       const list = prev[conversationId] ?? [];
 
@@ -29,23 +24,18 @@ export function useMessageActions(userId: string) {
             client_id: clientId,
             conversation_id: conversationId,
             sender_user_id: userId,
-            cipher_text: encrypted.cipher_text,
-            nonce: encrypted.nonce,
-            tag: encrypted.tag,
+            content: plainText, // ✅ Plain text
           }),
         ],
       };
     });
 
     try {
-      // 2️⃣ persist only
+      // 2️⃣ persist with blockchain hash
       await conversationService.sendMessage({
         conversation_id: conversationId,
         sender_user_id: userId,
-        cipher_text: encrypted.cipher_text,
-        nonce: encrypted.nonce,
-        tag: encrypted.tag,
-        encryption_algo: "AES-256-GCM",
+        content: plainText, // ✅ Plain text
         reply_to_message_id: null,
         attachments: [],
         client_id: clientId,

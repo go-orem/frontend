@@ -5,15 +5,9 @@ import { messageService } from "@/services/messageService";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { createOptimisticMessage, toUIMessage } from "@/types/chat.types";
 import { MessageStatus } from "@/types/database.types";
-import { encryptMessage } from "@/utils";
-import {
-  generateConversationKey,
-  exportRawKey,
-} from "@/utils/crypto/conversationKey";
 
 export function useMessage(userId: string) {
-  const { setMessages, messages, conversationKeys, setConversationKeys } =
-    useConversationContext();
+  const { setMessages, messages } = useConversationContext();
 
   /**
    * Send message with optimistic update
@@ -21,57 +15,17 @@ export function useMessage(userId: string) {
   async function sendMessage(conversationId: string, plainText: string) {
     const clientId = `client-${uuid()}`;
 
-    // 🔐 Get conversation key
-    let conversationKey = conversationKeys[conversationId];
-
-    // ✅ FIX: Better error message
-    if (!conversationKey) {
-      console.error("❌ No conversation key found:", {
-        conversationId,
-        availableKeys: Object.keys(conversationKeys),
-      });
-
-      throw new Error(
-        "Encryption key not found. Please refresh the page and try again."
-      );
-    }
-
-    // ✅ Validate key format
-    try {
-      atob(conversationKey); // Test if valid base64
-    } catch (err) {
-      console.error("❌ Invalid conversation key format:", {
-        conversationId,
-        keyPreview: conversationKey.substring(0, 16) + "...",
-      });
-      throw new Error("Invalid encryption key format.");
-    }
-
-    // ✅ Log key being used
-    console.log("🔑 Encrypting message with key:", {
+    console.log("📨 Sending message:", {
       conversationId,
-      keyPreview: conversationKey.substring(0, 16) + "...",
-      keyLength: conversationKey.length,
+      contentLength: plainText.length,
     });
 
-    const encrypted = await encryptMessage(plainText, conversationKey);
-
-    // ✅ Validate encrypted components
-    console.log("🔐 Encrypted message:", {
-      cipher_len: encrypted.cipher_text.length,
-      nonce_len: encrypted.nonce.length,
-      tag_len: encrypted.tag.length,
-    });
-
-    // 1️⃣ Optimistic insert
+    // 1️⃣ Optimistic insert with plain text
     const optimisticMsg = createOptimisticMessage({
       client_id: clientId,
       conversation_id: conversationId,
       sender_user_id: userId,
-      cipher_text: encrypted.cipher_text,
-      nonce: encrypted.nonce,
-      tag: encrypted.tag,
-      content: plainText,
+      content: plainText, // ✅ Plain text
     });
 
     setMessages((prev) => {
@@ -83,20 +37,19 @@ export function useMessage(userId: string) {
     });
 
     try {
-      // 2️⃣ Persist to backend
+      // 2️⃣ Persist to backend with plain text
       const response = await messageService.sendMessage({
         conversation_id: conversationId,
         sender_user_id: userId,
-        cipher_text: encrypted.cipher_text,
-        nonce: encrypted.nonce,
-        tag: encrypted.tag,
-        encryption_algo: "AES-256-GCM",
+        content: plainText, // ✅ Plain text
         reply_to_message_id: null,
         attachments: [],
         client_id: clientId,
       });
 
-      // 3️⃣ Replace optimistic message dengan actual message dari backend
+      console.log("✅ Message sent successfully:", response.id);
+
+      // 3️⃣ Replace optimistic message with actual message from backend
       const uiMessage = toUIMessage(response);
       setMessages((prev) => ({
         ...prev,
@@ -105,6 +58,8 @@ export function useMessage(userId: string) {
         ),
       }));
     } catch (err) {
+      console.error("❌ Failed to send message:", err);
+
       // 4️⃣ Rollback on error
       setMessages((prev) => ({
         ...prev,
@@ -121,10 +76,7 @@ export function useMessage(userId: string) {
    */
   async function addReaction(messageId: string, emoji: string) {
     try {
-      await messageService.addReaction(messageId, {
-        kind: emoji,
-        user_id: userId,
-      });
+      await messageService.addReaction(messageId, emoji);
     } catch (err) {
       console.error("Failed to add reaction:", err);
       throw err;

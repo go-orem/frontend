@@ -11,15 +11,12 @@ export interface UIMessage {
   id: string;
   conversation_id: string;
   sender_user_id: string;
-  cipher_text: string | number[] | null;
-  nonce: string | number[] | null;
-  tag: string | number[] | null;
-  encryption_algo: string;
+  content: string; // ✅ Plain text instead of cipher_text
+  reply_to_message_id?: string | null;
+  blockchain_hash?: string | null;
+  blockchain_tx_id?: string | null;
+  blockchain_chain?: string | null;
   message_status: MessageStatus;
-  reply_to_message_id: string | null;
-  blockchain_hash: string | null;
-  blockchain_tx_id: string | null;
-  blockchain_chain: string | null;
   created_at: string;
   updated_at: string;
 
@@ -45,6 +42,7 @@ export interface UIMessage {
   };
   attachments?: MessageAttachment[];
   deleted_at?: string | null;
+  isOptimistic?: boolean;
 }
 
 /**
@@ -54,7 +52,6 @@ export function toUIMessage(msg: Message): UIMessage {
   return {
     ...msg,
     status: (msg.message_status || "sent") as MessageStatus,
-    // ✅ UPDATED: Extract from sender_user first, fallback to profile
     sender_username: msg.sender_user?.username || undefined,
     sender_email: msg.sender_user?.email || undefined,
     sender_name:
@@ -93,30 +90,18 @@ export function createOptimisticMessage(params: {
   client_id: string;
   conversation_id: string;
   sender_user_id: string;
-  cipher_text: string;
-  nonce: string;
-  tag: string;
-  content?: string;
+  content: string; // ✅ Plain text
 }): UIMessage {
-  const now = new Date().toISOString();
   return {
     id: params.client_id,
-    client_id: params.client_id,
     conversation_id: params.conversation_id,
     sender_user_id: params.sender_user_id,
-    cipher_text: params.cipher_text,
-    nonce: params.nonce,
-    tag: params.tag,
-    encryption_algo: "AES-256-GCM",
-    message_status: "sent",
-    status: "sent",
-    reply_to_message_id: null,
-    blockchain_hash: null,
-    blockchain_tx_id: null,
-    blockchain_chain: null,
-    created_at: now,
-    updated_at: now,
-    is_sending: true,
+    content: params.content, // ✅ Plain text
+    message_status: "pending" as MessageStatus,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    isOptimistic: true,
+    client_id: params.client_id,
     attachments: [],
     deleted_at: null,
   };

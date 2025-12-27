@@ -1,13 +1,11 @@
 // ChatBubble.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UIMessage } from "@/types/chat.types";
 import { CheckIcon } from "./CheckIcon";
 import { MessageActions } from "./MessageActions";
 import { useAuthContext } from "@/context/AuthProvider";
-import { useConversationContext } from "@/context/ConversationProvider"; // ✅ NEW
-import { decryptUIMessage } from "@/utils/crypto"; // ✅ NEW
 
 interface ChatBubbleProps extends UIMessage {
   sender?: "me" | "other";
@@ -23,9 +21,8 @@ export function ChatBubble({
   sender_username,
   sender_avatar,
   created_at,
-  cipher_text,
-  nonce, // ✅ ADD: Get from props
-  tag, // ✅ ADD: Get from props
+  content, // ✅ Plain text content instead of cipher_text
+  blockchain_hash, // ✅ Show blockchain verification badge
   status,
   message_status,
   sender,
@@ -33,9 +30,7 @@ export function ChatBubble({
   onReact,
 }: ChatBubbleProps) {
   const [hovered, setHovered] = useState(false);
-  const [decryptedText, setDecryptedText] = useState<string>("");
   const { user } = useAuthContext();
-  const { conversationKeys } = useConversationContext();
   const displayStatus = status || message_status;
 
   const override =
@@ -46,55 +41,6 @@ export function ChatBubble({
     hour: "2-digit",
     minute: "2-digit",
   });
-
-  // ✅ FIX: Pass actual nonce & tag
-  useEffect(() => {
-    const decrypt = async () => {
-      const conversationKey = conversationKeys[conversation_id];
-      if (!conversationKey) {
-        setDecryptedText("[No encryption key]");
-        return;
-      }
-
-      // ✅ UPDATED: Better validation and logging
-      if (!cipher_text || !nonce || !tag) {
-        console.error("❌ Missing encryption components:", {
-          msgId: id.substring(0, 8),
-          hasCipher: !!cipher_text,
-          hasNonce: !!nonce,
-          hasTag: !!tag,
-        });
-        setDecryptedText("[Incomplete encrypted data]");
-        return;
-      }
-
-      try {
-        const plaintext = await decryptUIMessage(
-          {
-            id,
-            conversation_id,
-            cipher_text,
-            nonce,
-            tag,
-          } as UIMessage,
-          conversationKey
-        );
-        console.log("✅ Decrypt success:", id.substring(0, 8));
-        setDecryptedText(plaintext);
-      } catch (err: any) {
-        console.error("❌ Decrypt error:", {
-          msgId: id.substring(0, 8),
-          error: err.message,
-          // ✅ Log actual data for debugging
-          nonce_type: typeof nonce,
-          nonce_length: typeof nonce === "string" ? nonce.length : "N/A",
-        });
-        setDecryptedText(`[${err.message}]`);
-      }
-    };
-
-    decrypt();
-  }, [id, conversation_id, cipher_text, nonce, tag, conversationKeys]); // ✅ ADD: nonce & tag deps
 
   return (
     <div
@@ -145,14 +91,14 @@ export function ChatBubble({
               : "bg-gray-800/90 backdrop-blur-sm text-gray-100 rounded-tl-none shadow-md border border-white/5"
           } ${hovered ? "shadow-xl scale-[1.01]" : ""}`}
         >
-          {/* ✅ UPDATED: Show decrypted text */}
+          {/* ✅ Plain text content - no decryption needed */}
           <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
-            {decryptedText || (
-              <span className="text-gray-400 italic">Decrypting...</span>
+            {content || (
+              <span className="text-gray-400 italic">Empty message</span>
             )}
           </div>
 
-          {/* Time + Status */}
+          {/* Time + Status + Blockchain Badge */}
           <div
             className={`flex items-center gap-1.5 mt-1 ${
               isMe ? "justify-end" : "justify-start"
@@ -165,6 +111,30 @@ export function ChatBubble({
             >
               {timeStr}
             </span>
+
+            {/* ✅ Blockchain verification badge */}
+            {blockchain_hash && (
+              <span
+                className="text-[10px] text-green-400 flex items-center gap-0.5"
+                title={`Verified on blockchain\nHash: ${blockchain_hash.substring(
+                  0,
+                  16
+                )}...`}
+              >
+                <svg
+                  className="w-3 h-3"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+            )}
+
             {isMe && (
               <div className="flex items-center">
                 <CheckIcon status={displayStatus} />

@@ -9,11 +9,14 @@ import {
   useMessage,
 } from "@/hooks";
 import { useConversationContext } from "@/context/ConversationProvider";
+import { useWS } from "@/context";
+import { toUIMessage } from "@/types/chat.types";
 
 export default function MainContent({ channelId }: { channelId: string }) {
   const [openSidebar, setOpenSidebar] = useState(false);
   const { detail: detailConv } = useConversationDetail(channelId);
   const { user } = useAuth();
+  const ws = useWS();
 
   // 🎯 Message hooks
   const { sendMessage, addReaction, deleteMessage, updateStatus } = useMessage(
@@ -22,7 +25,7 @@ export default function MainContent({ channelId }: { channelId: string }) {
   const { markConversationAsRead, loadMessages } = useConversations();
 
   // 🎯 Get messages from context
-  const { messages } = useConversationContext();
+  const { messages, setMessages } = useConversationContext();
   const currentMessages = messages[channelId] ?? [];
 
   useEffect(() => {
@@ -45,6 +48,60 @@ export default function MainContent({ channelId }: { channelId: string }) {
       markConversationAsRead(channelId).catch(console.error);
     }
   }, [channelId, user]);
+
+  // 📡 Subscribe to conversation room for realtime updates
+  useEffect(() => {
+    if (!channelId || !ws.connected || !user?.user?.id) return;
+
+    const currentUserId = user.user.id;
+    const room = `conversation:${channelId}`;
+    console.log("📡 MainContent subscribing to room:", room);
+    ws.subscribe(room);
+
+    // ✅ Listen to message_created event
+    const handleWSEvent = (event: any) => {
+      if (event.type === "message_created" && event.message) {
+        const message = event.message;
+
+        // Only process messages for current conversation
+        if (message.conversation_id !== channelId) return;
+
+        // ✅ SKIP our own messages (already handled by optimistic update)
+        if (message.sender_user_id === currentUserId) {
+          console.log("⚠️ Skipping own message from WebSocket:", message.id);
+          return;
+        }
+
+        console.log("✅ New message from other user:", message.id);
+
+        // Update messages in context
+        setMessages((prev) => {
+          const currentMessages = prev[channelId] || [];
+
+          // Check if message already exists
+          if (currentMessages.some((m) => m.id === message.id)) {
+            console.log("⚠️ Message already exists, skipping:", message.id);
+            return prev;
+          }
+
+          // Add message from other users
+          return {
+            ...prev,
+            [channelId]: [...currentMessages, toUIMessage(message)],
+          };
+        });
+      }
+    };
+
+    ws.addEventListener(handleWSEvent);
+
+    // Cleanup
+    return () => {
+      console.log("📡 MainContent unsubscribing from room:", room);
+      ws.unsubscribe(room);
+      ws.removeEventListener(handleWSEvent);
+    };
+  }, [channelId, ws.connected, ws, setMessages, user?.user?.id]);
 
   if (!user || !user.user || !detailConv) return null;
   const currentUserId = user.user.id;

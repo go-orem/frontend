@@ -1,7 +1,7 @@
 // MessageList.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { UIMessage } from "@/types/chat.types";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { ChatBubble } from "./ChatBubble";
@@ -24,8 +24,24 @@ export function MessageList({
   onAddReaction,
 }: MessageListProps) {
   const { messages: contextMessages } = useConversationContext();
-  const list = messages || contextMessages;
+  const rawList = messages || contextMessages;
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ Remove duplicates by ID (defensive programming)
+  const list = useMemo(() => {
+    if (!rawList || rawList.length === 0) return [];
+
+    const seen = new Set<string>();
+    return rawList.filter((msg) => {
+      // Skip if already seen
+      if (seen.has(msg.id)) {
+        console.warn("⚠️ Duplicate message filtered:", msg.id);
+        return false;
+      }
+      seen.add(msg.id);
+      return true;
+    });
+  }, [rawList]);
 
   // Auto-scroll ke bottom saat messages berubah
   useEffect(() => {
@@ -47,7 +63,7 @@ export function MessageList({
       {list.map((msg) => (
         <div key={msg.id}>
           {/* ✅ Check if message is poll or regular */}
-          {isPollMessage(msg.cipher_text) ? (
+          {isPollMessage(msg.content) ? (
             <PollBubble
               message={msg}
               isMe={msg.sender_user_id === currentUserId}
@@ -68,10 +84,10 @@ export function MessageList({
 }
 
 // ✅ Helper: detect if message is poll
-function isPollMessage(cipherText: string | number[] | null): boolean {
-  if (!cipherText || typeof cipherText !== "string") return false;
+function isPollMessage(content: string | null | undefined): boolean {
+  if (!content || typeof content !== "string") return false;
   try {
-    const parsed = JSON.parse(cipherText);
+    const parsed = JSON.parse(content);
     return parsed?.type === "poll";
   } catch {
     return false;

@@ -4,12 +4,11 @@ import { HoverGif } from "../effects";
 import { SidebarPanelLoading } from "@/components/sidebar";
 import { useConversationContext } from "@/context/ConversationProvider";
 import { useConversations } from "@/hooks/useConversations";
-import { UIMessage } from "@/types/chat.types";
-import { ConversationType, Message } from "@/types/database.types";
-import { decryptUIMessage, getErrorMessage, runEffectAsync } from "@/utils";
-import { useEffect, useState } from "react";
+import { ConversationType } from "@/types/database.types";
+import { getErrorMessage, runEffectAsync } from "@/utils";
+import { useEffect } from "react";
 import { toast } from "sonner";
-import { useWS } from "@/context"; // ✅ ADD: Import WebSocket context
+import { useWS } from "@/context";
 
 // Utility: format ISO date ke "HH:mm" atau "Hari ini"
 function formatTime(iso?: string) {
@@ -49,11 +48,6 @@ function ChatCard({
               className={`w-auto aspect-square rounded-full object-cover border-3 ${borderColor} overflow-hidden`}
               src={img}
               alt={name}
-              // onError={(e) => {
-              //   const img = e.currentTarget as HTMLImageElement;
-              //   img.onerror = null;
-              //   img.src = "/default-avatar.png";
-              // }}
             />
           </div>
           <div>
@@ -71,17 +65,13 @@ function ChatCard({
   );
 }
 
-function ChatCardWithDecryption({
+function ChatCardSimple({
   conv,
-  conversationKeys,
   onListClick,
 }: {
   conv: any;
-  conversationKeys: Record<string, string>;
   onListClick?: (chat: any) => void;
 }) {
-  const [lastMessageText, setLastMessageText] = useState<string>("");
-
   const lastMsg = conv.last_message;
   const otherUser = conv.other_user;
 
@@ -101,40 +91,8 @@ function ChatCardWithDecryption({
           conv.name || "group-chat"
         }`;
 
-  // Decrypt last message
-  useEffect(() => {
-    const decrypt = async () => {
-      if (!lastMsg || !lastMsg.cipher_text) {
-        setLastMessageText("");
-        return;
-      }
-
-      const conversationKey = conversationKeys[conv.id];
-      if (!conversationKey) {
-        setLastMessageText("[No key]");
-        return;
-      }
-
-      try {
-        const plaintext = await decryptUIMessage(
-          {
-            id: lastMsg.id,
-            conversation_id: conv.id,
-            cipher_text: lastMsg.cipher_text,
-            nonce: lastMsg.nonce,
-            tag: lastMsg.tag,
-          } as UIMessage,
-          conversationKey
-        );
-        setLastMessageText(plaintext);
-      } catch (err) {
-        console.error("Failed to decrypt last message:", err);
-        setLastMessageText("[Encrypted]");
-      }
-    };
-
-    decrypt();
-  }, [lastMsg, conv.id, conversationKeys]);
+  // ✅ Direct content display
+  const lastMessageText = lastMsg?.content || "";
 
   return (
     <ChatCard
@@ -156,9 +114,9 @@ export default function ListChat({
   type: string;
   onListClick?: (chat: any) => void;
 }) {
-  const { conversations, loading, conversationKeys } = useConversationContext();
+  const { conversations, setConversations, loading } = useConversationContext();
   const { refreshConversations } = useConversations();
-  const ws = useWS(); // ✅ ADD: Get WebSocket context
+  const ws = useWS();
 
   // Fetch initial conversations
   useEffect(() => {
@@ -173,13 +131,13 @@ export default function ListChat({
     });
   }, [type]);
 
-  // ✅ ADD: Subscribe to all conversation rooms untuk realtime updates
+  // ✅ Subscribe to all conversation rooms for realtime updates
   useEffect(() => {
     if (!ws.connected || conversations.length === 0) return;
 
     console.log(`📡 Subscribing to ${conversations.length} conversation rooms`);
 
-    // Subscribe ke setiap conversation
+    // Subscribe to each conversation
     conversations.forEach((conv) => {
       ws.subscribe(`conversation:${conv.id}`);
     });
@@ -190,19 +148,63 @@ export default function ListChat({
         ws.unsubscribe(`conversation:${conv.id}`);
       });
     };
-  }, [ws.connected, conversations.map((c) => c.id).join(",")]); // ✅ Smart dependency
+  }, [ws.connected, conversations.map((c) => c.id).join(",")]);
+
+  // ✅ ADD: Listen to WebSocket events for realtime updates
+  useEffect(() => {
+    if (!ws.connected) return;
+
+    const handleWSEvent = (event: any) => {
+      console.log("📨 ListChat received event:", event.type);
+
+      // Handle new message: update last_message in conversations
+      if (event.type === "message_created" && event.message) {
+        const message = event.message;
+
+        setConversations((prevConversations) => {
+          return prevConversations
+            .map((conv) => {
+              // Update the conversation that received the message
+              if (conv.id === message.conversation_id) {
+                console.log(
+                  "✅ Updating last message for conversation:",
+                  conv.id
+                );
+                return {
+                  ...conv,
+                  last_message: message,
+                  updated_at: message.created_at, // Sort by latest message
+                };
+              }
+              return conv;
+            })
+            .sort((a, b) => {
+              // Sort conversations by last message time (newest first)
+              const timeA = new Date(
+                a.last_message?.created_at || a.updated_at
+              ).getTime();
+              const timeB = new Date(
+                b.last_message?.created_at || b.updated_at
+              ).getTime();
+              return timeB - timeA;
+            });
+        });
+      }
+    };
+
+    ws.addEventListener(handleWSEvent);
+
+    return () => {
+      ws.removeEventListener(handleWSEvent);
+    };
+  }, [ws.connected, setConversations]);
 
   if (loading) return <SidebarPanelLoading />;
 
   return (
     <div className="container h-screen overflow-y-auto pl-3 pr-3 space-y-2">
       {conversations.map((conv) => (
-        <ChatCardWithDecryption
-          key={conv.id}
-          conv={conv}
-          conversationKeys={conversationKeys}
-          onListClick={onListClick}
-        />
+        <ChatCardSimple key={conv.id} conv={conv} onListClick={onListClick} />
       ))}
     </div>
   );

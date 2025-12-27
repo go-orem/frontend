@@ -1,12 +1,7 @@
 "use client";
 
+import { Message } from "@/types/database.types";
 import { handleResponse } from "@/utils/response";
-import {
-  Message,
-  MessageReaction,
-  MessageAttachment,
-  MessageStatus,
-} from "@/types/database.types";
 
 class MessageService {
   /**
@@ -15,11 +10,7 @@ class MessageService {
   async sendMessage(payload: {
     conversation_id: string;
     sender_user_id: string;
-    target_user_id?: string;
-    cipher_text: string;
-    nonce: string;
-    tag: string | null;
-    encryption_algo: string;
+    content: string; // ✅ Plain text
     reply_to_message_id?: string | null;
     attachments?: any[];
     client_id: string;
@@ -33,73 +24,18 @@ class MessageService {
     return handleResponse(res);
   }
 
-  /**
-   * List messages in a conversation with pagination
-   */
-  async listMessages(
-    conversationId: string,
-    limit: number = 50,
-    offset: number = 0
-  ): Promise<Message[]> {
+  async getMessages(conversationId: string, limit = 50, offset = 0) {
     const res = await fetch(
       `/api/conversations/${conversationId}/messages?limit=${limit}&offset=${offset}`,
       {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
       }
     );
     return handleResponse(res);
   }
 
-  /**
-   * Add a reaction to a message
-   */
-  async addReaction(
-    messageId: string,
-    payload: {
-      kind: string; // emoji reaction type
-      user_id: string;
-    }
-  ): Promise<MessageReaction> {
-    const res = await fetch(`/api/messages/${messageId}/reactions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(payload),
-    });
-    return handleResponse(res);
-  }
-
-  /**
-   * Add attachment to a message
-   */
-  async addAttachment(
-    messageId: string,
-    payload: {
-      url: string;
-      file_type: string;
-      file_size: number;
-      file_name: string;
-    }
-  ): Promise<MessageAttachment> {
-    const res = await fetch(`/api/messages/${messageId}/attachments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(payload),
-    });
-    return handleResponse(res);
-  }
-
-  /**
-   * Update message status (sent/delivered/read/queued/etc)
-   * ✅ FIX: Accept any MessageStatus
-   */
-  async updateMessageStatus(
-    messageId: string,
-    status: MessageStatus
-  ): Promise<void> {
+  // ✅ Update message status (for read receipts)
+  async updateMessageStatus(messageId: string, status: string): Promise<void> {
     const res = await fetch(`/api/messages/${messageId}/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -109,21 +45,46 @@ class MessageService {
     return handleResponse(res);
   }
 
-  /**
-   * Delete a message
-   */
+  // ✅ Delete message
   async deleteMessage(messageId: string): Promise<void> {
     const res = await fetch(`/api/messages/${messageId}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
     return handleResponse(res);
   }
 
-  /**
-   * Delete an attachment from a message
-   */
+  // ✅ React to message
+  async addReaction(messageId: string, emoji: string): Promise<void> {
+    const res = await fetch(`/api/messages/${messageId}/reactions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ kind: "custom", custom_code: emoji }),
+    });
+    return handleResponse(res);
+  }
+
+  // ✅ ADD: Add attachment to message
+  async addAttachment(
+    messageId: string,
+    payload: {
+      url: string;
+      file_type: string;
+      file_size: number;
+      file_name: string;
+    }
+  ): Promise<void> {
+    const res = await fetch(`/api/messages/${messageId}/attachments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    return handleResponse(res);
+  }
+
+  // ✅ ADD: Delete attachment from message
   async deleteAttachment(
     messageId: string,
     attachmentId: string
@@ -132,7 +93,6 @@ class MessageService {
       `/api/messages/${messageId}/attachments/${attachmentId}`,
       {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
       }
     );

@@ -104,18 +104,16 @@ class ConversationService {
     return handleResponse(res);
   }
 
+  // ✅ Updated: Remove encryption fields, use plain text content
   async sendMessage(payload: {
     conversation_id: string;
     sender_user_id: string;
     target_user_id?: string;
-    cipher_text: string;
-    nonce: string;
-    tag: string | null;
-    encryption_algo: string;
+    content: string; // ✅ Plain text instead of cipher_text
     reply_to_message_id?: string | null;
     attachments?: any[];
-    client_id: string; // ⬅️ penting untuk optimistic
-  }): Promise<void> {
+    client_id: string;
+  }): Promise<Message> {
     const res = await fetch("/api/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -123,46 +121,11 @@ class ConversationService {
       body: JSON.stringify(payload),
     });
 
-    await handleResponse(res);
-  }
-
-  async getConversationKey(conversationId: string): Promise<{
-    encrypted_key: string;
-    key_algo: string;
-    key_version: number;
-    // allow backend variations
-    cipher?: string;
-    iv?: string;
-    eph_public_key?: string;
-  }> {
-    const res = await fetch(`/api/conversations/${conversationId}/key`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
     return handleResponse(res);
   }
 
-  async updateMemberKey(
-    conversationId: string,
-    memberId: string,
-    keyData: {
-      encrypted_conversation_key: string;
-      key_algo: string;
-      key_version: number;
-    }
-  ): Promise<void> {
-    const res = await fetch(
-      `/api/conversations/${conversationId}/members/${memberId}/key`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(keyData),
-      }
-    );
-    return handleResponse(res);
-  }
+  // ✅ Removed: getConversationKey() - no longer needed
+  // ✅ Removed: updateMemberKey() - no longer needed
 }
 
 export const conversationService = new ConversationService();

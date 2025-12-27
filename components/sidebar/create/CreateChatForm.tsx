@@ -5,17 +5,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { getErrorMessage, importPublicKey } from "@/utils";
+import { getErrorMessage } from "@/utils";
 import { useUserSearch } from "@/hooks/useUserSearch";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { useConversations } from "@/hooks/useConversations";
 import { useRouter } from "next/navigation";
-import {
-  encryptConversationKey,
-  exportRawKey,
-  generateConversationKey,
-} from "@/utils/crypto/conversationKey";
 import { useAuth } from "@/hooks";
 
 const CreateChatSchema = z.object({
@@ -84,32 +79,7 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
       }
       console.log("Starting chat with:", recipient);
 
-      // 1. generate conversation key
-      const conversationKey = await generateConversationKey();
-      const rawKey = await exportRawKey(conversationKey);
-
-      // 2. encrypt for recipient
-      if (!recipient.active_key?.public_key) {
-        throw new Error("Recipient active public key not found.");
-      }
-      const recipientPublicKey = await importPublicKey(
-        recipient.active_key?.public_key
-      );
-      const encryptedForRecipient = await encryptConversationKey(
-        rawKey,
-        recipientPublicKey
-      );
-
-      // 3. encrypt for self
-      if (!user.active_key?.public_key) {
-        throw new Error("User active public key not found.");
-      }
-      const userPublicKey = await importPublicKey(user.active_key.public_key);
-      const encryptedForSelf = await encryptConversationKey(
-        rawKey,
-        userPublicKey
-      );
-
+      // ✅ Simple conversation creation without encryption
       const conversationBody: ConversationsWithMemberBody = {
         conversation: {
           conversation_type: "direct",
@@ -123,16 +93,10 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
           {
             user_id: recipient.user_id,
             role: "admin",
-            encrypted_conversation_key: JSON.stringify(encryptedForRecipient),
-            key_algo: "X25519+AES-GCM",
-            key_version: 1,
           },
           {
             user_id: user.user.id,
             role: "admin",
-            encrypted_conversation_key: JSON.stringify(encryptedForSelf),
-            key_algo: "X25519+AES-GCM",
-            key_version: 1,
           },
         ],
       };

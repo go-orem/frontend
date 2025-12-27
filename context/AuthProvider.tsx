@@ -8,12 +8,6 @@ import {
   ReactNode,
 } from "react";
 import { authService } from "@/services/authService";
-import {
-  getPrivateKey,
-  generateUserKeyPair,
-  savePrivateKey,
-  exportPublicKey,
-} from "@/utils";
 import { FullUser } from "@/types/database.types";
 
 type AuthContextType = {
@@ -36,37 +30,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * 🔐 Ensure user has keypair
-   * - private key: IndexedDB
-   * - public key: backend
-   */
-  async function ensureUserKey(me: FullUser) {
-    if (typeof window === "undefined" || !me.user) return; // safety check
-
-    const userId = me.user.id;
-    const existingPrivateKey = await getPrivateKey(userId);
-    if (existingPrivateKey) return;
-
-    const keyPair = await generateUserKeyPair();
-    await savePrivateKey(userId, keyPair.privateKey);
-
-    const publicKey = await exportPublicKey(keyPair.publicKey);
-
-    await authService.registerPublicKey({
-      publicKey,
-      algo: "ECDH-P256",
-      version: 1,
-    });
-
-    refreshUser();
-  }
-
   async function refreshUser() {
     setRefreshing(true);
     try {
       const me = await authService.getMe();
-      await ensureUserKey(me);
       setUser(me);
       setError(null);
     } catch (err: any) {
@@ -83,11 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // initial load
+    // Initial load
     (async () => {
       try {
         const me = await authService.getMe();
-        await ensureUserKey(me);
         setUser(me);
         setError(null);
       } catch (err: any) {
