@@ -48,4 +48,4 @@ jobs:
           script: |
             cd /srv/app/frontend
             docker compose up -d --build frontend
-          command_timeout: 1800
+          command_timeout: 30m
