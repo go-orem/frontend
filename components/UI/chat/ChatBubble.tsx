@@ -1,7 +1,7 @@
 // ChatBubble.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { UIMessage } from "@/types/chat.types";
 import { CheckIcon } from "./CheckIcon";
 import { MessageActions } from "./MessageActions";
@@ -21,15 +21,15 @@ export function ChatBubble({
   sender_username,
   sender_avatar,
   created_at,
-  content, // ✅ Plain text content instead of cipher_text
-  blockchain_hash, // ✅ Show blockchain verification badge
+  content,
+  blockchain_hash,
   status,
   message_status,
   sender,
   onDelete,
   onReact,
 }: ChatBubbleProps) {
-  const [hovered, setHovered] = useState(false);
+  const [showActions, setShowActions] = useState(false);
   const { user } = useAuthContext();
   const displayStatus = status || message_status;
 
@@ -42,13 +42,39 @@ export function ChatBubble({
     minute: "2-digit",
   });
 
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // Close actions when clicking outside
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setShowActions(false);
+      }
+    }
+
+    if (showActions) {
+      document.addEventListener("mousedown", onDocClick);
+    }
+
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [showActions]);
+
+  const handleToggleActions = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    console.log("🔧 Chevron clicked, current state:", showActions);
+    setShowActions((prev) => !prev);
+  };
+
   return (
     <div
+      ref={wrapperRef}
       className={`flex w-full mb-4 px-4 ${
         isMe ? "justify-end" : "justify-start"
       } group relative`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       {/* Avatar */}
       {!isMe && (
@@ -89,9 +115,31 @@ export function ChatBubble({
             isMe
               ? "bg-linear-to-br from-blue-600 to-blue-700 text-white rounded-br-none shadow-lg"
               : "bg-gray-800/90 backdrop-blur-sm text-gray-100 rounded-tl-none shadow-md border border-white/5"
-          } ${hovered ? "shadow-xl scale-[1.01]" : ""}`}
+          } ${showActions ? "shadow-xl scale-[1.01]" : ""}`}
         >
-          {/* ✅ Plain text content - no decryption needed */}
+          {/* Chevron trigger: only visible on hover */}
+          <button
+            onClick={handleToggleActions}
+            aria-label="Open message options"
+            title="Open message options"
+            type="button"
+            className={`absolute ${
+              isMe ? "left-2" : "right-2"
+            } top-2 z-10 opacity-0 bg-(--background)/50 group-hover:opacity-100 transition-opacity hover:bg-(--background)/70 rounded-full p-1.5`}
+          >
+            <svg
+              className={`w-4 h-4 ${isMe ? "text-white" : "text-gray-200"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
           <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
             {content || (
               <span className="text-gray-400 italic">Empty message</span>
@@ -112,7 +160,6 @@ export function ChatBubble({
               {timeStr}
             </span>
 
-            {/* ✅ Blockchain verification badge */}
             {blockchain_hash && (
               <span
                 className="text-[10px] text-green-400 flex items-center gap-0.5"
@@ -142,27 +189,22 @@ export function ChatBubble({
             )}
           </div>
         </div>
-      </div>
 
-      {/* Actions */}
-      {hovered && (
-        <div
-          className={`absolute z-20 ${
-            isMe
-              ? "right-4 top-1/2 -translate-y-1/2"
-              : "left-16 top-1/2 -translate-y-1/2"
-          }`}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <MessageActions
-            messageId={id}
-            isMe={isMe}
-            onDelete={onDelete}
-            onReact={onReact}
-          />
-        </div>
-      )}
+        {/* Actions positioned below bubble (instead of beside) */}
+        {showActions && (
+          <div
+            className={`mt-2 z-30 ${isMe ? "self-end" : "self-start"}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MessageActions
+              messageId={id}
+              isMe={isMe}
+              onDelete={onDelete}
+              onReact={onReact}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
