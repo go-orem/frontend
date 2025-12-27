@@ -14,3 +14,9 @@ services:
       - CLOUDINARY_API_SECRET=57d4TK0hbF7XXV-yfpeAfdRZnBs
     ports:
       - "3000:3000"
+    networks:
+      - npm_network
+
+networks:
+  npm_network:
+    external: true
