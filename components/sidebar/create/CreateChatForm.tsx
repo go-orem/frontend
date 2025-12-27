@@ -12,6 +12,7 @@ import { ConversationsWithMemberBody } from "@/types/conversations.types";
 import { useConversations } from "@/hooks/useConversations";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
+import { useWS } from "@/context";
 
 const CreateChatSchema = z.object({
   recipient_id: z.string().uuid("Recipient ID must be valid UUID"),
@@ -30,6 +31,8 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
     resolver: zodResolver(CreateChatSchema),
     defaultValues: { recipient_id: "" },
   });
+
+  const ws = useWS();
 
   const { watch, setValue, handleSubmit } = form;
   const recipientId = watch("recipient_id");
@@ -109,6 +112,10 @@ export default function CreateChatForm({ onClose }: CreateChatFormProps) {
         toast.error("Failed to create chat.");
         return;
       }
+
+      // ✅ Immediately subscribe to the new conversation
+      ws.subscribe(`conversation:${res.id}`);
+
       toast.success("Chat created successfully!");
       router.push(`/channel/${res.id}`);
       onClose?.();

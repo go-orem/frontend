@@ -33,6 +33,62 @@ export function useConversations() {
     };
   }, [ws.connected, setMessages, setConversations]);
 
+  // ✅ Handle WebSocket conversation_created event
+  useEffect(() => {
+    if (!ws.connected || !user?.user?.id) return;
+
+    const handleWSEvent = (event: any) => {
+      console.log("📨 useConversations received event:", event.type);
+
+      // ✅ Handle new conversation created
+      if (event.type === "conversation_created" && event.conversation) {
+        const newConv = event.conversation;
+
+        console.log("🆕 New conversation created:", newConv.id);
+
+        // Add to conversations list
+        setConversations((prev) => {
+          // Check if already exists
+          if (prev.some((c) => c.id === newConv.id)) {
+            return prev;
+          }
+
+          // Add as ConversationWithLastMessage format
+          const convWithLastMsg = {
+            ...newConv,
+            last_message: null,
+            last_message_at: newConv.created_at,
+            unread_count: 0,
+          };
+
+          return [convWithLastMsg, ...prev];
+        });
+
+        // Subscribe to the new conversation room
+        ws.subscribe(`conversation:${newConv.id}`);
+      }
+    };
+
+    ws.addEventListener(handleWSEvent);
+
+    return () => {
+      ws.removeEventListener(handleWSEvent);
+    };
+  }, [ws.connected, user, setConversations, ws]);
+
+  // ✅ Subscribe to user's personal room
+  useEffect(() => {
+    if (!ws.connected || !user?.user?.id) return;
+
+    const userRoom = `user:${user.user.id}`;
+    console.log("📡 Subscribing to user room:", userRoom);
+    ws.subscribe(userRoom);
+
+    return () => {
+      ws.unsubscribe(userRoom);
+    };
+  }, [ws.connected, user, ws]);
+
   async function refreshConversations(type: ConversationType | null = null) {
     setLoading(true);
     try {

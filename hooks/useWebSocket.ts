@@ -79,7 +79,10 @@ export function useWebSocket() {
 
         // subscribe semua room yang sudah diregistrasi
         roomsRef.current.forEach((room) => {
-          ws.send(JSON.stringify({ action: "subscribe", room }));
+          // ✅ FIX: Check readyState before sending
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ action: "subscribe", room }));
+          }
         });
       };
 
@@ -132,9 +135,20 @@ export function useWebSocket() {
 
     roomsRef.current.add(room);
 
-    if (connected && wsRef.current) {
+    // ✅ FIX: Check both connected AND readyState
+    if (
+      connected &&
+      wsRef.current &&
+      wsRef.current.readyState === WebSocket.OPEN
+    ) {
       console.log("📡 Subscribing to room:", room);
       wsRef.current.send(JSON.stringify({ action: "subscribe", room }));
+    } else {
+      console.log(
+        "📡 Queued subscription for room:",
+        room,
+        "- will subscribe when connected"
+      );
     }
   }
 
@@ -143,7 +157,12 @@ export function useWebSocket() {
 
     roomsRef.current.delete(room);
 
-    if (connected && wsRef.current) {
+    // ✅ FIX: Check both connected AND readyState
+    if (
+      connected &&
+      wsRef.current &&
+      wsRef.current.readyState === WebSocket.OPEN
+    ) {
       console.log("📡 Unsubscribing from room:", room);
       wsRef.current.send(JSON.stringify({ action: "unsubscribe", room }));
     }
@@ -162,7 +181,12 @@ export function useWebSocket() {
 
   // ✅ NEW: Send raw message to WebSocket (for WebRTC signaling)
   function sendMessage(message: any) {
-    if (!connected || !wsRef.current) {
+    // ✅ FIX: Check readyState before sending
+    if (
+      !connected ||
+      !wsRef.current ||
+      wsRef.current.readyState !== WebSocket.OPEN
+    ) {
       console.warn("⚠️ WebSocket not connected, cannot send message");
       return false;
     }
