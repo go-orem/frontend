@@ -1,17 +1,15 @@
 services:
   frontend:
     build:
-      context: /srv/app/frontend
+      context: .
+      args:
+        - NEXT_PUBLIC_API_BASE=${NEXT_PUBLIC_API_BASE}
+        - NEXT_PUBLIC_WEBSOCKET_BASE=${NEXT_PUBLIC_WEBSOCKET_BASE}
+        - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
     container_name: frontend
     restart: always
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_BASE=https://backend.oremchat.com
-      - NEXT_PUBLIC_WEBSOCKET_BASE=wss://backend.oremchat.com/ws
-      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=203865654728-2eaoa81vcpv1afm9qspulm20nj7htfvg.apps.googleusercontent.com
-      - CLOUDINARY_CLOUD_NAME=darvszclv
-      - CLOUDINARY_API_KEY=696863639457853
-      - CLOUDINARY_API_SECRET=57d4TK0hbF7XXV-yfpeAfdRZnBs
+    env_file:
+      - .env.production
     ports:
       - "3000:3000"
     networks:
