@@ -23,12 +23,25 @@ export async function POST(req: Request) {
 
     const token = data.data?.token;
     if (token) {
-      response.cookies.set("token", token, {
+      const cookieOptions: any = {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
-      });
+      };
+
+      if (
+        process.env.NEXT_PUBLIC_APP_URL &&
+        !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")
+      ) {
+        const url = new URL(process.env.NEXT_PUBLIC_APP_URL);
+        const parts = url.hostname.split(".");
+        if (parts.length >= 2) {
+          cookieOptions.domain = "." + parts.slice(-2).join(".");
+        }
+      }
+
+      response.cookies.set("token", token, cookieOptions);
     }
 
     return response;
