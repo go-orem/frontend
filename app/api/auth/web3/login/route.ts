@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     const token = data.data?.token;
     if (token) {
       const cookieOptions: any = {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
