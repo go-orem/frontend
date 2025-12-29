@@ -452,13 +452,7 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
           >
             <IconGear />
           </button>
-          <SidebarSharePanel
-            open={shareOpen}
-            setOpen={setShareOpen}
-            url="https://bloop.id"
-            title="Bloop.id"
-            description="Kamu bisa bagikan link kamu disini ☺️"
-          />
+          <SidebarSharePanel open={shareOpen} setOpen={setShareOpen} />
         </div>
       </div>
     </aside>
