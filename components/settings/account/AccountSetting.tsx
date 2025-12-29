@@ -86,11 +86,20 @@ const AccountSetting: React.FC<AccountSettingProps> = ({
   const handleLogout = async () => {
     try {
       await logout();
-      window.location.reload();
-      refreshUser();
       toast.success("Logged out successfully");
-    } catch {
+
+      // Redirect ke home setelah logout berhasil
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
+    } catch (error) {
+      console.error("Logout error:", error);
       toast.error("Logout failed");
+
+      // Tetap redirect meskipun error
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     }
   };
 
