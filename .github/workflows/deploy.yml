@@ -24,8 +24,24 @@ jobs:
             git fetch origin
             git reset --hard origin/dev
 
-            echo "🏗️  Building and deploying..."
-            docker compose up -d --build frontend
+            echo "🔍 Latest commit:"
+            git log -1 --oneline
+
+            echo "🛑 Stopping container..."
+            docker compose down frontend
+
+            echo "🏗️  Building with --no-cache..."
+            docker compose build --no-cache frontend
+
+            echo "🚀 Starting container..."
+            docker compose up -d frontend
+
+            echo "⏳ Waiting for container..."
+            sleep 10
+
+            echo "📊 Container status:"
+            docker compose ps frontend
+            docker compose logs frontend --tail=20
 
             echo "🧹 Cleaning up..."
             docker image prune -f
