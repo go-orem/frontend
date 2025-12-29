@@ -27,6 +27,16 @@ jobs:
             echo "🔍 Latest commit:"
             git log -1 --oneline
 
+            # load build env vars from .env.production into shell
+            if [ -f .env.production ]; then
+              echo "📄 Loading .env.production..."
+              set -o allexport
+              source .env.production
+              set +o allexport
+            else
+              echo "⚠️ .env.production not found"
+            fi
+
             echo "🛑 Stopping container..."
             docker compose down frontend
 
@@ -41,7 +51,7 @@ jobs:
 
             echo "📊 Container status:"
             docker compose ps frontend
-            docker compose logs frontend --tail=20
+            docker compose logs frontend --tail=50
 
             echo "🧹 Cleaning up..."
             docker image prune -f
