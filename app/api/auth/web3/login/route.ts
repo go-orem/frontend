@@ -24,10 +24,11 @@ export async function POST(req: Request) {
     const token = data.data?.token;
     if (token) {
       const cookieOptions: any = {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
+        maxAge: 60 * 60 * 24 * 7,
       };
 
       if (

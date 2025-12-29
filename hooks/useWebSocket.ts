@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { getClientToken } from "@/lib/getClientToken";
 
 type WSEvent =
   | { type: "message_created"; message: any }
@@ -69,7 +70,17 @@ export function useWebSocket() {
 
     async function connect() {
       if (!active || wsRef.current || stoppedRef.current) return;
-      const ws = new WebSocket(WS_URL);
+
+      // ✅ Get token from cookie
+      const token = getClientToken();
+
+      // ✅ Add token to WebSocket URL
+      const wsUrl = token
+        ? `${WS_URL}?token=${encodeURIComponent(token)}`
+        : WS_URL;
+
+      console.log("🔌 Connecting WebSocket...", { hasToken: !!token });
+      const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {
