@@ -25,8 +25,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orem",
-  description: "Situs untuk komunikasi dengan teman seluruh dunia",
+  title: "Oremchat",
+  description: "Communicate with a global community for decentralized chats",
 };
 
 export default function RootLayout({

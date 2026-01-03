@@ -34,7 +34,6 @@ const settingsMenu = [
     key: "privacy",
     variant: "user",
   },
-  { name: "Chat", icon: <IconChatSet />, key: "chat", variant: "user" },
   { name: "Folder", icon: <IconFolderSet />, key: "folder", variant: "group" },
   {
     name: "Language",
