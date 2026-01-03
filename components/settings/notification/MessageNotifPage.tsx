@@ -1,0 +1,79 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+export default function MessageNotifPage({ onBack }: any) {
+  return (
+    <div className="h-full overflow-y-auto p-4 space-y-4">
+      <Section
+        title="Private Messages"
+        desc="Control notifications for end-to-end encrypted chats"
+      />
+
+      <Toggle label="Show Message Preview" />
+      <Toggle label="Notify When Screen Locked" />
+      <Toggle label="High Priority Notifications" />
+      <Toggle label="Ignore Archived Chats" />
+    </div>
+  );
+}
+
+function Section({ title, desc }: any) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <p className="text-xs text-gray-400 mt-1">{desc}</p>
+    </div>
+  );
+}
+
+/* =========================
+   CYBER TOGGLE (INLINE)
+   replaces checkbox only
+========================= */
+function Toggle({ label }: any) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <div className="flex justify-between items-center py-3">
+      <span className="text-sm">{label}</span>
+
+      <button
+        onClick={() => setActive(!active)}
+        className={`relative w-11 h-6 rounded-full border overflow-hidden transition-colors duration-300
+          ${
+            active
+              ? "bg-emerald-500/25 border-emerald-400/40"
+              : "bg-white/10 border-white/10"
+          }`}
+      >
+        {/* soft glow */}
+        {active && (
+          <div className="absolute inset-0 bg-emerald-400/20 blur-md" />
+        )}
+
+        {/* subtle scan animation */}
+        {active && (
+          <motion.div
+            className="absolute inset-0 bg-linear-to-r from-transparent via-emerald-400/30 to-transparent"
+            animate={{ x: ["-100%", "100%"] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+          />
+        )}
+
+        {/* knob — perfectly centered */}
+        <motion.div
+          className={`absolute top-1/2 left-[3px] w-4 h-4 rounded-full -translate-y-1/2 z-10
+            ${
+              active
+                ? "bg-emerald-400 shadow-[0_0_10px_#34d399]"
+                : "bg-gray-400"
+            }`}
+          animate={{ x: active ? 20 : 0 }}
+          transition={{ type: "spring", stiffness: 420, damping: 28 }}
+        />
+      </button>
+    </div>
+  );
+}

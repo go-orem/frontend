@@ -18,7 +18,7 @@ const Search: FC<SearchProps> = () => {
           border-gray-600
           bg-transparent
           pl-5
-          pr-4
+          pr-13
           py-2
           text-sm
           

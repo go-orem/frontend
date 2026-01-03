@@ -1,10 +1,12 @@
 "use client";
 import {
   AccountSetting,
+  NotificationSetting,
   PrivacySetting,
   WalletSetting,
   WhitepaperSetting,
 } from "@/components/settings";
+import AppearanceSetting from "@/components/settings/appearace/AppearanceSetting";
 
 export default function SettingSidebarContent({
   activeSidebar,
@@ -15,6 +17,8 @@ export default function SettingSidebarContent({
     | "info"
     | "account"
     | "wallet"
+    | "notification"
+    | "appearance"
     | "whitepaper"
     | "privacy"
     | "settings";
@@ -34,6 +38,12 @@ export default function SettingSidebarContent({
       )}
       {activeSidebar === "privacy" && (
         <PrivacySetting data={data} onClose={onClose} />
+      )}
+      {activeSidebar == "notification" && (
+        <NotificationSetting data={data} onClose={onClose} />
+      )}
+      {activeSidebar == "appearance" && (
+        <AppearanceSetting data={data} onClose={onClose} />
       )}
     </div>
   );

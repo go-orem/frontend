@@ -3,46 +3,64 @@ import { useState } from "react";
 import SettingSidebarContent from "@/components/sidebar/setting/SettingSidebarContent";
 import { useAuth } from "@/hooks/useAuth";
 import {
+  IconArrowRight,
   IconEdit,
-  IconGear,
   IconLogout,
   IconProfile,
-  IconReply,
-  IconSendDocs,
-  IconSet,
-  IconSuka,
 } from "@/components/icons";
 import WalletOrem from "@/components/icons/IconWalletApp/WalletOrem";
+import IconLanguage from "@/components/icons/IconSidebarSetting/IconLanguage";
+import IconPrivacy from "@/components/icons/IconSidebarSetting/IconPrivacy";
+import IconAppearance from "@/components/icons/IconSidebarSetting/IconAppearance";
+import IconDeveloper from "@/components/icons/IconSidebarSetting/IconDeveloper";
+import IconWhitepaper from "@/components/icons/IconSidebarSetting/IconWhitepaper";
+import IconFolderSet from "@/components/icons/IconSidebarSetting/IconFolderSet";
+import IconChatSet from "@/components/icons/IconSidebarSetting/IconChatSet";
+import IconNotificationSet from "@/components/icons/IconSidebarSetting/IconNotificationSet";
 
 const settingsMenu = [
   { name: "Account", icon: <IconProfile />, key: "account", variant: "user" },
   { name: "Wallet", icon: <WalletOrem />, key: "wallet", variant: "user" },
   { name: "Edit", icon: <IconEdit />, key: "edit", variant: "user" },
-  { name: "Settings", icon: <IconGear />, key: "setting", variant: "group" },
   {
-    name: "Privacy & Security",
-    icon: <IconReply />,
+    name: "Notification",
+    icon: <IconNotificationSet />,
+    key: "notification",
+    variant: "group",
+  },
+  {
+    name: "Privacy",
+    icon: <IconPrivacy />,
     key: "privacy",
     variant: "user",
   },
-  { name: "Chat", icon: <IconSuka />, key: "chat", variant: "user" },
-  { name: "Folder", icon: <IconSendDocs />, key: "folder", variant: "group" },
-  { name: "Bahasa", icon: <IconSuka />, key: "language", variant: "user" },
-  { name: "Penyimpanan", icon: <IconSuka />, key: "storage", variant: "group" },
+  { name: "Chat", icon: <IconChatSet />, key: "chat", variant: "user" },
+  { name: "Folder", icon: <IconFolderSet />, key: "folder", variant: "group" },
   {
-    name: "Tampilan",
-    icon: <IconSuka />,
-    key: "display",
+    name: "Language",
+    icon: <IconLanguage />,
+    key: "language",
+    variant: "user",
+  },
+  {
+    name: "Appearance",
+    icon: <IconAppearance />,
+    key: "appearance",
     variant: "user",
     divider: true,
   },
   {
     name: "Whitepaper",
-    icon: <IconSuka />,
+    icon: <IconWhitepaper />,
     key: "whitepaper",
     variant: "user",
   },
-  { name: "Developer", icon: <IconSuka />, key: "developer", variant: "group" },
+  {
+    name: "Developer",
+    icon: <IconDeveloper />,
+    key: "developer",
+    variant: "group",
+  },
 ];
 
 export default function SettingSidebarView() {
@@ -104,7 +122,7 @@ export default function SettingSidebarView() {
   };
 
   return (
-    <div className="relative container h-screen overflow-y-auto pl-6 pr-6">
+    <div className="relative container h-screen overflow-y-auto pl-4 pr-4">
       {/* ======= MENU SETTINGS ======= */}
       <nav>
         <ul className="align-middle justify-center items-center">
@@ -121,7 +139,7 @@ export default function SettingSidebarView() {
                   </span>
                 </button>
                 <span>
-                  <IconSet />
+                  <IconArrowRight />
                 </span>
               </div>
 
@@ -137,7 +155,7 @@ export default function SettingSidebarView() {
               <button className="flex space-x-4 items-center">
                 <IconLogout />
                 <span className="text-sm  font-light text-gray-400">
-                  Keluar
+                  Log Out
                 </span>
               </button>
             </div>
@@ -162,6 +180,10 @@ export default function SettingSidebarView() {
                 ? "whitepaper"
                 : selectedMenu === "privacy"
                 ? "privacy"
+                : selectedMenu === "notification"
+                ? "notification"
+                : selectedMenu === "appearance"
+                ? "appearance"
                 : "info"
             }
             data={selectedData}
